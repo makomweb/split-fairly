@@ -4,17 +4,22 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class SpaController
 {
+    public function __construct(private readonly KernelInterface $kernel)
+    {
+    }
+
     #[Route('/', name: 'app_home')]
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
     public function index(Request $request): Response
     {
-        // If a built frontend exists, serve the built index.html
-        $buildIndex = dirname(__DIR__, 3) . '/public/build/index.html';
-        if (file_exists($buildIndex)) {
+        // In production, serve the built index.html if present
+        $buildIndex = $this->kernel->getProjectDir() . '/public/build/index.html';
+        if ($this->kernel->getEnvironment() === 'prod' && file_exists($buildIndex)) {
             return new Response(
                 file_get_contents($buildIndex),
                 Response::HTTP_OK,
