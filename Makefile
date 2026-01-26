@@ -1,57 +1,86 @@
 APP_NAME = web-app-project-skeleton
 VERSION = 0.1.1
 
+.DEFAULT_GOAL := help
+
+help:
+	@echo "📋 Available targets:\n"
+	@echo "🏗️  Build & Setup:"
+	@echo "  make build              Build development image, boot stack, and open browser"
+	@echo "  make image              Build development Docker image"
+	@echo "  make up                 Boot the Docker stack"
+	@echo "  make down               Shut down the Docker stack"
+	@echo "  make init               Initialize app (composer, database, fixtures)"
+	@echo "\n🔄 Maintenance:"
+	@echo "  make maintain           Update composer and npm dependencies"
+	@echo "  make show-composer-updates  Show outdated composer packages"
+	@echo "  make update-composer-dependencies  Update composer packages"
+	@echo "  make update-npm-dependencies  Update npm packages"
+	@echo "\n🧪 Testing & Quality:"
+	@echo "  make test               Run backend tests"
+	@echo "  make quality            Run quality checks"
+	@echo "  make phpstan            Run static code analysis"
+	@echo "  make style              Fix code style"
+	@echo "  make arch               Test architecture"
+	@echo "  make coverage           Generate coverage report"
+	@echo "\n🛠️  Development:"
+	@echo "  make shell              Open shell on app container"
+	@echo "  make composer           Run composer command (use: make composer cmd='install')"
+	@echo "  make npm-build          Create frontend build"
+	@echo "  make clear              Clear all caches"
+	@echo "  make open               Open application in browser\n"
+
 build: image up open
 
 image:
-	@echo "Build development image"
+	@echo "🏗️  Building development image..."
 	docker build . -f ./build/php/Dockerfile --target dev -t ${APP_NAME}-dev:${VERSION}
 	
 up:
-	@echo "Boot stack"
+	@echo "🚀 Booting Docker stack..."
 	docker compose up -d --remove-orphans
 
 down:
-	@echo "Shutting down"
+	@echo "⛔ Shutting down Docker stack..."
 	docker compose down
 
 restart: reset
 reset: reset-worker reset-app
 
 reset-worker:
-	@echo "Reset worker"
+	@echo "🔄 Resetting worker..."
 	docker compose restart worker
 
 reset-app:
-	@echo "Reset app"
+	@echo "🔄 Resetting app..."
 	docker compose restart app
 
 init: composer-install create-database create-schema load-fixtures
 
 composer-install:
-	@echo "Install composer dependencies"
+	@echo "📦 Installing composer dependencies..."
 	docker compose exec -it app composer install
 
 create-database:
-	@echo "Create database"
+	@echo "🗄️  Creating database..."
 	docker compose exec -it app bin/console doctrine:database:create --if-not-exists
 
 load-fixtures:
-	@echo "Load fixtures"
+	@echo "📥 Loading fixtures..."
 	docker compose exec -it app bin/console doctrine:fixtures:load -q
 
 create-schema:
-	@echo "Create database schema"
+	@echo "📐 Creating database schema..."
 	docker compose exec -it app bin/console doctrine:schema:update --force
 
 init-test: create-test-database create-test-schema
 
 create-test-database:
-	@echo "Create database"
+	@echo "🗄️  Creating test database..."
 	docker compose exec -it app bin/console doctrine:database:create --env=test --if-not-exists
 
 create-test-schema:
-	@echo "Create database schema"
+	@echo "📐 Creating test database schema..."
 	docker compose exec -it app bin/console doctrine:schema:update --env=test --force
 
 composer:
@@ -61,62 +90,62 @@ composer:
 shell: shell-backend
 shell-backend: backend-shell
 backend-shell:
-	@echo "Open shell on app container"
+	@echo "💻 Opening shell on app container..."
 	docker compose exec -it app bash
 	
 qa: quality
 quality:
-	@echo "Run quality scripts"
+	@echo "✅ Running quality checks..."
 	docker compose exec -it app composer qa
 
 sa: phpstan
 phpstan:
-	@echo "Run static code analysis"
+	@echo "🔍 Running static code analysis..."
 	docker compose exec -it app vendor/bin/phpstan analyse --memory-limit=1G
 
 cs: style
 style: codestyle
 codestyle: code-style
 code-style:
-	@echo "Fix code style"
+	@echo "💄 Fixing code style..."
 	docker compose exec -it app vendor/bin/php-cs-fixer fix
 
 test: test-backend
 
 backend-test: test-backend
 test-backend:
-	@echo "Run backend tests"
+	@echo "🧪 Running backend tests..."
 	docker compose exec -it app bin/phpunit
 	
 arch:
-	@echo "Test architecture"
+	@echo "🏛️  Testing architecture..."
 	docker compose exec -it app vendor/bin/deptrac analyse --report-uncovered
 
 clear:
-	@echo "Clear all caches"
+	@echo "🗑️  Clearing all caches..."
 	docker compose exec -it app composer clear
 
 maintenance: maintain
 maintain: show-composer-updates update-composer-dependencies update-npm-dependencies
 
 show-composer-updates:
-	@echo "Show wether composer dependencies are outdated"
+	@echo "📊 Checking for outdated composer packages..."
 	docker compose exec -it app composer show --outdated
 	
 update-composer-dependencies:
-	@echo "Update dependencies"
+	@echo "📦 Updating composer dependencies..."
 	docker compose exec -it app composer update -W
 
 update-npm-dependencies:
-	@echo "Update NPM dependencies"
+	@echo "📦 Updating npm dependencies..."
 	docker compose exec -it npm-dev npm update --save
 
 coverage:
-	@echo "Generate coverage report"
+	@echo "📈 Generating coverage report..."
 	docker compose exec -it app bin/phpunit -c phpunit.xml.dist --coverage-html ./coverage
 
 npm-build:
-	@echo "Create frontend build"
+	@echo "⚛️  Creating frontend build..."
 	docker compose exec -it npm-dev npm run build
 
 open:
