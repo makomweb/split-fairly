@@ -32,8 +32,11 @@ final readonly class SpaController
             throw new \RuntimeException("SPA build not found at {$buildIndex}. Run make npm-build!");
         }
 
+        $content = file_get_contents($buildIndex);
+        assert(is_string($content));
+
         return new Response(
-            file_get_contents($buildIndex),
+            $content,
             Response::HTTP_OK,
             ['Content-Type' => 'text/html; charset=utf-8']
         );

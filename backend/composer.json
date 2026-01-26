@@ -57,10 +57,12 @@
             "@auto-scripts"
         ],
         "qa": [
+            "vendor/bin/phpstan analyse --memory-limit=1G",
             "vendor/bin/php-cs-fixer fix",
             "bin/phpunit"
         ],
         "cs": "vendor/bin/php-cs-fixer fix",
+        "sa": "vendor/bin/phpstan analyse --memory-limit=1G",
         "test": "bin/phpunit",
         "coverage": "bin/phpunit --coverage-text",
         "clear": [
@@ -81,6 +83,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.93",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.5",
         "symfony/stopwatch": "8.0.*",
         "symfony/web-profiler-bundle": "8.0.*"
