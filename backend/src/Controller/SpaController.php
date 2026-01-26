@@ -33,7 +33,6 @@ class SpaController extends AbstractController
         }
 
         $content = file_get_contents($buildIndex);
-
         return $this->render('spa.html.twig', [
             'content' => $content,
         ], new Response(null, Response::HTTP_OK, [
