@@ -112,6 +112,10 @@ coverage:
 	@echo "Generate coverage report"
 	docker compose exec -it app bin/phpunit -c phpunit.xml.dist --coverage-html ./coverage
 
+npm-build:
+	@echo "Create frontend build"
+	docker compose exec -it npm-dev npm run build
+
 open:
 	@if command -v xdg-open > /dev/null 2>&1; then \
 		xdg-open http://localhost:8000 2>/dev/null & \

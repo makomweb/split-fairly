@@ -25,9 +25,7 @@ services:
         environment:
             APP_ENV: ${APP_ENV}
             APP_VERSION: ${APP_VERSION}
-            MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@rabbitmq:5672/%2f/messages"
             DATABASE_URL: "mysql://root:secret@db:3306/app?serverVersion=8.0.31&charset=utf8mb4"
-            REDIS_URL: "redis://shared-cache:6379"
             ADMIN_EMAIL: ${ADMIN_EMAIL}
             ADMIN_PASSWORD: ${ADMIN_PASSWORD}
         networks:
@@ -43,9 +41,7 @@ services:
         environment:
             APP_ENV: ${APP_ENV}
             APP_VERSION: ${APP_VERSION}
-            MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@rabbitmq:5672/%2f/messages"
             DATABASE_URL: "mysql://root:secret@db:3306/app?serverVersion=8.0.31&charset=utf8mb4"
-            REDIS_URL: "redis://shared-cache:6379"
         networks:
             - web-app-project-skeleton
     db:
@@ -86,6 +82,19 @@ services:
             - "8000:8080"
         user: "1000:1001"
         restart: unless-stopped
+        networks:
+            - web-app-project-skeleton
+    npm-dev:
+        image: ${NODE_IMAGE}
+        working_dir: /var/www/frontend
+        volumes:
+            - ./frontend:/var/www/frontend
+            - ./backend:/var/www/backend
+        ports:
+            - "5173:5173"
+        command: ["sh", "-lc", "npm ci --no-audit --no-fund && npm run dev -- --host 0.0.0.0"]
+        environment:
+            - CHOKIDAR_USEPOLLING=true
         networks:
             - web-app-project-skeleton
 volumes:
