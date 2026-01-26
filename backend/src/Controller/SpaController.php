@@ -12,9 +12,9 @@ final readonly class SpaController
     public function __construct(
         #[Autowire('%kernel.environment%')]
         private string $environment,
-        
+
         #[Autowire('%kernel.project_dir%')]
-        private string $projectDir
+        private string $projectDir,
     ) {
     }
 
@@ -22,12 +22,12 @@ final readonly class SpaController
     public function index(): Response
     {
         // Development: serve via Vite with Hot Module Reload
-        if ($this->environment === 'dev') {
+        if ('dev' === $this->environment) {
             return new RedirectResponse('http://localhost:5173');
         }
 
         // Production: serve built HTML
-        $buildIndex = $this->projectDir . '/public/build/index.html';
+        $buildIndex = $this->projectDir.'/public/build/index.html';
         if (!file_exists($buildIndex)) {
             throw new \RuntimeException("SPA build not found at {$buildIndex}. Run make npm-build!");
         }
