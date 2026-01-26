@@ -25,9 +25,7 @@ services:
        environment:
            APP_ENV: ${APP_ENV}
            APP_VERSION: ${APP_VERSION}
-           MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@rabbitmq:5672/%2f/messages"
            DATABASE_URL: "mysql://root:secret@db:3306/app?serverVersion=8.0.31&charset=utf8mb4"
-           REDIS_URL: "redis://shared-cache:6379"
            ADMIN_EMAIL: ${ADMIN_EMAIL}
            ADMIN_PASSWORD: ${ADMIN_PASSWORD}
        networks:
@@ -43,9 +41,7 @@ services:
        environment:
            APP_ENV: ${APP_ENV}
            APP_VERSION: ${APP_VERSION}
-           MESSENGER_TRANSPORT_DSN: "amqp://guest:guest@rabbitmq:5672/%2f/messages"
            DATABASE_URL: "mysql://root:secret@db:3306/app?serverVersion=8.0.31&charset=utf8mb4"
-           REDIS_URL: "redis://shared-cache:6379"
        networks:
            - web-app-project-skeleton
    db:
@@ -89,7 +85,7 @@ services:
        networks:
            - web-app-project-skeleton
    npm-dev:
-       image: node:20
+       image: ${NODE_IMAGE}
        working_dir: /var/www/frontend
        volumes:
            - ./frontend:/var/www/frontend
