@@ -45,7 +45,7 @@ down:
 	docker compose down
 
 restart: reset
-reset: reset-worker reset-app
+reset: reset-worker reset-app reset-npm-dev
 
 reset-worker:
 	@echo "🔄 Resetting worker..."
@@ -54,6 +54,10 @@ reset-worker:
 reset-app:
 	@echo "🔄 Resetting app..."
 	docker compose restart app
+
+reset-npm-dev:
+	@echo "🔄 Resetting npm-dev..."
+	docker compose restart npm-dev
 
 init: composer-install create-database create-schema load-fixtures
 

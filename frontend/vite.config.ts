@@ -6,6 +6,11 @@ export default defineConfig(({ command }) => ({
   plugins: [react()],
   root: __dirname,
   base: command === 'build' ? '/build/' : '/',
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+    },
+  },
   server: {
     port: 5173,
     hmr: {
