@@ -1,3 +1,5 @@
+import { StrictMode } from 'react'
+
 export default function App() {
   return (
     <div style={{fontFamily: 'system-ui, sans-serif', padding: 20}}>
