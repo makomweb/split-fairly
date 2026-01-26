@@ -97,8 +97,7 @@ clear:
 	docker compose exec -it app composer clear
 
 maintenance: maintain
-
-maintain: show-composer-updates update-composer-dependencies
+maintain: show-composer-updates update-composer-dependencies update-npm-dependencies
 
 show-composer-updates:
 	@echo "Show wether composer dependencies are outdated"
@@ -107,6 +106,10 @@ show-composer-updates:
 update-composer-dependencies:
 	@echo "Update dependencies"
 	docker compose exec -it app composer update -W
+
+update-npm-dependencies:
+	@echo "Update NPM dependencies"
+	docker compose exec -it npm-dev npm update --save
 
 coverage:
 	@echo "Generate coverage report"
