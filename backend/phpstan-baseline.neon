@@ -5,3 +5,9 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: public/index.php
+
+		-
+			message: '#^Property App\\Entity\\User\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/User.php
