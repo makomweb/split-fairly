@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Routing\Attribute\Route;
 
 class SpaController extends AbstractController
@@ -20,22 +20,26 @@ class SpaController extends AbstractController
     }
 
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
-    public function index(Request $request): Response
+    public function index(): Response
     {
         if ($this->environment === 'dev') {
-            // Dev mode: serve Vite shell through Symfony (keeps toolbar visible)
-            $viteUrl = sprintf(
-                '%s://%s:5173',
-                $request->isSecure() ? 'https' : 'http',
-                $request->getHost()
-            );
+            // Dev mode: fetch from Vite dev server and inject toolbar
+            // Use Docker network hostname (npm-dev service) from within container
+            $viteUrl = 'http://npm-dev:5173/';
             
-            return $this->render('spa.html.twig', [
-                'vite' => true,
-                'vite_url' => $viteUrl,
-            ], new Response(null, Response::HTTP_OK, [
-                'Content-Type' => 'text/html; charset=utf-8',
-            ]));
+            $httpClient = HttpClient::create();
+            try {
+                $response = $httpClient->request('GET', $viteUrl);
+                $content = $response->getContent();
+            } catch (\Exception $e) {
+                throw new \RuntimeException("Vite dev server not available at {$viteUrl}: " . $e->getMessage());
+            }
+
+            return new Response(
+                $content,
+                Response::HTTP_OK,
+                ['Content-Type' => 'text/html; charset=utf-8']
+            );
         }
 
         // Prod mode: serve built static HTML
