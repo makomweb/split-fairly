@@ -1,27 +1,10 @@
 import { useState } from 'react'
-
-async function login(username: string, password: string) {
-  const credentials = btoa(`${username}:${password}`)
-  const response = await fetch('http://localhost:8080/api/login', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-  })
-
-  if (!response.ok) {
-    const error = await response.json() as { message: string }
-    throw new Error(error.message || 'Login failed')
-  }
-
-  return response.json() as Promise<{ user: string }>
-}
+import { login } from './api'
 
 export function Login() {
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -31,7 +14,7 @@ export function Login() {
     setLoading(true)
 
     try {
-      const response = await login(username, password)
+      const response = await login(email, password, rememberMe)
       console.log('Logged in as:', response.user)
       // TODO: Handle successful login (e.g., redirect, store user state)
     } catch (err) {
@@ -48,13 +31,13 @@ export function Login() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Username</label>
+            <label className="text-sm font-medium">Email</label>
             <input
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
               required
               className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2"
@@ -73,6 +56,20 @@ export function Login() {
               required
               className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2"
             />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              id="rememberMe"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              disabled={loading}
+              className="w-4 h-4"
+            />
+            <label htmlFor="rememberMe" className="text-sm font-medium cursor-pointer">
+              Remember me
+            </label>
           </div>
 
           {error && (

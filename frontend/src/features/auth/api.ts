@@ -1,26 +1,27 @@
-export interface LoginResponse {
+interface LoginResponse {
   user: string
 }
 
-export interface LoginError {
+interface LoginError {
   message: string
 }
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api'
-
 export async function login(
-  username: string,
-  password: string
+  email: string,
+  password: string,
+  rememberMe: boolean = false
 ): Promise<LoginResponse> {
-  const credentials = btoa(`${username}:${password}`)
-
-  const response = await fetch(`${API_BASE_URL}/login`, {
+  const response = await fetch('http://localhost:8080/api/login', {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${credentials}`,
       'Content-Type': 'application/json',
     },
     credentials: 'include',
+    body: JSON.stringify({
+      email,
+      password,
+      _remember_me: rememberMe,
+    }),
   })
 
   if (!response.ok) {

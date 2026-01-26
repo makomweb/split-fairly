@@ -9,16 +9,8 @@
     "preview": "vite preview --port 5174"
   },
   "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-label": "^2.0.2",
-    "@radix-ui/react-slot": "^1.0.2",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.0.0",
-    "lucide-react": "^0.378.0",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "tailwind-merge": "^2.2.0",
-    "tailwindcss-animate": "^1.0.7"
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.9",
