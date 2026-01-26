@@ -90,7 +90,6 @@ services:
        volumes:
            - ./frontend:/var/www/frontend
            - ./backend:/var/www/backend
-           - npm_node_modules:/var/www/frontend/node_modules
        ports:
            - "5173:5173"
        command: ["sh", "-lc", "npm ci --no-audit --no-fund && npm run dev -- --host 0.0.0.0"]
@@ -100,4 +99,3 @@ services:
            - web-app-project-skeleton
 volumes:
    mysql_data: {}
-   npm_node_modules: {}
