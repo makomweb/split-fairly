@@ -88,6 +88,7 @@
         "friendsofphp/php-cs-fixer": "^3.93",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^12.5",
+        "symfony/maker-bundle": "^1.65",
         "symfony/stopwatch": "8.0.*",
         "symfony/web-profiler-bundle": "8.0.*"
     }
