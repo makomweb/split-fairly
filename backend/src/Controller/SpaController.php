@@ -2,42 +2,32 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Twig\Environment;
 
-class SpaController
+class SpaController extends AbstractController
 {
     public function __construct(
-        private readonly KernelInterface $kernel,
-        private readonly Environment $twig
-    ) {}
+        #[Autowire('%kernel.project_dir%')]
+        private readonly string $projectDir
+    ) {
+    }
 
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $buildIndex = $this->kernel->getProjectDir() . '/public/build/index.html';
-        if ($this->kernel->getEnvironment() === 'prod' && file_exists($buildIndex)) {
-            return new Response(
-                file_get_contents($buildIndex),
-                Response::HTTP_OK,
-                ['Content-Type' => 'text/html; charset=utf-8']
-            );
+        $buildIndex = $this->projectDir . '/public/build/index.html';
+        if (!file_exists($buildIndex)) {
+            throw new \RuntimeException("SPA build not found at {$buildIndex}");
         }
 
-        // In dev, render the HTML shell using Twig
-        $viteUrl = sprintf(
-            '%s://%s:5173',
-            $request->isSecure() ? 'https' : 'http',
-            $request->getHost()
+        return new Response(
+            file_get_contents($buildIndex),
+            Response::HTTP_OK,
+            ['Content-Type' => 'text/html; charset=utf-8']
         );
-        $html = $this->twig->render('spa.html.twig', [
-            'vite' => true,
-            'vite_url' => $viteUrl,
-        ]);
-        return new Response($html, Response::HTTP_OK, ['Content-Type' => 'text/html; charset=utf-8']);
     }
 }
 
