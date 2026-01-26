@@ -1,0 +1,40 @@
+title: "Web app project skeleton"
+subtitle: "Developer Dashboard"
+
+header: true
+footer: '<p>Created with ☯️ by <a href="https://github.com/makomweb/">Martin Komischke</a></p>'
+
+theme: default
+
+services:
+  - name: "Application"
+    icon: "fas fa-book"
+    items:
+      - name: "Application"
+        subtitle: "Symfony + MySQL"
+        icon: "fa-solid fa-tablet-screen-button"
+        url: "http://localhost:8080"
+        target: "_blank"
+      - name: "Accounts"
+        subtitle: "Management"
+        icon: "fas fa-file-alt"
+        url: "http://localhost:8080/admin"
+        target: "_blank"
+
+  - name: "Persistence"
+    icon: "fas fa-credit-card-alt"
+    items:
+      - name: "Database administration"
+        subtitle: "Adminer"
+        icon: "fa-solid fa-gear"
+        url: "http://localhost:8085/?server=db&username=root&db=app"
+        target: "_blank"
+
+  - name: "Resources"
+    icon: "fas fa-credit-card-alt"
+    items:
+      - name: "Source code"
+        subtitle: "Github"
+        icon: "fa-brands fa-github"
+        url: "https://github.com/makomweb/web-app-project-skeleton"
+        target: "_blank"

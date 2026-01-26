@@ -1,0 +1,74 @@
+FROM php:8.4.3-fpm-alpine3.20 AS base
+
+WORKDIR /var/www/project
+
+RUN apk add --no-cache --virtual .build-deps \
+    build-base autoconf icu-dev libzip-dev \
+    && apk add --no-cache libintl git zip icu-libs \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl pdo opcache pdo_mysql zip \
+    && pecl install opentelemetry redis \
+    && docker-php-ext-enable opentelemetry redis \
+    && apk del .build-deps icu-dev libzip-dev
+
+COPY build/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
+# -----------------------------------
+# Development-Stage (with Composer + XDebug)
+# -----------------------------------
+FROM base AS dev
+
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
+
+RUN apk add --no-cache --virtual .build-deps \
+    build-base linux-headers autoconf && \
+    pecl install xdebug && docker-php-ext-enable xdebug && \
+    echo "xdebug.mode=debug,coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    apk del .build-deps
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
+
+# -----------------------------------
+# Vendor-Stage (for Production)
+# -----------------------------------
+FROM base AS vendor
+
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
+
+COPY backend/composer.json .
+COPY backend/composer.lock .
+COPY backend/.env .env
+COPY backend/bin ./bin
+COPY backend/src ./src
+COPY backend/public ./public
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+RUN apk add --no-cache --virtual .composer-deps \
+    icu-libs git zip unzip \
+    && composer install \
+        --no-dev \
+        --optimize-autoloader \
+        --classmap-authoritative \
+    && apk del .composer-deps
+
+# -----------------------------------
+# Production-Stage (no Composer, no XDebug)
+# -----------------------------------
+FROM base AS prod
+
+COPY --from=vendor /var/www/backend/vendor ./vendor
+
+COPY backend/bin ./bin
+COPY backend/config ./config
+COPY backend/migrations ./migrations
+COPY backend/public ./public
+COPY backend/src ./src
+COPY backend/templates ./templates
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
