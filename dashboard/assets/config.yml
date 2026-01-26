@@ -1,5 +1,5 @@
-title: "Web app project skeleton"
-subtitle: "Developer Dashboard"
+title: "Developer Dashboard"
+subtitle: "Web app project skeleton"
 
 header: true
 footer: '<p>Created with ☯️ by <a href="https://github.com/makomweb/">Martin Komischke</a></p>'
@@ -11,9 +11,14 @@ services:
     icon: "fas fa-book"
     items:
       - name: "Application"
-        subtitle: "Symfony + MySQL"
+        subtitle: "Enable prod + make npm-build"
         icon: "fa-solid fa-tablet-screen-button"
         url: "http://localhost:8080"
+        target: "_blank"
+      - name: "Application (DEV)"
+        subtitle: "React + Vite + HMR + Symfony + MySQL"
+        icon: "fa-solid fa-tablet-screen-button"
+        url: "http://localhost:5173"
         target: "_blank"
       - name: "Accounts"
         subtitle: "Management"
