@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -20,7 +20,7 @@ class SpaController extends AbstractController
     }
 
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
-    public function index(Request $request): Response
+    public function index(): Response
     {
         if ($this->environment === 'prod') {
             $buildIndex = $this->projectDir . '/public/build/index.html';
@@ -37,19 +37,8 @@ class SpaController extends AbstractController
             ]));
         }
 
-        // Development mode with Vite HMR
-        $viteUrl = sprintf(
-            '%s://%s:5173',
-            $request->isSecure() ? 'https' : 'http',
-            $request->getHost()
-        );
-
-        return $this->render('spa.html.twig', [
-            'vite' => true,
-            'vite_url' => $viteUrl,
-        ], new Response(null, Response::HTTP_OK, [
-            'Content-Type' => 'text/html; charset=utf-8',
-        ]));
+        // Development mode: redirect to Vite dev server
+        return new RedirectResponse('http://localhost:5173');
     }
 }
 
