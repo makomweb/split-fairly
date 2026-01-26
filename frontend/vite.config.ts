@@ -8,6 +8,11 @@ export default defineConfig(({ command }) => ({
   base: command === 'build' ? '/build/' : '/',
   server: {
     port: 5173,
+    hmr: {
+      host: 'localhost',
+      port: 5173,
+      protocol: 'ws'
+    }
   },
   build: {
     outDir: resolve(__dirname, '../backend/public/build'),
