@@ -6,8 +6,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
 class SpaController
@@ -17,7 +15,6 @@ class SpaController
         private readonly Environment $twig
     ) {}
 
-    #[Route('/', name: 'app_home')]
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
     public function index(Request $request): Response
     {

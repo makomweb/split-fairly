@@ -11,9 +11,9 @@ services:
     icon: "fas fa-book"
     items:
       - name: "Application"
-        subtitle: "Symfony + MySQL"
+        subtitle: "React + Vite + Symfony + MySQL"
         icon: "fa-solid fa-tablet-screen-button"
-        url: "http://localhost:8080"
+        url: "http://localhost:5173"
         target: "_blank"
       - name: "Accounts"
         subtitle: "Management"
