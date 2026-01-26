@@ -55,6 +55,17 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "qa": [
+            "bin/phpunit"
+        ],
+        "test": "bin/phpunit",
+        "coverage": "bin/phpunit --coverage-text",
+        "clear": [
+            "bin/console cache:clear",
+            "bin/console cache:clear --env=test",
+            "bin/console cache:pool:clear --all",
+            "bin/console cache:pool:clear --all --env=test"
         ]
     },
     "conflict": {
@@ -67,6 +78,7 @@
         }
     },
     "require-dev": {
+        "phpunit/phpunit": "^12.5",
         "symfony/stopwatch": "8.0.*",
         "symfony/web-profiler-bundle": "8.0.*"
     }
