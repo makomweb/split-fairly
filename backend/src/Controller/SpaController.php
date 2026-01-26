@@ -2,20 +2,19 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class SpaController extends AbstractController
+final readonly class SpaController
 {
     public function __construct(
         #[Autowire('%kernel.environment%')]
-        private readonly string $environment,
+        private string $environment,
         
         #[Autowire('%kernel.project_dir%')]
-        private readonly string $projectDir
+        private string $projectDir
     ) {
     }
 
