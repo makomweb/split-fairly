@@ -23,11 +23,13 @@ class SpaController extends AbstractController
             throw new \RuntimeException("SPA build not found at {$buildIndex}");
         }
 
-        return new Response(
-            file_get_contents($buildIndex),
-            Response::HTTP_OK,
-            ['Content-Type' => 'text/html; charset=utf-8']
-        );
+        $content = file_get_contents($buildIndex);
+
+        return $this->render('spa.html.twig', [
+            'content' => $content,
+        ], new Response(null, Response::HTTP_OK, [
+            'Content-Type' => 'text/html; charset=utf-8',
+        ]));
     }
 }
 
