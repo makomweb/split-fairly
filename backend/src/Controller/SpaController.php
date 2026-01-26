@@ -22,23 +22,23 @@ class SpaController extends AbstractController
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
     public function index(): Response
     {
-        if ($this->environment === 'prod') {
-            $buildIndex = $this->projectDir . '/public/build/index.html';
-            if (!file_exists($buildIndex)) {
-                throw new \RuntimeException("SPA build not found at {$buildIndex}");
-            }
-
-            $content = file_get_contents($buildIndex);
-
-            return $this->render('spa.html.twig', [
-                'content' => $content,
-            ], new Response(null, Response::HTTP_OK, [
-                'Content-Type' => 'text/html; charset=utf-8',
-            ]));
+        if ($this->environment === 'dev') {
+            // redirect to Vite dev server
+            return new RedirectResponse('http://localhost:5173');
         }
 
-        // Development mode: redirect to Vite dev server
-        return new RedirectResponse('http://localhost:5173');
+        $buildIndex = $this->projectDir . '/public/build/index.html';
+        if (!file_exists($buildIndex)) {
+            throw new \RuntimeException("SPA build not found at {$buildIndex}");
+        }
+
+        $content = file_get_contents($buildIndex);
+
+        return $this->render('spa.html.twig', [
+            'content' => $content,
+        ], new Response(null, Response::HTTP_OK, [
+            'Content-Type' => 'text/html; charset=utf-8',
+        ]));
     }
 }
 
