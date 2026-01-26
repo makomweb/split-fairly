@@ -5,6 +5,7 @@ import { resolve } from 'path'
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   root: __dirname,
+  base: command === 'build' ? '/build/' : '/',
   server: {
     port: 5173,
   },
