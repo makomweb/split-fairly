@@ -27,11 +27,11 @@ export function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-2 text-center">Login</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Email</label>
+            <label className="text-sm font-medium" htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
@@ -41,11 +41,12 @@ export function Login() {
               disabled={loading}
               required
               className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2"
+              autoComplete="given-email"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Password</label>
+            <label className="text-sm font-medium" htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
@@ -55,6 +56,7 @@ export function Login() {
               disabled={loading}
               required
               className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2"
+              autoComplete="off"
             />
           </div>
 
