@@ -42,6 +42,8 @@ services:
             APP_ENV: ${APP_ENV}
             APP_VERSION: ${APP_VERSION}
             DATABASE_URL: "mysql://root:secret@db:3306/app?serverVersion=8.0.31&charset=utf8mb4"
+            ADMIN_EMAIL: ${ADMIN_EMAIL}
+            ADMIN_PASSWORD: ${ADMIN_PASSWORD}
         networks:
             - split-fairly
     db:
