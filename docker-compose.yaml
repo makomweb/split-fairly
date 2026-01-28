@@ -34,7 +34,7 @@ services:
         image: ${APP_IMAGE}
         volumes:
             - ./backend:/var/www/project
-        command: ["bin/console", "messenger:consume", "async"]
+        command: ["bin/console", "messenger:consume", "async", "-vv"]
         depends_on:
             db:
                 condition: service_healthy
