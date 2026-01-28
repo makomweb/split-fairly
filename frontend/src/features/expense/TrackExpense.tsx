@@ -1,0 +1,137 @@
+import { useState } from 'react'
+import { useAuth } from '@/features/auth/AuthContext'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { trackExpense } from '@/features/expense/api'
+
+export function TrackExpense() {
+  const { user, logout } = useAuth()
+  const [what, setWhat] = useState('')
+  const [location, setLocation] = useState('')
+  const [price, setPrice] = useState('')
+  const [purpose, setPurpose] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setSuccess(false)
+    setLoading(true)
+
+    try {
+      await trackExpense({
+        time: new Date().toISOString(),
+        user: user?.email || '',
+        what,
+        location,
+        price: parseFloat(price),
+        purpose,
+      })
+      setSuccess(true)
+      // Clear form
+      setWhat('')
+      setLocation('')
+      setPrice('')
+      setPurpose('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to track expense')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
+      <div className="w-full max-w-2xl mx-auto">
+        {/* Header */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Track Expense</h1>
+            <p className="text-sm text-muted-foreground">{user?.email}</p>
+          </div>
+          <Button onClick={logout} variant="outline" size="sm">
+            Logout
+          </Button>
+        </div>
+
+        {/* Form */}
+        <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="what">What</Label>
+              <Input
+                id="what"
+                type="text"
+                placeholder="e.g., Coffee, Lunch, Taxi"
+                value={what}
+                onChange={(e) => setWhat(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                type="text"
+                placeholder="e.g., Starbucks, Downtown"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="price">Price</Label>
+              <Input
+                id="price"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="purpose">Purpose</Label>
+              <Input
+                id="purpose"
+                type="text"
+                placeholder="e.g., Business meeting, Personal"
+                value={purpose}
+                onChange={(e) => setPurpose(e.target.value)}
+                disabled={loading}
+                required
+              />
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                {error}
+              </div>
+            )}
+
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded text-green-700 text-sm">
+                Expense tracked successfully!
+              </div>
+            )}
+
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? 'Tracking...' : 'Track Expense'}
+            </Button>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
