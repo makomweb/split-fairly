@@ -7,4 +7,6 @@ namespace App\SplitFairly;
 interface CurrentUserInterface
 {
     public function getUuid(): string;
+
+    public function getEmail(): string;
 }

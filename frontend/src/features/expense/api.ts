@@ -5,7 +5,6 @@ interface Price {
 
 interface ExpenseData {
   time: string
-  user: string
   price: Price
   what: string
   location: string

@@ -13,9 +13,6 @@ final readonly class Expense
         public \DateTimeImmutable $time,
 
         #[Assert\NotBlank]
-        public string $user,
-
-        #[Assert\NotBlank]
         #[Assert\Valid]
         public Price $price,
 

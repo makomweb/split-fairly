@@ -24,7 +24,6 @@ export function TrackExpense() {
     try {
       await trackExpense({
         time: new Date().toISOString(),
-        user: user?.email || '',
         price: {
           value: parseFloat(price),
           currency,
