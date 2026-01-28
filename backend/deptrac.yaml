@@ -38,19 +38,17 @@ deptrac:
     - name: Supporting
       collectors:
         - type: classLike
+          value: .*App\\Async\\.*
+        - type: classLike
           value: .*App\\Controller\\.*
         - type: classLike
           value: .*App\\DataFixtures\\.*
         - type: classLike
           value: .*App\\Entity\\.*
         - type: classLike
-          value: .*App\\Listener\\.*
-        - type: classLike
-          value: .*App\\Message\\.*
+          value: .*App\\EventListener\\.*
         - type: classLike
           value: .*App\\Repository\\.*
-    - name: Supporting.Invariant
-      collectors:
         - type: classLike
           value: .*App\\Invariant\\.*
     - name: Supporting.Tests
@@ -60,16 +58,12 @@ deptrac:
         - type: classLike
           value: .*PHPUnit\\Framework\\.*  
   ruleset:
-    Supporting.Invariant: ~
     Generic: ~
-    Core:
-      - Supporting.Invariant
+    Core: ~
     Supporting:
-      - Supporting.Invariant
       - Generic
       - Core
     Supporting.Tests:
       - Generic
       - Core
       - Supporting
-      - Supporting.Invariant
