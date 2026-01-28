@@ -4,8 +4,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { login } from "@/features/auth/api"
+import { useAuth } from "@/features/auth/AuthContext"
 
 export function LoginForm() {
+  const { login: setAuthUser } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
@@ -19,8 +21,7 @@ export function LoginForm() {
 
     try {
       const response = await login(email, password, rememberMe)
-      console.log("Logged in as:", response.user)
-      // TODO: Handle successful login (e.g., redirect, store user state)
+      setAuthUser(response.user)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed")
     } finally {
