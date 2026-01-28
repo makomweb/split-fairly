@@ -6,8 +6,8 @@ namespace App\EventListener;
 
 use App\Async\Message;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 #[AsEventListener]
 final readonly class LoginCounter
@@ -17,10 +17,10 @@ final readonly class LoginCounter
     ) {
     }
 
-    public function __invoke(ResponseEvent $event): void
+    public function __invoke(LoginSuccessEvent $event): void
     {
-        // TODO:
+        $userId = $event->getUser()->getUserIdentifier();
 
-        $this->bus->dispatch(Message::create('🛎️ new request'));
+        $this->bus->dispatch(Message::create("🔐 Successful login: {$userId}"));
     }
 }

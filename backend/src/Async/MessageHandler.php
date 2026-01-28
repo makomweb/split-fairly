@@ -36,6 +36,6 @@ final readonly class MessageHandler
 
     private function handle(Message $message): void
     {
-        $this->logger->info('Handle: '.$message->type);
+        $this->logger->info('📫 Handle message: '.$message->type);
     }
 }
