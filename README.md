@@ -1,1 +1,1 @@
-# Web app project skeleton
+# Split Fairly
