@@ -9,6 +9,7 @@
 parameters:
     admin.email: '%env(ADMIN_EMAIL)%'
     admin.password: '%env(ADMIN_PASSWORD)%'
+    app.version: '%env(APP_VERSION)%'
 
 services:
     # default configuration for services in *this* file
