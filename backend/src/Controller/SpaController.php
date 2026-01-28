@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +16,16 @@ final readonly class SpaController
 
         #[Autowire('%kernel.project_dir%')]
         private string $projectDir,
+
+        private LoggerInterface $logger,
     ) {
     }
 
     #[Route('/{path}', name: 'app_spa', requirements: ['path' => '.*'], priority: -10)]
     public function index(): Response
     {
+        $this->logger->debug('Entering '.__METHOD__);
+
         // Development: serve via Vite with Hot Module Reload
         if ('dev' === $this->environment) {
             return new RedirectResponse('http://localhost:5173');

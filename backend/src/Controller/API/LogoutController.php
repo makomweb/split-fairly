@@ -2,6 +2,7 @@
 
 namespace App\Controller\API;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +13,16 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 #[Route('/api', name: 'api.')]
 class LogoutController extends AbstractController
 {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    ) {
+    }
+
     #[Route('/logout', name: 'logout', methods: ['POST'])]
     public function logout(Request $request, SessionInterface $session, TokenStorageInterface $tokenStorage): Response
     {
+        $this->logger->debug('Entering '.__METHOD__);
+
         $session->invalidate();
         $tokenStorage->setToken(null);
 
