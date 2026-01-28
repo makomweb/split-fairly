@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final readonly class AsyncMessageHandler
+final readonly class MessageHandler
 {
     public function __construct(
         private LoggerInterface $logger,
@@ -36,12 +36,6 @@ final readonly class AsyncMessageHandler
 
     private function handle(Message $message): void
     {
-        $event = $message->event;
-
-        switch ($event->getSubjectType()) {
-            default:
-                /* Do nothing at the moment. */
-                break;
-        }
+        $this->logger->info('Handle: '.$message->type);
     }
 }
