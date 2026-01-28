@@ -2,7 +2,7 @@
 
 namespace App\Controller\API;
 
-use App\DTO\Expense;
+use App\Controller\DTO\Expense;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,15 +19,16 @@ class ExpenseController extends AbstractController
 
     #[Route('/track', name: 'track', methods: ['POST'])]
     public function track(
-        #[MapRequestPayload] Expense $expense
+        #[MapRequestPayload] Expense $expense,
     ): JsonResponse {
         $this->logger->debug('Entering '.__METHOD__);
 
-        $this->logger->info(
-            sprintf('💰 "%s" spent %.2f', $expense->user, $expense->price),
-            ['expense' => $expense]
-        );
+        $this->logger->info(sprintf(
+            '💰 Expense tracked: "%s" spent %s',
+            $expense->user,
+            $expense->price,
+        ), ['expense' => $expense]);
 
-        return $this->json(['message' => 'tracked']);
+        return $this->json($expense);
     }
 }

@@ -7,10 +7,10 @@ import { trackExpense } from '@/features/expense/api'
 
 export function TrackExpense() {
   const { user, logout } = useAuth()
+  const [price, setPrice] = useState('')
+  const [currency, setCurrency] = useState('EUR')
   const [what, setWhat] = useState('')
   const [location, setLocation] = useState('')
-  const [price, setPrice] = useState('')
-  const [purpose, setPurpose] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -25,17 +25,18 @@ export function TrackExpense() {
       await trackExpense({
         time: new Date().toISOString(),
         user: user?.email || '',
+        price: {
+          value: parseFloat(price),
+          currency,
+        },
         what,
         location,
-        price: parseFloat(price),
-        purpose,
       })
       setSuccess(true)
       // Clear form
       setWhat('')
       setLocation('')
       setPrice('')
-      setPurpose('')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to track expense')
     } finally {
@@ -61,7 +62,7 @@ export function TrackExpense() {
         <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="what">What</Label>
+              <Label htmlFor="what">What?</Label>
               <Input
                 id="what"
                 type="text"
@@ -74,7 +75,7 @@ export function TrackExpense() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">Where?</Label>
               <Input
                 id="location"
                 type="text"
@@ -87,31 +88,32 @@ export function TrackExpense() {
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="price">Price</Label>
-              <Input
-                id="price"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                disabled={loading}
-                required
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="purpose">Purpose</Label>
-              <Input
-                id="purpose"
-                type="text"
-                placeholder="e.g., Business meeting, Personal"
-                value={purpose}
-                onChange={(e) => setPurpose(e.target.value)}
-                disabled={loading}
-                required
-              />
+              <Label htmlFor="price">How much?</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="price"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  disabled={loading}
+                  required
+                  className="flex-1"
+                />
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  disabled={loading}
+                  className="w-24 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                  <option value="GBP">GBP</option>
+                  <option value="CHF">CHF</option>
+                </select>
+              </div>
             </div>
 
             {error && (

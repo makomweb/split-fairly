@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DTO;
+namespace App\Controller\DTO;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -10,24 +10,20 @@ final readonly class Expense
 {
     public function __construct(
         #[Assert\NotBlank]
-        #[Assert\DateTime]
-        public string $time,
+        public \DateTimeImmutable $time,
 
         #[Assert\NotBlank]
         public string $user,
+
+        #[Assert\NotBlank]
+        #[Assert\Valid]
+        public Price $price,
 
         #[Assert\NotBlank]
         public string $what,
 
         #[Assert\NotBlank]
         public string $location,
-
-        #[Assert\NotBlank]
-        #[Assert\Positive]
-        public float $price,
-
-        #[Assert\NotBlank]
-        public string $purpose,
     ) {
     }
 }

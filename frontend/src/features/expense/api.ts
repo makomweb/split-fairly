@@ -1,10 +1,14 @@
+interface Price {
+  value: number
+  currency: string
+}
+
 interface ExpenseData {
   time: string
   user: string
+  price: Price
   what: string
   location: string
-  price: number
-  purpose: string
 }
 
 export async function trackExpense(expense: ExpenseData): Promise<void> {
