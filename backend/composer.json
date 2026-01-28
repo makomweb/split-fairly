@@ -65,12 +65,14 @@
         "qa": [
             "vendor/bin/phpstan analyse --memory-limit=1G",
             "vendor/bin/php-cs-fixer fix",
-            "bin/phpunit"
+            "bin/phpunit",
+            "vendor/bin/deptrac analyse --report-uncovered"
         ],
         "cs": "vendor/bin/php-cs-fixer fix",
         "sa": "vendor/bin/phpstan analyse --memory-limit=1G",
         "test": "bin/phpunit",
         "coverage": "bin/phpunit --coverage-text",
+        "arch": "vendor/bin/deptrac analyse --report-uncovered",
         "clear": [
             "bin/console cache:clear",
             "bin/console cache:clear --env=test",
@@ -88,6 +90,7 @@
         }
     },
     "require-dev": {
+        "deptrac/deptrac": "^4.5",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.93",
         "phpstan/phpstan": "^2.1",
