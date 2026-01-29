@@ -2,6 +2,7 @@
 
 namespace App\Controller\API;
 
+use App\Invariant\Ensure;
 use App\SplitFairly\Calculator;
 use App\SplitFairly\Expenses;
 use Psr\Log\LoggerInterface;
@@ -22,18 +23,28 @@ class CalculateExpensesController extends AbstractController
     public function calculate(): JsonResponse
     {
         $expenses = $this->calculator->calculate();
-        $compensate = $expenses[0]->substract($expenses[1]);
+        
+        Ensure::that(count($expenses) === 2);
 
-        $this->logger->debug('Calculated', ['expenses' => $expenses, 'compensate' => $compensate]);
+        $compensation = $expenses[0]->substract($expenses[1]);
 
-        return $this->json(
-            array_map(
+        $this->logger->debug('Calculated', ['expenses' => $expenses, 'compensation' => $compensation]);
+
+        return $this->json([
+            'users' => array_map(
                 static fn (Expenses $e) => [
                     'user_email' => $e->userEmail,
                     'categories' => $e->categories(),
                 ],
                 $expenses
-            )
-        );
+            ),
+            'compensation' => $compensation ? [
+                'value' => $compensation->value,
+                'currency' => $compensation->currency,
+                'from' => $compensation->value > 0 ? $expenses[1]->userEmail : $expenses[0]->userEmail,
+                'to' => $compensation->value > 0 ? $expenses[0]->userEmail : $expenses[1]->userEmail,
+                'amount' => abs($compensation->value),
+            ] : null,
+        ]);
     }
 }

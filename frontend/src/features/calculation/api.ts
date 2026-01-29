@@ -9,12 +9,24 @@ interface Category {
 }
 
 export interface Expenses {
-  user_uuid: string
   user_email: string
   categories: Category[]
 }
 
-export async function fetchCalculation(): Promise<Expenses[]> {
+interface Compensation {
+  value: number
+  currency: string
+  from: string
+  to: string
+  amount: number
+}
+
+export interface CalculationResponse {
+  users: Expenses[]
+  compensation: Compensation | null
+}
+
+export async function fetchCalculation(): Promise<CalculationResponse> {
   const response = await fetch('http://localhost:8080/api/calculate', {
     credentials: 'include',
   })
