@@ -13,6 +13,7 @@ final readonly class Event
         public string $eventType,
         public array $payload,
         public \DateTimeImmutable $createdAt = new \DateTimeImmutable('now'),
+        public ?string $createdBy = null,
     ) {
     }
 

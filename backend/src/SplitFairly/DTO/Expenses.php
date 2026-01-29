@@ -11,7 +11,7 @@ final readonly class Expenses
      */
     public function __construct(
         public string $userId,
-        public array $expenses
+        public array $expenses,
     ) {
     }
 

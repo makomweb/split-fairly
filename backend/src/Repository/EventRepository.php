@@ -67,7 +67,8 @@ final readonly class EventRepository implements EventStoreInterface
                     $entity->getSubjectId(),
                     $entity->getEventType(),
                     $entity->getPayload(),
-                    $entity->getCreatedAt()
+                    $entity->getCreatedAt(),
+                    $entity->getCreatedBy()
                 );
             },
             $events
@@ -78,36 +79,39 @@ final readonly class EventRepository implements EventStoreInterface
     {
         $repository = $this->entityManager->getRepository(EventEntity::class);
 
+        // TODO: put users into the options!
+        // $builder = $repository
+        //     ->createQueryBuilder('e')
+        //     ->where('e.createdBy = :uuid')
+        //     ->orderBy('e.createdAt', 'ASC')
+        //     ->setParameter('uuid', $this->currentUser->getUuid());
+
         $builder = $repository
             ->createQueryBuilder('e')
-            ->where('e.createdBy = :uuid')
-            ->orderBy('e.createdAt', 'ASC')
-            ->setParameter('uuid', $this->currentUser->getUuid());
+            ->orderBy('e.createdAt', 'ASC');
 
         if (!empty($options->subjectTypes)) {
             $builder = $builder
-                ->andWhere('e.subjectType IN (:subjectTypes)')
+                ->where('e.subjectType IN (:subjectTypes)')
                 ->setParameter('subjectTypes', $options->subjectTypes);
         }
 
         if (empty($options->subjectTypes) && !empty($options->subjectIds)) {
             $builder = $builder
-                ->andWhere('e.subjectId IN (:subjectIds)')
+                ->where('e.subjectId IN (:subjectIds)')
                 ->setParameter('subjectIds', $options->subjectIds);
         } elseif (!empty($options->subjectIds)) {
             $builder = $builder
-                // Attention: Use andWhere here!
                 ->andWhere('e.subjectId IN (:subjectIds)')
                 ->setParameter('subjectIds', $options->subjectIds);
         }
 
         if (empty($options->subjectTypes) && empty($options->subjectIds) && !empty($options->eventTypes)) {
             $builder = $builder
-                ->andWhere('e.subjectId IN (:subjectIds)')
-                ->setParameter('subjectIds', $options->subjectIds);
+                ->where('e.eventType IN (:eventTypes)')
+                ->setParameter('eventTypes', $options->eventTypes);
         } elseif (!empty($options->eventTypes)) {
             $builder = $builder
-                // Attention: Use andWhere here!
                 ->andWhere('e.eventType IN (:eventTypes)')
                 ->setParameter('eventTypes', $options->eventTypes);
         }
