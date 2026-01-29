@@ -3,7 +3,7 @@
 namespace App\Controller\API;
 
 use App\SplitFairly\Calculator;
-use App\SplitFairly\DTO\Expenses;
+use App\SplitFairly\Expenses;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +29,7 @@ class CalculateExpensesController extends AbstractController
             array_map(
                 static fn (Expenses $e) => [
                     'user_email' => $e->userEmail,
-                    'categories' => $e->categories()
+                    'categories' => $e->categories(),
                 ],
                 $expenses
             )

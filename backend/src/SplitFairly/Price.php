@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SplitFairly\DTO;
+namespace App\SplitFairly;
 
 use App\Invariant\Ensure;
 

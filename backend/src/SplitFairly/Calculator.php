@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\SplitFairly;
 
-use App\SplitFairly\DTO\Expense;
-use App\SplitFairly\DTO\Expenses;
-
 final readonly class Calculator
 {
     public function __construct(

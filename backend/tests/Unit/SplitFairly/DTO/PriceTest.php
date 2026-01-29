@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\SplitFairly\DTO;
 
-use App\SplitFairly\DTO\Price;
+use App\SplitFairly\Price;
 use PHPUnit\Framework\TestCase;
 
 final class PriceTest extends TestCase

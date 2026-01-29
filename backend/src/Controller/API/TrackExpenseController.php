@@ -2,7 +2,7 @@
 
 namespace App\Controller\API;
 
-use App\SplitFairly\DTO\Expense;
+use App\SplitFairly\Expense;
 use App\SplitFairly\ExpenseTracker;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

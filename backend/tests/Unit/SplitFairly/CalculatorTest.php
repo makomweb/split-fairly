@@ -6,12 +6,12 @@ namespace App\Tests\Unit\SplitFairly;
 
 use App\SplitFairly\Calculator;
 use App\SplitFairly\DenormalizerInterface;
-use App\SplitFairly\DTO\Expense;
-use App\SplitFairly\DTO\Expenses;
-use App\SplitFairly\DTO\Price;
 use App\SplitFairly\EmailProviderInterface;
 use App\SplitFairly\Event;
 use App\SplitFairly\EventStoreInterface;
+use App\SplitFairly\Expense;
+use App\SplitFairly\Expenses;
+use App\SplitFairly\Price;
 use App\SplitFairly\QueryOptions;
 use PHPUnit\Framework\TestCase;
 

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\SplitFairly;
 
-use App\SplitFairly\DTO\Expense;
-
 final readonly class ExpenseTracker
 {
     public function __construct(
