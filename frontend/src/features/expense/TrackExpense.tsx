@@ -144,7 +144,7 @@ export function TrackExpense() {
             className="w-full h-12 text-base font-semibold"
             size="lg"
           >
-            {loading ? 'Saving...' : '💾 Track Expense'}
+            {loading ? 'Saving...' : 'Track Expense'}
           </Button>
         </form>
       </div>

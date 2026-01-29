@@ -69,17 +69,6 @@ export function Calculation() {
   return (
     <div className="w-full p-4 md:p-6 pb-safe">
       <div className="max-w-2xl mx-auto space-y-4">
-        {/* Refresh button */}
-        <div className="flex justify-end">
-          <Button 
-            onClick={loadCalculation} 
-            variant="outline" 
-            size="sm"
-            className="h-9"
-          >
-            🔄 Refresh
-          </Button>
-        </div>
 
         {!data || data.users.length === 0 ? (
           <Card>
@@ -129,8 +118,8 @@ export function Calculation() {
               const totals = calculateTotal(expenses)
               return (
                 <Card key={expenses.user_email}>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base font-semibold flex items-center justify-between">
+                  <CardHeader className="pb-3 px-3">
+                    <CardTitle className="text-base font-semibold flex items-center justify-between px-3">
                       <span className="truncate">{expenses.user_email}</span>
                       <Badge variant="secondary" className="ml-2 shrink-0">
                         {expenses.categories.length} items
@@ -142,14 +131,14 @@ export function Calculation() {
                       {expenses.categories.map((category, idx) => (
                         <div
                           key={idx}
-                          className="flex justify-between items-start gap-3 p-3 bg-muted/50 rounded-lg"
+                          className="flex justify-between items-center gap-3 p-3 bg-muted/50 rounded-lg"
                         >
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-sm truncate">{category.what}</p>
-                          </div>
-                          <Badge variant="outline" className="shrink-0 font-mono">
+                          <span className="font-medium text-sm truncate">
+                            {category.what}
+                          </span>
+                          <span className="font-mono text-sm shrink-0">
                             {category.sum.value.toFixed(2)} {category.sum.currency}
-                          </Badge>
+                          </span>
                         </div>
                       ))}
                       
@@ -159,7 +148,7 @@ export function Calculation() {
                         {Object.entries(totals).map(([currency, total]) => (
                           <div 
                             key={currency}
-                            className="flex justify-between items-center text-sm font-semibold"
+                            className="flex justify-between items-center text-sm font-semibold px-3"
                           >
                             <span className="text-muted-foreground">Total</span>
                             <span className="font-mono">
