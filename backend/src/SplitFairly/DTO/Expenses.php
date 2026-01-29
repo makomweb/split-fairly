@@ -4,19 +4,24 @@ declare(strict_types=1);
 
 namespace App\SplitFairly\DTO;
 
-final readonly class Expenses
+final class Expenses
 {
     /**
      * @param Expense[] $expenses
      */
-    public function __construct(
-        public string $userId,
+    private function __construct(
+        public readonly string $userId,
         public array $expenses,
     ) {
     }
 
-    public function withExpense(Expense $expense): self
+    public static function initial(string $userId): self
     {
-        return new self($this->userId, [...$this->expenses, $expense]);
+        return new self($userId, []);
+    }
+
+    public function add(Expense $expense): void
+    {
+        $this->expenses[] = $expense;
     }
 }

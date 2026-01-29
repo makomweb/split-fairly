@@ -16,44 +16,92 @@ final readonly class Calculator
     }
 
     /**
+     * @param array<Expenses> $expenses
+     *
+     * @return array<Expenses>
+     */
+    private function reduce(array $expenses, Event $event): array
+    {
+        $found = array_find(
+            $expenses,
+            static fn (Expenses $expense): bool => $expense->userId === $event->createdBy
+        );
+
+        assert($found instanceof Expenses);
+
+        $expense = $this->denormalizer->fromArray(
+            $event->payload,
+            Expense::class
+        );
+
+        assert($expense instanceof Expense);
+
+        $found->add($expense);
+
+        return $expenses;
+    }
+
+    /**
      * @return Expenses[]
      */
     public function calculate(): array
     {
-        // Get all expense events that were tracked (from all users)
+        $userIds = $this->eventStore->getUserIds();
+
         $events = $this->eventStore->getEvents(
             new QueryOptions(
+                createdBy: $userIds,
                 subjectTypes: ['Expense'],
                 eventTypes: ['tracked']
             )
         );
 
-        // Group expenses by user (createdBy)
-        $expensesByUser = [];
+        /** @var array<Expenses> $initialExpenses */
+        $initialExpenses = array_map(
+            static fn (string $userId): Expenses => Expenses::initial($userId),
+            $userIds
+        );
 
-        foreach ($events as $event) {
-            // Denormalize the expense from the event payload
-            $expense = $this->denormalizer->fromArray(
-                $event->payload,
-                Expense::class
-            );
+        return array_reduce(
+            $events,
+            $this->reduce(...),
+            $initialExpenses
+        );
 
-            $userId = $event->createdBy;
+        // // Get all expense events that were tracked (from all users)
+        // $events = $this->eventStore->getEvents(
+        //     new QueryOptions(
+        //         subjectTypes: ['Expense'],
+        //         eventTypes: ['tracked']
+        //     )
+        // );
 
-            // Initialize user's expenses collection if not exists
-            if (!isset($expensesByUser[$userId])) {
-                $expensesByUser[$userId] = [];
-            }
+        // // Group expenses by user (createdBy)
+        // $expensesByUser = [];
 
-            $expensesByUser[$userId][] = $expense;
-        }
+        // foreach ($events as $event) {
+        //     // Denormalize the expense from the event payload
+        //     $expense = $this->denormalizer->fromArray(
+        //         $event->payload,
+        //         Expense::class
+        //     );
 
-        // Convert to Expenses objects
-        $result = [];
-        foreach ($expensesByUser as $userId => $expenses) {
-            $result[] = new Expenses($userId, $expenses);
-        }
+        //     $userId = $event->createdBy;
 
-        return $result;
+        //     // Initialize user's expenses collection if not exists
+        //     if (!isset($expensesByUser[$userId])) {
+        //         $expensesByUser[$userId] = [];
+        //     }
+
+        //     $expensesByUser[$userId][] = $expense;
+        // }
+
+        // // Convert to Expenses objects
+        // $result = [];
+        // foreach ($expensesByUser as $userId => $expenses) {
+        //     $result[] = new Expenses($userId, $expenses);
+        // }
+
+        // return $result;
     }
 }

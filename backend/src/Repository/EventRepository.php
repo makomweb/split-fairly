@@ -49,18 +49,21 @@ final readonly class EventRepository implements EventStoreInterface
     }
 
     /** @return string[] */
-    public function getUsers(): array
+    public function getUserIds(): array
     {
         $repository = $this->entityManager->getRepository(EventEntity::class);
 
+        /** @var list<array{createdBy: string}> $result */
         $result = $repository
             ->createQueryBuilder('e')
             ->select('DISTINCT e.createdBy')
             ->getQuery()
             ->getResult();
 
-        // Extract the createdBy values from the result array
-        return array_map(fn($row) => $row['createdBy'], $result);
+        return array_map(
+            static fn (array $row): string => $row['createdBy'],
+            $result
+        );
     }
 
     /** @return DomainEvent[] */
@@ -78,12 +81,12 @@ final readonly class EventRepository implements EventStoreInterface
                 assert($entity instanceof EventEntity);
 
                 return new DomainEvent(
+                    $entity->getCreatedBy(),
                     $entity->getSubjectType(),
                     $entity->getSubjectId(),
                     $entity->getEventType(),
                     $entity->getPayload(),
-                    $entity->getCreatedAt(),
-                    $entity->getCreatedBy()
+                    $entity->getCreatedAt()
                 );
             },
             $events
@@ -94,26 +97,27 @@ final readonly class EventRepository implements EventStoreInterface
     {
         $repository = $this->entityManager->getRepository(EventEntity::class);
 
-        // TODO: put users into the options!
-        // $builder = $repository
-        //     ->createQueryBuilder('e')
-        //     ->where('e.createdBy = :uuid')
-        //     ->orderBy('e.createdAt', 'ASC')
-        //     ->setParameter('uuid', $this->currentUser->getUuid());
-
         $builder = $repository
             ->createQueryBuilder('e')
             ->orderBy('e.createdAt', 'ASC');
 
-        if (!empty($options->subjectTypes)) {
+        if (!empty($options->createdBy)) {
             $builder = $builder
-                ->where('e.subjectType IN (:subjectTypes)')
+                ->where('e.createdBy IN (:createdBy)')
+                ->setParameter('createdBy', $options->createdBy);
+        }
+
+        if (!empty($options->subjectTypes)) {
+            $whereMethod = empty($options->createdBy) ? 'where' : 'andWhere';
+            $builder = $builder
+                ->$whereMethod('e.subjectType IN (:subjectTypes)')
                 ->setParameter('subjectTypes', $options->subjectTypes);
         }
 
         if (empty($options->subjectTypes) && !empty($options->subjectIds)) {
+            $whereMethod = empty($options->createdBy) ? 'where' : 'andWhere';
             $builder = $builder
-                ->where('e.subjectId IN (:subjectIds)')
+                ->$whereMethod('e.subjectId IN (:subjectIds)')
                 ->setParameter('subjectIds', $options->subjectIds);
         } elseif (!empty($options->subjectIds)) {
             $builder = $builder
@@ -122,8 +126,9 @@ final readonly class EventRepository implements EventStoreInterface
         }
 
         if (empty($options->subjectTypes) && empty($options->subjectIds) && !empty($options->eventTypes)) {
+            $whereMethod = empty($options->createdBy) ? 'where' : 'andWhere';
             $builder = $builder
-                ->where('e.eventType IN (:eventTypes)')
+                ->$whereMethod('e.eventType IN (:eventTypes)')
                 ->setParameter('eventTypes', $options->eventTypes);
         } elseif (!empty($options->eventTypes)) {
             $builder = $builder

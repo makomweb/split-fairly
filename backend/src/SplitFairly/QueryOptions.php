@@ -10,11 +10,13 @@ namespace App\SplitFairly;
 final readonly class QueryOptions
 {
     /**
+     * @param string[] $createdBy
      * @param string[] $subjectTypes
      * @param string[] $subjectIds
      * @param string[] $eventTypes
      */
     public function __construct(
+        public array $createdBy = [],
         public array $subjectTypes = [],
         public array $subjectIds = [],
         public array $eventTypes = [],
@@ -23,6 +25,9 @@ final readonly class QueryOptions
 
     public function isEmpty(): bool
     {
-        return empty($this->subjectTypes) && empty($this->subjectIds) && empty($this->eventTypes);
+        return empty($this->createdBy)
+            && empty($this->subjectTypes)
+            && empty($this->subjectIds)
+            && empty($this->eventTypes);
     }
 }

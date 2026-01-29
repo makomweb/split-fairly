@@ -16,9 +16,10 @@ use PHPUnit\Framework\TestCase;
 
 final class CalculatorTest extends TestCase
 {
-    public function testCalculateReturnsEmptyArrayWhenNoEvents(): void
+    public function test_calculate_returns_empty_array_when_no_users(): void
     {
         $eventStore = $this->createMock(EventStoreInterface::class);
+        $eventStore->method('getUserIds')->willReturn([]);
         $eventStore->method('getEvents')->willReturn([]);
 
         $denormalizer = $this->createMock(DenormalizerInterface::class);
@@ -30,11 +31,11 @@ final class CalculatorTest extends TestCase
         $this->assertSame([], $result);
     }
 
-    public function testCalculateGroupsExpensesByMultipleUsers(): void
+    public function test_calculate_groups_expenses_by_multiple_users(): void
     {
         $user1 = 'user-123';
         $user2 = 'user-456';
-        
+
         $price = new Price(value: 10.50, currency: 'EUR');
         $expense1 = new Expense(price: $price, what: 'Coffee', location: 'Starbucks');
         $expense2 = new Expense(price: $price, what: 'Lunch', location: 'Restaurant');
@@ -67,10 +68,15 @@ final class CalculatorTest extends TestCase
 
         $eventStore = $this->createMock(EventStoreInterface::class);
         $eventStore
+            ->method('getUserIds')
+            ->willReturn([$user1, $user2]);
+
+        $eventStore
             ->expects($this->once())
             ->method('getEvents')
-            ->with($this->callback(function (QueryOptions $options) {
-                return $options->subjectTypes === ['Expense'] 
+            ->with($this->callback(function (QueryOptions $options) use ($user1, $user2) {
+                return $options->createdBy === [$user1, $user2]
+                    && $options->subjectTypes === ['Expense']
                     && $options->eventTypes === ['tracked'];
             }))
             ->willReturn([$event1, $event2, $event3]);
@@ -85,33 +91,31 @@ final class CalculatorTest extends TestCase
         $result = $calculator->calculate();
 
         $this->assertCount(2, $result);
-        
+
         // Find user1's expenses
-        $user1Expenses = array_filter($result, fn($e) => $e->userId === $user1);
+        $user1Expenses = array_filter($result, fn ($e) => $e->userId === $user1);
         $user1Expenses = array_values($user1Expenses)[0];
         $this->assertInstanceOf(Expenses::class, $user1Expenses);
         $this->assertSame($user1, $user1Expenses->userId);
         $this->assertCount(2, $user1Expenses->expenses);
-        
+
         // Find user2's expenses
-        $user2Expenses = array_filter($result, fn($e) => $e->userId === $user2);
+        $user2Expenses = array_filter($result, fn ($e) => $e->userId === $user2);
         $user2Expenses = array_values($user2Expenses)[0];
         $this->assertInstanceOf(Expenses::class, $user2Expenses);
         $this->assertSame($user2, $user2Expenses->userId);
         $this->assertCount(1, $user2Expenses->expenses);
     }
 
-    public function testCalculateFiltersOnlyTrackedExpenseEvents(): void
+    public function test_calculate_calls_get_user_ids(): void
     {
         $eventStore = $this->createMock(EventStoreInterface::class);
         $eventStore
             ->expects($this->once())
-            ->method('getEvents')
-            ->with($this->callback(function (QueryOptions $options) {
-                return $options->subjectTypes === ['Expense'] 
-                    && $options->eventTypes === ['tracked'];
-            }))
+            ->method('getUserIds')
             ->willReturn([]);
+
+        $eventStore->method('getEvents')->willReturn([]);
 
         $denormalizer = $this->createMock(DenormalizerInterface::class);
 
