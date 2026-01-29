@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { trackExpense } from '@/features/expense/api'
 
 export function TrackExpense() {
@@ -41,48 +42,56 @@ export function TrackExpense() {
   }
 
   return (
-    <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
-      <div className="max-w-4xl mx-auto w-full">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold">Track Expense</h1>
-        </div>
+    <div className="w-full p-4 md:p-6 pb-safe">
+      <div className="max-w-2xl mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* What field */}
+          <div className="space-y-2">
+            <Label htmlFor="what" className="text-base">
+              What did you buy?
+            </Label>
+            <Input
+              id="what"
+              type="text"
+              placeholder="Coffee, Lunch, Taxi..."
+              value={what}
+              onChange={(e) => setWhat(e.target.value)}
+              disabled={loading}
+              required
+              autoComplete="off"
+              className="h-12 text-base"
+            />
+          </div>
 
-        {/* Form */}
-        <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="what">What?</Label>
-              <Input
-                id="what"
-                type="text"
-                placeholder="e.g., Coffee, Lunch, Taxi"
-                value={what}
-                onChange={(e) => setWhat(e.target.value)}
-                disabled={loading}
-                required
-              />
-            </div>
+          {/* Location field */}
+          <div className="space-y-2">
+            <Label htmlFor="location" className="text-base">
+              Where?
+            </Label>
+            <Input
+              id="location"
+              type="text"
+              placeholder="Starbucks, Downtown..."
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              disabled={loading}
+              required
+              autoComplete="off"
+              className="h-12 text-base"
+            />
+          </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="location">Where?</Label>
-              <Input
-                id="location"
-                type="text"
-                placeholder="e.g., Starbucks, Downtown"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                disabled={loading}
-                required
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="price">How much?</Label>
-              <div className="flex gap-2">
+          {/* Price field */}
+          <div className="space-y-2">
+            <Label htmlFor="price" className="text-base">
+              How much?
+            </Label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
                 <Input
                   id="price"
                   type="number"
+                  inputMode="decimal"
                   step="0.01"
                   min="0"
                   placeholder="0.00"
@@ -90,39 +99,54 @@ export function TrackExpense() {
                   onChange={(e) => setPrice(e.target.value)}
                   disabled={loading}
                   required
-                  className="flex-1"
+                  className="h-12 text-base pr-16"
                 />
-                <select
-                  value={currency}
-                  onChange={(e) => setCurrency(e.target.value)}
-                  disabled={loading}
-                  className="w-24 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                <Badge 
+                  variant="secondary" 
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium"
                 >
-                  <option value="EUR">EUR</option>
-                  <option value="USD">USD</option>
-                  <option value="GBP">GBP</option>
-                  <option value="CHF">CHF</option>
-                </select>
+                  {currency}
+                </Badge>
               </div>
+              <select
+                value={currency}
+                onChange={(e) => setCurrency(e.target.value)}
+                disabled={loading}
+                className="h-12 w-20 rounded-md border border-input bg-background px-3 text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="Currency"
+              >
+                <option value="EUR">€</option>
+                <option value="USD">$</option>
+                <option value="GBP">£</option>
+                <option value="CHF">CHF</option>
+              </select>
             </div>
+          </div>
 
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
-                {error}
-              </div>
-            )}
+          {/* Error message */}
+          {error && (
+            <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-destructive text-sm">
+              {error}
+            </div>
+          )}
 
-            {success && (
-              <div className="p-3 bg-green-50 border border-green-200 rounded text-green-700 text-sm">
-                Expense tracked successfully!
-              </div>
-            )}
+          {/* Success message */}
+          {success && (
+            <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-green-700 text-sm font-medium">
+              ✓ Expense tracked successfully!
+            </div>
+          )}
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? 'Tracking...' : 'Track Expense'}
-            </Button>
-          </form>
-        </div>
+          {/* Submit button */}
+          <Button 
+            type="submit" 
+            disabled={loading} 
+            className="w-full h-12 text-base font-semibold"
+            size="lg"
+          >
+            {loading ? 'Saving...' : '💾 Track Expense'}
+          </Button>
+        </form>
       </div>
     </div>
   )

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { fetchCalculation, CalculationResponse, Expenses } from './api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
 export function Calculation() {
   const [data, setData] = useState<CalculationResponse | null>(null)
@@ -27,9 +29,12 @@ export function Calculation() {
 
   if (loading) {
     return (
-      <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
-        <div className="max-w-4xl mx-auto w-full">
-          <p className="text-center text-gray-600">Loading calculation...</p>
+      <div className="w-full p-4 md:p-6">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+            <div className="animate-pulse mb-3 text-3xl">💰</div>
+            <p>Loading calculation...</p>
+          </div>
         </div>
       </div>
     )
@@ -37,13 +42,13 @@ export function Calculation() {
 
   if (error) {
     return (
-      <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
-        <div className="max-w-4xl mx-auto w-full">
-          <Card>
+      <div className="w-full p-4 md:p-6">
+        <div className="max-w-2xl mx-auto">
+          <Card className="border-destructive">
             <CardContent className="pt-6">
-              <p className="text-red-600 text-center">{error}</p>
-              <Button onClick={loadCalculation} className="w-full mt-4">
-                Retry
+              <p className="text-destructive text-center mb-4">{error}</p>
+              <Button onClick={loadCalculation} className="w-full" variant="outline">
+                🔄 Retry
               </Button>
             </CardContent>
           </Card>
@@ -62,71 +67,106 @@ export function Calculation() {
   }
 
   return (
-    <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
-      <div className="max-w-4xl mx-auto w-full space-y-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Expense Calculation</h1>
-          <Button onClick={loadCalculation} variant="outline" size="sm">
-            Refresh
+    <div className="w-full p-4 md:p-6 pb-safe">
+      <div className="max-w-2xl mx-auto space-y-4">
+        {/* Refresh button */}
+        <div className="flex justify-end">
+          <Button 
+            onClick={loadCalculation} 
+            variant="outline" 
+            size="sm"
+            className="h-9"
+          >
+            🔄 Refresh
           </Button>
         </div>
 
         {!data || data.users.length === 0 ? (
           <Card>
-            <CardContent className="pt-6">
-              <p className="text-center text-gray-600">No expenses tracked yet.</p>
+            <CardContent className="py-12 text-center text-muted-foreground">
+              <div className="text-4xl mb-3">📝</div>
+              <p className="text-base">No expenses tracked yet.</p>
+              <p className="text-sm mt-2">Start tracking to see calculations!</p>
             </CardContent>
           </Card>
         ) : (
           <>
+            {/* Compensation card */}
             {data.compensation && (
-              <Card className="bg-blue-50 border-blue-200">
-                <CardHeader>
-                  <CardTitle className="text-lg text-blue-900">💰 Compensation</CardTitle>
+              <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base font-semibold text-blue-900 flex items-center gap-2">
+                    <span className="text-xl">💸</span>
+                    Settlement Required
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <p className="text-gray-700">
-                      <span className="font-semibold">{data.compensation.from}</span>
-                      {' '}pays{' '}
-                      <span className="font-semibold">{data.compensation.to}</span>
-                    </p>
-                    <p className="text-2xl font-bold text-blue-900">
-                      {data.compensation.amount.toFixed(2)} {data.compensation.currency}
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-blue-700 mb-1">From</p>
+                      <p className="font-semibold text-blue-900">{data.compensation.from}</p>
+                    </div>
+                    <div className="text-2xl">→</div>
+                    <div className="text-right">
+                      <p className="text-sm text-blue-700 mb-1">To</p>
+                      <p className="font-semibold text-blue-900">{data.compensation.to}</p>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="text-center">
+                    <p className="text-sm text-blue-700 mb-1">Amount</p>
+                    <p className="text-3xl font-bold text-blue-900">
+                      {data.compensation.amount.toFixed(2)}
+                      <span className="text-lg ml-2">{data.compensation.currency}</span>
                     </p>
                   </div>
                 </CardContent>
               </Card>
             )}
+            
+            {/* User expenses */}
             {data.users.map((expenses) => {
               const totals = calculateTotal(expenses)
               return (
                 <Card key={expenses.user_email}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{expenses.user_email}</CardTitle>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base font-semibold flex items-center justify-between">
+                      <span className="truncate">{expenses.user_email}</span>
+                      <Badge variant="secondary" className="ml-2 shrink-0">
+                        {expenses.categories.length} items
+                      </Badge>
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {expenses.categories.map((category, idx) => (
                         <div
                           key={idx}
-                          className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                          className="flex justify-between items-start gap-3 p-3 bg-muted/50 rounded-lg"
                         >
-                          <p className="font-medium">{category.what}</p>
-                          <p className="font-semibold">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{category.what}</p>
+                          </div>
+                          <Badge variant="outline" className="shrink-0 font-mono">
                             {category.sum.value.toFixed(2)} {category.sum.currency}
-                          </p>
+                          </Badge>
                         </div>
                       ))}
                       
-                      <div className="border-t pt-3 mt-3">
-                        <div className="font-bold text-right space-y-1">
-                          {Object.entries(totals).map(([currency, total]) => (
-                            <div key={currency}>
-                              Total: {total.toFixed(2)} {currency}
-                            </div>
-                          ))}
-                        </div>
+                      <Separator className="my-3" />
+                      
+                      <div className="space-y-1.5">
+                        {Object.entries(totals).map(([currency, total]) => (
+                          <div 
+                            key={currency}
+                            className="flex justify-between items-center text-sm font-semibold"
+                          >
+                            <span className="text-muted-foreground">Total</span>
+                            <span className="font-mono">
+                              {total.toFixed(2)} {currency}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </CardContent>
