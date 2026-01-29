@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { useAuth } from '@/features/auth/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { trackExpense } from '@/features/expense/api'
 
 export function TrackExpense() {
-  const { user, logout } = useAuth()
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('EUR')
   const [what, setWhat] = useState('')
@@ -44,16 +42,10 @@ export function TrackExpense() {
 
   return (
     <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto w-full">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Track Expense</h1>
-            <p className="text-sm text-muted-foreground">{user?.email}</p>
-          </div>
-          <Button onClick={logout} variant="outline" size="sm">
-            Logout
-          </Button>
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">Track Expense</h1>
         </div>
 
         {/* Form */}

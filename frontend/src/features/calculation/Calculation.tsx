@@ -27,8 +27,8 @@ export function Calculation() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
+        <div className="max-w-4xl mx-auto w-full">
           <p className="text-center text-gray-600">Loading calculation...</p>
         </div>
       </div>
@@ -37,8 +37,8 @@ export function Calculation() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
+        <div className="max-w-4xl mx-auto w-full">
           <Card>
             <CardContent className="pt-6">
               <p className="text-red-600 text-center">{error}</p>
@@ -62,8 +62,8 @@ export function Calculation() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-4">
+    <div className="flex min-h-svh w-full flex-col p-6 md:p-10">
+      <div className="max-w-4xl mx-auto w-full space-y-4">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Expense Calculation</h1>
           <Button onClick={loadCalculation} variant="outline" size="sm">
