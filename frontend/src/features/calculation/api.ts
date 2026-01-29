@@ -3,19 +3,18 @@ interface Price {
   currency: string
 }
 
-interface Expense {
-  price: Price
+interface Category {
   what: string
-  location: string
+  sum: Price
 }
 
-export interface UserExpenses {
+export interface Expenses {
   user_uuid: string
   user_email: string
-  expenses: Expense[]
+  categories: Category[]
 }
 
-export async function fetchCalculation(): Promise<UserExpenses[]> {
+export async function fetchCalculation(): Promise<Expenses[]> {
   const response = await fetch('http://localhost:8080/api/calculate', {
     credentials: 'include',
   })

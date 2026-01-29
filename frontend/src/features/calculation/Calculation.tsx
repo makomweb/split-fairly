@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { fetchCalculation, UserExpenses } from './api'
+import { fetchCalculation, Expenses } from './api'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 export function Calculation() {
-  const [data, setData] = useState<UserExpenses[]>([])
+  const [data, setData] = useState<Expenses[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -52,10 +52,10 @@ export function Calculation() {
     )
   }
 
-  const calculateTotal = (expenses: UserExpenses) => {
-    const totals = expenses.expenses.reduce((acc, expense) => {
-      const currency = expense.price.currency
-      acc[currency] = (acc[currency] || 0) + expense.price.value
+  const calculateTotal = (expenses: Expenses) => {
+    const totals = expenses.categories.reduce((acc, category) => {
+      const currency = category.sum.currency
+      acc[currency] = (acc[currency] || 0) + category.sum.value
       return acc
     }, {} as Record<string, number>)
     return totals
@@ -78,26 +78,23 @@ export function Calculation() {
             </CardContent>
           </Card>
         ) : (
-          data.map((userExpenses) => {
-            const totals = calculateTotal(userExpenses)
+          data.map((expenses) => {
+            const totals = calculateTotal(expenses)
             return (
-              <Card key={userExpenses.user_email}>
+              <Card key={expenses.user_uuid}>
                 <CardHeader>
-                  <CardTitle className="text-muted-foreground text-sm">{userExpenses.user_email}</CardTitle>
+                  <CardTitle className="text-lg">{expenses.user_email}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {userExpenses.expenses.map((expense, idx) => (
+                    {expenses.categories.map((category, idx) => (
                       <div
                         key={idx}
-                        className="flex justify-between items-start p-3 bg-gray-50 rounded-lg"
+                        className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
                       >
-                        <div className="flex-1">
-                          <p className="font-medium">{expense.what}</p>
-                          <p className="text-sm text-gray-600">{expense.location}</p>
-                        </div>
+                        <p className="font-medium">{category.what}</p>
                         <p className="font-semibold">
-                          {expense.price.value.toFixed(2)} {expense.price.currency}
+                          {category.sum.value.toFixed(2)} {category.sum.currency}
                         </p>
                       </div>
                     ))}

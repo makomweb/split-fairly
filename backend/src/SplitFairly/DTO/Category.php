@@ -14,9 +14,9 @@ final class Category
     ) {
     }
 
-    public static function initial(string $what): self
+    public static function initial(Expense $expense): self
     {
-        return new self($what, Price::ZERO());
+        return new self($expense->what, $expense->price);
     }
 
     public function with(Expense $expense): self

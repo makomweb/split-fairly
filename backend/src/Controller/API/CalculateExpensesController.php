@@ -3,6 +3,8 @@
 namespace App\Controller\API;
 
 use App\SplitFairly\Calculator;
+use App\SplitFairly\DTO\Expenses;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,14 +14,25 @@ class CalculateExpensesController extends AbstractController
 {
     public function __construct(
         private readonly Calculator $calculator,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
     #[Route('/calculate', name: 'calculate', methods: ['GET'])]
     public function calculate(): JsonResponse
     {
-        $result = $this->calculator->calculate();
+        $expenses = $this->calculator->calculate();
 
-        return $this->json($result);
+        $this->logger->debug('Calculated', ['expenses' => $expenses]);
+
+        return $this->json(
+            array_map(
+                static fn (Expenses $e) => [
+                    'user_email' => $e->userEmail,
+                    'categories' => $e->categories()
+                ],
+                $expenses
+            )
+        );
     }
 }

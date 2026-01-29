@@ -27,22 +27,42 @@ final class Expenses
     }
 
     /**
-     * return Category[]
+     * @return array<int, Category>
      */
     public function categories(): array
     {
-        return array_reduce(
+        /** @var array<int, Category> $result */
+        $result = array_reduce(
             $this->expenses,
             /**
-             * @param Category[] $carry
-             * @return Category[]
+             * @param array<int, Category> $carry
+             *
+             * @return array<int, Category>
              */
             static function (array $carry, Expense $expense): array {
-                // TODO sum up the "what" to calculate each category
+                $found = null;
+                $foundKey = null;
+
+                foreach ($carry as $key => $category) {
+                    assert($category instanceof Category);
+                    if ($category->what === $expense->what) {
+                        $found = $category;
+                        $foundKey = $key;
+                        break;
+                    }
+                }
+
+                if ($found instanceof Category && null !== $foundKey) {
+                    $carry[$foundKey] = $found->with($expense);
+                } else {
+                    $carry[] = Category::initial($expense);
+                }
+
                 return $carry;
             },
-            /** @var Category[] */
             []
         );
+
+        return $result;
     }
 }
