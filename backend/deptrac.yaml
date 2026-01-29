@@ -35,8 +35,13 @@ deptrac:
           value: .*phpDocumentor\\Reflection\\.*
         - type: classLike
           value: .*PhpParser\\.*
-        - type: classLike
-          value: .*Symfony\\.*
+        - type: bool
+          must:
+            - type: classLike
+              value: .*Symfony\\.*
+          must_not:
+            - type: classLike
+              value: .*Symfony\\Component\\Uid\\.*
         - type: classLike
           value: .*Twig\\.*
     - name: Supporting
