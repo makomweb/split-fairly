@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api', name: 'api.')]
-class ExpenseController extends AbstractController
+class TrackExpenseController extends AbstractController
 {
     public function __construct(
         private readonly ExpenseTracker $tracker,
