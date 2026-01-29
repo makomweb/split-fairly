@@ -17,7 +17,7 @@ final readonly class ExpenseTracker
     public function track(Expense $expense): void
     {
         $event = new Event(
-            subjectType: (new \ReflectionClass($expense))->getShortName(),
+            subjectType: array_last(explode('\\', get_class($expense))),
             subjectId: $expense->getId()->toRfc4122(),
             eventType: 'tracked',
             payload: $this->normalizer->toArray($expense, ['id'])
