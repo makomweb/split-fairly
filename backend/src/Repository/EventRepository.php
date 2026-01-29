@@ -48,6 +48,21 @@ final readonly class EventRepository implements EventStoreInterface
         $this->entityManager->flush();
     }
 
+    /** @return string[] */
+    public function getUsers(): array
+    {
+        $repository = $this->entityManager->getRepository(EventEntity::class);
+
+        $result = $repository
+            ->createQueryBuilder('e')
+            ->select('DISTINCT e.createdBy')
+            ->getQuery()
+            ->getResult();
+
+        // Extract the createdBy values from the result array
+        return array_map(fn($row) => $row['createdBy'], $result);
+    }
+
     /** @return DomainEvent[] */
     public function getEvents(Options $options = new Options()): array
     {
