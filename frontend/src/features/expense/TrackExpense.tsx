@@ -23,7 +23,6 @@ export function TrackExpense() {
 
     try {
       await trackExpense({
-        time: new Date().toISOString(),
         price: {
           value: parseFloat(price),
           currency,

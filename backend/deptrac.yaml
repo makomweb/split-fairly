@@ -8,7 +8,13 @@ deptrac:
     - name: Core
       collectors:
         - type: classLike
+          value: .*App\\Invariant\\.*
+        - type: classLike
+          value: .*Psr\\.*
+        - type: classLike
           value: .*App\\SplitFairly\\.*
+        - type: classLike
+          value: .*Symfony\\Component\\Uid\\.*
     - name: Generic
       collectors:
         - type: classLike
@@ -30,8 +36,6 @@ deptrac:
         - type: classLike
           value: .*PhpParser\\.*
         - type: classLike
-          value: .*Psr\\.*
-        - type: classLike
           value: .*Symfony\\.*
         - type: classLike
           value: .*Twig\\.*
@@ -39,6 +43,8 @@ deptrac:
       collectors:
         - type: classLike
           value: .*App\\Async\\.*
+        - type: classLike
+          value: .*App\\Auth\\.*
         - type: classLike
           value: .*App\\Controller\\.*
         - type: classLike
@@ -48,10 +54,10 @@ deptrac:
         - type: classLike
           value: .*App\\EventListener\\.*
         - type: classLike
-          value: .*App\\Repository\\.*
+          value: .*App\\Normalizer\\.*
         - type: classLike
-          value: .*App\\Invariant\\.*
-    - name: Supporting.Tests
+          value: .*App\\Repository\\.*
+    - name: Tests
       collectors:
         - type: classLike
           value: .*App\\Tests\\.*
@@ -63,7 +69,7 @@ deptrac:
     Supporting:
       - Generic
       - Core
-    Supporting.Tests:
+    Tests:
       - Generic
       - Core
       - Supporting

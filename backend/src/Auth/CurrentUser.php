@@ -10,7 +10,9 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 final readonly class CurrentUser implements CurrentUserInterface
 {
-    public function __construct(private Security $security) {}
+    public function __construct(private Security $security)
+    {
+    }
 
     public function getUuid(): string
     {

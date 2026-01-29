@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\SplitFairly\DTO;
+
+use App\Invariant\Ensure;
+use Symfony\Component\Uid\Uuid;
+
+final readonly class Expense
+{
+    public function __construct(
+        public Price $price,
+        public string $what,
+        public string $location,
+    ) {
+        Ensure::that(!empty($what));
+        Ensure::that(!empty($location));
+    }
+
+    public function getId(): Uuid
+    {
+        return Uuid::v5(
+            Uuid::fromString(Uuid::NAMESPACE_OID),
+            sprintf('%s - %s - %s', $this->price, $this->what, $this->location)
+        );
+    }
+}

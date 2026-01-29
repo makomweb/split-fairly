@@ -2,21 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\DTO;
+namespace App\SplitFairly\DTO;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Invariant\Ensure;
 
 final readonly class Price implements \Stringable
 {
     public function __construct(
-        #[Assert\NotBlank]
-        #[Assert\Positive]
         public float $value,
-
-        #[Assert\NotBlank]
-        #[Assert\Currency]
         public string $currency,
     ) {
+        Ensure::that(!empty($currency));
     }
 
     public function __toString(): string

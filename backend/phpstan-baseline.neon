@@ -5,6 +5,11 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: public/index.php
+		-
+			message: '#^Method App\\Normalizer\\Normalizer\:\:toArray\(\) should return array\<string, mixed\> but returns array\|ArrayObject\|bool\|float\|int\|string\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Normalizer/Normalizer.php
 
 		-
 			message: '#^Property App\\Entity\\User\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'

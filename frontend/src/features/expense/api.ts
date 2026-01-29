@@ -4,7 +4,6 @@ interface Price {
 }
 
 interface ExpenseData {
-  time: string
   price: Price
   what: string
   location: string
