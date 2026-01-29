@@ -10,7 +10,8 @@ interface Expense {
 }
 
 export interface UserExpenses {
-  userId: string
+  user_uuid: string
+  user_email: string
   expenses: Expense[]
 }
 

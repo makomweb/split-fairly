@@ -10,14 +10,15 @@ final class Expenses
      * @param Expense[] $expenses
      */
     private function __construct(
-        public readonly string $userId,
+        public readonly string $userUuid,
+        public readonly string $userEmail,
         public array $expenses,
     ) {
     }
 
-    public static function initial(string $userId): self
+    public static function initial(string $userUuid, string $email): self
     {
-        return new self($userId, []);
+        return new self($userUuid, $email, []);
     }
 
     public function add(Expense $expense): void

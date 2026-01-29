@@ -10,8 +10,9 @@ use App\SplitFairly\DTO\Expenses;
 final readonly class Calculator
 {
     public function __construct(
-        private readonly EventStoreInterface $eventStore,
-        private readonly DenormalizerInterface $denormalizer,
+        private EventStoreInterface $eventStore,
+        private DenormalizerInterface $denormalizer,
+        private EmailProviderInterface $emailProvider,
     ) {
     }
 
@@ -20,11 +21,11 @@ final readonly class Calculator
      */
     public function calculate(): array
     {
-        $userIds = $this->eventStore->getUserIds();
+        $uuids = $this->eventStore->getUserIds();
 
         $events = $this->eventStore->getEvents(
             new QueryOptions(
-                createdBy: $userIds,
+                createdBy: $uuids,
                 subjectTypes: ['Expense'],
                 eventTypes: ['tracked']
             )
@@ -34,8 +35,12 @@ final readonly class Calculator
             $events,
             $this->reduce(...),
             array_map(
-                static fn (string $userId): Expenses => Expenses::initial($userId),
-                $userIds
+                function (string $uuid): Expenses {
+                    $email = $this->emailProvider->getEmailFor($uuid);
+
+                    return Expenses::initial($uuid, $email);
+                },
+                $uuids
             )
         );
     }
@@ -49,7 +54,7 @@ final readonly class Calculator
     {
         $found = array_find(
             $expenses,
-            static fn (Expenses $expense): bool => $expense->userId === $event->createdBy
+            static fn (Expenses $expense): bool => $expense->userUuid === $event->createdBy
         );
 
         assert($found instanceof Expenses);

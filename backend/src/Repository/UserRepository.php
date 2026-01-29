@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\SplitFairly\EmailProviderInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -12,7 +13,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 /**
  * @extends ServiceEntityRepository<User>
  */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface, EmailProviderInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -31,5 +32,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user->setPassword($newHashedPassword);
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function getEmailFor(string $userUuid): string
+    {
+        $user = $this->findOneBy(['uuid' => $userUuid]);
+        assert($user instanceof User);
+        $email = $user->getEmail();
+        assert(!empty($email));
+
+        return $email;
     }
 }

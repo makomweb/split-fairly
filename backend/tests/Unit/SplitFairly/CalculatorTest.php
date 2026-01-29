@@ -9,6 +9,7 @@ use App\SplitFairly\DenormalizerInterface;
 use App\SplitFairly\DTO\Expense;
 use App\SplitFairly\DTO\Expenses;
 use App\SplitFairly\DTO\Price;
+use App\SplitFairly\EmailProviderInterface;
 use App\SplitFairly\Event;
 use App\SplitFairly\EventStoreInterface;
 use App\SplitFairly\QueryOptions;
@@ -24,7 +25,10 @@ final class CalculatorTest extends TestCase
 
         $denormalizer = $this->createMock(DenormalizerInterface::class);
 
-        $calculator = new Calculator($eventStore, $denormalizer);
+        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider->method('getEmailFor')->willReturn('test@example.com');
+
+        $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
 
         $result = $calculator->calculate();
 
@@ -86,24 +90,27 @@ final class CalculatorTest extends TestCase
             ->method('fromArray')
             ->willReturnOnConsecutiveCalls($expense1, $expense2, $expense3);
 
-        $calculator = new Calculator($eventStore, $denormalizer);
+        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider->method('getEmailFor')->willReturn('test@example.com');
+
+        $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
 
         $result = $calculator->calculate();
 
         $this->assertCount(2, $result);
 
         // Find user1's expenses
-        $user1Expenses = array_filter($result, fn ($e) => $e->userId === $user1);
+        $user1Expenses = array_filter($result, fn ($e) => $e->userUuid === $user1);
         $user1Expenses = array_values($user1Expenses)[0];
         $this->assertInstanceOf(Expenses::class, $user1Expenses);
-        $this->assertSame($user1, $user1Expenses->userId);
+        $this->assertSame($user1, $user1Expenses->userUuid);
         $this->assertCount(2, $user1Expenses->expenses);
 
         // Find user2's expenses
-        $user2Expenses = array_filter($result, fn ($e) => $e->userId === $user2);
+        $user2Expenses = array_filter($result, fn ($e) => $e->userUuid === $user2);
         $user2Expenses = array_values($user2Expenses)[0];
         $this->assertInstanceOf(Expenses::class, $user2Expenses);
-        $this->assertSame($user2, $user2Expenses->userId);
+        $this->assertSame($user2, $user2Expenses->userUuid);
         $this->assertCount(1, $user2Expenses->expenses);
     }
 
@@ -119,7 +126,10 @@ final class CalculatorTest extends TestCase
 
         $denormalizer = $this->createMock(DenormalizerInterface::class);
 
-        $calculator = new Calculator($eventStore, $denormalizer);
+        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider->method('getEmailFor')->willReturn('test@example.com');
+
+        $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
 
         $calculator->calculate();
     }
