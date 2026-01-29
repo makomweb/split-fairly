@@ -25,4 +25,24 @@ final class Expenses
     {
         $this->expenses[] = $expense;
     }
+
+    /**
+     * return Category[]
+     */
+    public function categories(): array
+    {
+        return array_reduce(
+            $this->expenses,
+            /**
+             * @param Category[] $carry
+             * @return Category[]
+             */
+            static function (array $carry, Expense $expense): array {
+                // TODO sum up the "what" to calculate each category
+                return $carry;
+            },
+            /** @var Category[] */
+            []
+        );
+    }
 }
