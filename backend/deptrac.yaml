@@ -51,6 +51,8 @@ deptrac:
         - type: classLike
           value: .*App\\Auth\\.*
         - type: classLike
+          value: .*App\\Command\\.*
+        - type: classLike
           value: .*App\\Controller\\.*
         - type: classLike
           value: .*App\\DataFixtures\\.*
