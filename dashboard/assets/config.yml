@@ -4,7 +4,7 @@ subtitle: "Split Fairly"
 message:
   style: "is-info"
   title: "Welcome!"
-  icon: "fa fa-info-circle"
+  icon: "fa-solid fa-circle-info"
   content: "Split Fairly - splitting fairly made easy."
 
 header: true
@@ -14,7 +14,7 @@ theme: default
 
 services:
   - name: "Application"
-    icon: "fas fa-book"
+    icon: "fa-solid fa-laptop-code"
     items:
       - name: "Application"
         subtitle: "Enable prod + make npm-build"
@@ -28,12 +28,12 @@ services:
         target: "_blank"
       - name: "Accounts"
         subtitle: "Management"
-        icon: "fas fa-file-alt"
+        icon: "fa-solid fa-users"
         url: "http://localhost:8080/admin"
         target: "_blank"
 
   - name: "Persistence"
-    icon: "fas fa-credit-card-alt"
+    icon: "fa-solid fa-database"
     items:
       - name: "Database administration"
         subtitle: "Adminer"
