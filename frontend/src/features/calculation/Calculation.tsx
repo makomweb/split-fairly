@@ -81,11 +81,9 @@ export function Calculation() {
           data.map((userExpenses) => {
             const totals = calculateTotal(userExpenses)
             return (
-              <Card key={userExpenses.userId}>
+              <Card key={userExpenses.user_email}>
                 <CardHeader>
-                  <CardTitle className="text-lg">
-                    User: {userExpenses.userId}
-                  </CardTitle>
+                  <CardTitle className="text-muted-foreground text-sm">{userExpenses.user_email}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
