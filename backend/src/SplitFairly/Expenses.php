@@ -65,4 +65,18 @@ final class Expenses
 
         return $result;
     }
+
+    public function spent(): Price
+    {
+        return array_reduce(
+            $this->categories(),
+            static fn (Price $spent, Category $category) => $spent->add($category->sum),
+            Price::ZERO()
+        );
+    }
+
+    public function substract(self $other): Price
+    {
+        return $this->spent()->substract($other->spent());
+    }
 }

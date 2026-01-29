@@ -27,6 +27,13 @@ final readonly class Price implements \Stringable
         return new self($this->value + $other->value, $this->currency);
     }
 
+    public function substract(self $other): self
+    {
+        Ensure::that($this->currency === $other->currency);
+
+        return new self($this->value - $other->value, $this->currency);
+    }
+
     public function __toString(): string
     {
         return sprintf('%.2f %s', $this->value, $this->currency);

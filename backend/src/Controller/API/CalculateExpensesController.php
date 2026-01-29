@@ -22,8 +22,9 @@ class CalculateExpensesController extends AbstractController
     public function calculate(): JsonResponse
     {
         $expenses = $this->calculator->calculate();
+        $compensate = $expenses[0]->substract($expenses[1]);
 
-        $this->logger->debug('Calculated', ['expenses' => $expenses]);
+        $this->logger->debug('Calculated', ['expenses' => $expenses, 'compensate' => $compensate]);
 
         return $this->json(
             array_map(
