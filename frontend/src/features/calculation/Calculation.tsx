@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { getAvatarColor } from '@/lib/avatar-colors'
 
 export function Calculation() {
   const [data, setData] = useState<CalculationResponse | null>(null)
@@ -81,25 +82,42 @@ export function Calculation() {
                     Settlement Required
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-blue-700 mb-1">From</p>
-                      <p className="font-semibold text-blue-900">{data.compensation.from}</p>
+                <CardContent>
+                  {/* Content row */}
+                  <div className="flex items-center justify-between gap-4">
+                    {/* From */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-blue-700 mb-1">From</p>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Avatar className="h-8 w-8 shrink-0">
+                          <AvatarFallback className={`text-xs font-semibold ${getAvatarColor(data.compensation.from).bg} ${getAvatarColor(data.compensation.from).text}`}>
+                            {data.compensation.from.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="font-semibold text-blue-900 truncate text-sm">{data.compensation.from}</p>
+                      </div>
                     </div>
-                    <div className="text-2xl">→</div>
-                    <div className="text-right">
-                      <p className="text-sm text-blue-700 mb-1">To</p>
-                      <p className="font-semibold text-blue-900">{data.compensation.to}</p>
+
+                    {/* Pays */}
+                    <div className="shrink-0">
+                      <p className="text-xs text-blue-700 mb-1 text-center">Pays</p>
+                      <p className="font-bold text-blue-900 text-sm whitespace-nowrap">
+                        {data.compensation.settlement.value.toFixed(2)} {data.compensation.settlement.currency}
+                      </p>
                     </div>
-                  </div>
-                  <Separator />
-                  <div className="text-center">
-                    <p className="text-sm text-blue-700 mb-1">Amount</p>
-                    <p className="text-3xl font-bold text-blue-900">
-                      {data.compensation.settlement.value.toFixed(2)}
-                      <span className="text-lg ml-2">{data.compensation.settlement.currency}</span>
-                    </p>
+
+                    {/* To */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-blue-700 mb-1 text-right">To</p>
+                      <div className="flex items-center gap-2 flex-row-reverse min-w-0">
+                        <Avatar className="h-8 w-8 shrink-0">
+                          <AvatarFallback className={`text-xs font-semibold ${getAvatarColor(data.compensation.to).bg} ${getAvatarColor(data.compensation.to).text}`}>
+                            {data.compensation.to.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <p className="font-semibold text-blue-900 truncate text-sm text-right">{data.compensation.to}</p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -109,6 +127,7 @@ export function Calculation() {
             {data.users.map((expenses) => {
               const spentCategories = expenses.categories.filter(c => c.type !== 'Lent')
               const lentCategories = expenses.categories.filter(c => c.type === 'Lent')
+              const colors = getAvatarColor(expenses.user_email)
               
               const spentTotals = spentCategories.reduce((acc, category) => {
                 const currency = category.sum.currency
@@ -118,11 +137,11 @@ export function Calculation() {
               
               return (
                 <Card key={expenses.user_email}>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base font-semibold flex items-center justify-between min-w-0">
+                  <CardHeader className="pb-3 overflow-visible">
+                    <div className="text-base font-semibold flex items-center justify-between min-w-0 h-8">
                       <div className="flex items-center gap-3 min-w-0">
                         <Avatar className="h-8 w-8 shrink-0">
-                          <AvatarFallback className="text-xs font-semibold">
+                          <AvatarFallback className={`text-xs font-semibold ${colors.bg} ${colors.text}`}>
                             {expenses.user_email.substring(0, 2).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
@@ -131,7 +150,7 @@ export function Calculation() {
                       <Badge variant="secondary" className="ml-2 shrink-0">
                         {expenses.categories.length} items
                       </Badge>
-                    </CardTitle>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">

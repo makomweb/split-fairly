@@ -34,7 +34,7 @@ function AppContent() {
                 value="track" 
                 className="rounded-none border-b-4 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-none bg-slate-200 text-slate-600 hover:bg-slate-300 font-semibold transition-all"
               >
-                💰 Track
+                🛍️ Track
               </TabsTrigger>
               <TabsTrigger 
                 value="calculate"
