@@ -5,6 +5,7 @@ import { TrackExpense } from './features/expense/TrackExpense'
 import { Calculation } from './features/calculation/Calculation'
 import { Button } from './components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
+import { HeartHandshake } from 'lucide-react'
 
 function AppContent() {
   const { user, logout } = useAuth()
@@ -18,7 +19,10 @@ function AppContent() {
       {/* Sticky header */}
       <header className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-white">Split Fairly</h1>
+          <div className="flex items-center gap-2">
+            <HeartHandshake className="h-6 w-6 text-white" />
+            <h1 className="text-xl font-bold text-white">Split Fairly</h1>
+          </div>
           <Button onClick={logout} variant="secondary" size="sm">
             Logout
           </Button>
