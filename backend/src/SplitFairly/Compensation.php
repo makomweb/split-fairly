@@ -15,12 +15,15 @@ final class Compensation
 
     public static function calculate(Expenses $a, Expenses $b): self
     {
-        $diff = $a->spent()->substract($b->spent());
+        $spentDiff = $a->spent()->substract($b->spent());
+        $lentDiff = $a->lent()->substract($b->lent());
+        
+        $totalDiff = $spentDiff->add($lentDiff);
 
         return new Compensation(
-            from: $diff->value > 0 ? $b->userEmail : $a->userEmail,
-            to: $diff->value > 0 ? $a->userEmail : $b->userEmail,
-            settlement: Price::ABS($diff)
+            from: $totalDiff->value > 0 ? $b->userEmail : $a->userEmail,
+            to: $totalDiff->value > 0 ? $a->userEmail : $b->userEmail,
+            settlement: Price::ABS($totalDiff)
         );
     }
 }

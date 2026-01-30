@@ -378,4 +378,169 @@ final class CompensationTest extends TestCase
         $filtered = $expenses->categories(['Groceries', 'Lent']);
         $this->assertCount(2, $filtered);
     }
+
+    public function test_compensation_with_lent_money_from_first_user(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+        $expenses1->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Money Lent',
+            type: 'Lent',
+            location: 'Transfer'
+        ));
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+
+        $compensation = Compensation::calculate($expenses1, $expenses2);
+
+        $this->assertSame($user2Email, $compensation->from);
+        $this->assertSame($user1Email, $compensation->to);
+        $this->assertSame(50.0, $compensation->settlement->value);
+    }
+
+    public function test_compensation_with_lent_money_from_second_user(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+        $expenses2->add(new Expense(
+            price: new Price(75.0, 'EUR'),
+            what: 'Money Lent',
+            type: 'Lent',
+            location: 'Transfer'
+        ));
+
+        $compensation = Compensation::calculate($expenses1, $expenses2);
+
+        $this->assertSame($user1Email, $compensation->from);
+        $this->assertSame($user2Email, $compensation->to);
+        $this->assertSame(75.0, $compensation->settlement->value);
+    }
+
+    public function test_compensation_with_both_lent_and_spent(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+        $expenses1->add(new Expense(
+            price: new Price(60.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses1->add(new Expense(
+            price: new Price(100.0, 'EUR'),
+            what: 'Money Lent',
+            type: 'Lent',
+            location: 'Transfer'
+        ));
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+        $expenses2->add(new Expense(
+            price: new Price(40.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+
+        $compensation = Compensation::calculate($expenses1, $expenses2);
+
+        $this->assertSame($user2Email, $compensation->from);
+        $this->assertSame($user1Email, $compensation->to);
+        $this->assertSame(120.0, $compensation->settlement->value);
+    }
+
+    public function test_compensation_with_lent_amounts_from_both_users(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+        $expenses1->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses1->add(new Expense(
+            price: new Price(100.0, 'EUR'),
+            what: 'Money Lent',
+            type: 'Lent',
+            location: 'Transfer'
+        ));
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+        $expenses2->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses2->add(new Expense(
+            price: new Price(30.0, 'EUR'),
+            what: 'Money Lent',
+            type: 'Lent',
+            location: 'Transfer'
+        ));
+
+        $compensation = Compensation::calculate($expenses1, $expenses2);
+
+        $this->assertSame($user2Email, $compensation->from);
+        $this->assertSame($user1Email, $compensation->to);
+        $this->assertSame(70.0, $compensation->settlement->value);
+    }
+
+    public function test_compensation_lent_adds_to_spent_difference(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+        $expenses1->add(new Expense(
+            price: new Price(60.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses1->add(new Expense(
+            price: new Price(20.0, 'EUR'),
+            what: 'Money Lent',
+            type: 'Lent',
+            location: 'Transfer'
+        ));
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+        $expenses2->add(new Expense(
+            price: new Price(40.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+
+        $compensation = Compensation::calculate($expenses1, $expenses2);
+
+        // Spent diff: 60 - 40 = 20 (User 1 spent 20 more)
+        // Lent diff: 20 - 0 = 20 (User 1 lent 20 more)
+        // Total: 20 + 20 = 40
+        $this->assertSame($user2Email, $compensation->from);
+        $this->assertSame($user1Email, $compensation->to);
+        $this->assertSame(40.0, $compensation->settlement->value);
+    }
 }

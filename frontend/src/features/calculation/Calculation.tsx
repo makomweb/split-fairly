@@ -57,15 +57,6 @@ export function Calculation() {
     )
   }
 
-  const calculateTotal = (expenses: Expenses) => {
-    const totals = expenses.categories.reduce((acc, category) => {
-      const currency = category.sum.currency
-      acc[currency] = (acc[currency] || 0) + category.sum.value
-      return acc
-    }, {} as Record<string, number>)
-    return totals
-  }
-
   return (
     <div className="w-full p-4 md:p-6 pb-safe">
       <div className="max-w-2xl mx-auto space-y-4">
@@ -115,7 +106,21 @@ export function Calculation() {
             
             {/* User expenses */}
             {data.users.map((expenses) => {
-              const totals = calculateTotal(expenses)
+              const spentCategories = expenses.categories.filter(c => c.type !== 'Lent')
+              const lentCategories = expenses.categories.filter(c => c.type === 'Lent')
+              
+              const spentTotals = spentCategories.reduce((acc, category) => {
+                const currency = category.sum.currency
+                acc[currency] = (acc[currency] || 0) + category.sum.value
+                return acc
+              }, {} as Record<string, number>)
+              
+              const lentTotals = lentCategories.reduce((acc, category) => {
+                const currency = category.sum.currency
+                acc[currency] = (acc[currency] || 0) + category.sum.value
+                return acc
+              }, {} as Record<string, number>)
+              
               return (
                 <Card key={expenses.user_email}>
                   <CardHeader className="pb-3 px-3">
@@ -127,31 +132,66 @@ export function Calculation() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2">
-                      {expenses.categories.map((category, idx) => (
-                        <div
-                          key={idx}
-                          className="flex justify-between items-center gap-3 p-3 bg-muted/50 rounded-lg"
-                        >
-                          <span className="font-medium text-sm truncate">
-                            {category.type}
-                          </span>
-                          <span className="font-mono text-sm shrink-0">
-                            {category.sum.value.toFixed(2)} {category.sum.currency}
-                          </span>
+                    <div className="space-y-4">
+                      {spentCategories.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Split Expenses</p>
+                          {spentCategories.map((category, idx) => (
+                            <div
+                              key={idx}
+                              className="flex justify-between items-center gap-3 p-3 bg-muted/50 rounded-lg"
+                            >
+                              <span className="font-medium text-sm truncate">
+                                {category.type}
+                              </span>
+                              <span className="font-mono text-sm shrink-0">
+                                {category.sum.value.toFixed(2)} {category.sum.currency}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+                      )}
                       
+                      {lentCategories.length > 0 && (
+                        <div className="space-y-2">
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Lent Money</p>
+                          {lentCategories.map((category, idx) => (
+                            <div
+                              key={idx}
+                              className="flex justify-between items-center gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200"
+                            >
+                              <span className="font-medium text-sm truncate">
+                                {category.type}
+                              </span>
+                              <span className="font-mono text-sm shrink-0 text-amber-900">
+                                {category.sum.value.toFixed(2)} {category.sum.currency}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                       
                       <Separator className="my-3" />
-                      
+                       
                       <div className="space-y-1.5">
-                        {Object.entries(totals).map(([currency, total]) => (
+                        {Object.entries(spentTotals).map(([currency, total]) => (
                           <div 
-                            key={currency}
-                            className="flex justify-between items-center text-sm font-semibold px-3"
+                            key={`spent-${currency}`}
+                            className="flex justify-between items-center text-sm px-3"
                           >
-                            <span className="text-muted-foreground">Total</span>
-                            <span className="font-mono">
+                            <span className="text-muted-foreground">Split Total</span>
+                            <span className="font-mono font-semibold">
+                              {total.toFixed(2)} {currency}
+                            </span>
+                          </div>
+                        ))}
+                        {Object.entries(lentTotals).map(([currency, total]) => (
+                          <div 
+                            key={`lent-${currency}`}
+                            className="flex justify-between items-center text-sm px-3"
+                          >
+                            <span className="text-amber-700 font-semibold">Lent Total</span>
+                            <span className="font-mono font-semibold text-amber-700">
                               {total.toFixed(2)} {currency}
                             </span>
                           </div>
