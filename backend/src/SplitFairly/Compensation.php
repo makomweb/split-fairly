@@ -17,7 +17,7 @@ final class Compensation
     {
         $spentDiff = $a->spent()->substract($b->spent());
         $lentDiff = $a->lent()->substract($b->lent());
-        
+
         $totalDiff = $spentDiff->add($lentDiff);
 
         return new Compensation(
