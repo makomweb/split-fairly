@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\SplitFairly\DTO;
+namespace App\Tests\Unit\SplitFairly;
 
 use App\SplitFairly\Price;
 use PHPUnit\Framework\TestCase;

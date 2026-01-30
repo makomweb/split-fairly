@@ -12,9 +12,11 @@ final readonly class Expense
     public function __construct(
         public Price $price,
         public string $what,
+        public string $type,
         public string $location,
     ) {
         Ensure::that(!empty($what));
+        Ensure::that(!empty($type));
         Ensure::that(!empty($location));
     }
 
@@ -22,7 +24,7 @@ final readonly class Expense
     {
         return Uuid::v5(
             Uuid::fromString(Uuid::NAMESPACE_OID),
-            sprintf('%s - %s - %s', $this->price, $this->what, $this->location)
+            sprintf('%s - %s - %s - %s', $this->price, $this->what, $this->type, $this->location)
         );
     }
 }

@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { RadioGroup, RadioOption } from '@/components/ui/radio'
 import { trackExpense } from '@/features/expense/api'
 
 export function TrackExpense() {
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('EUR')
   const [what, setWhat] = useState('')
+  const [type, setType] = useState<'Groceries' | 'Non-Food Expenses' | 'Out-of-pocket Expenses'>('Groceries')
   const [location, setLocation] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -27,6 +29,7 @@ export function TrackExpense() {
           currency,
         },
         what,
+        type,
         location,
       })
       setSuccess(true)
@@ -50,17 +53,26 @@ export function TrackExpense() {
             <Label htmlFor="what" className="text-base">
               What did you buy?
             </Label>
-            <Input
-              id="what"
-              type="text"
-              placeholder="Coffee, Lunch, Taxi..."
-              value={what}
-              onChange={(e) => setWhat(e.target.value)}
-              disabled={loading}
-              required
-              autoComplete="off"
-              className="h-12 text-base"
-            />
+            <div className="flex flex-col">
+              <Input
+                id="what"
+                type="text"
+                placeholder="Coffee, Lunch, Taxi..."
+                value={what}
+                onChange={(e) => setWhat(e.target.value)}
+                disabled={loading}
+                required
+                autoComplete="off"
+                className="h-12 text-base w-full"
+              />
+              <div className="mt-2">
+                <RadioGroup value={type} onValueChange={(v) => setType(v as any)} className="flex gap-2">
+                  <RadioOption value="Groceries">Groceries</RadioOption>
+                  <RadioOption value="Non-Food Expenses">Non-Food</RadioOption>
+                  <RadioOption value="Out-of-pocket Expenses">Out-of-pocket</RadioOption>
+                </RadioGroup>
+              </div>
+            </div>
           </div>
 
           {/* Location field */}

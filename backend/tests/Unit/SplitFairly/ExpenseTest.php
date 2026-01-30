@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\SplitFairly\DTO;
+namespace App\Tests\Unit\SplitFairly;
 
 use App\SplitFairly\Expense;
 use App\SplitFairly\Price;
@@ -17,19 +17,21 @@ final class ExpenseTest extends TestCase
         $expense = new Expense(
             price: $price,
             what: 'Coffee',
+            type: 'Groceries',
             location: 'Starbucks'
         );
 
         $this->assertSame($price, $expense->price);
         $this->assertSame('Coffee', $expense->what);
+        $this->assertSame('Groceries', $expense->type);
         $this->assertSame('Starbucks', $expense->location);
     }
 
     public function test_generates_consistent_id(): void
     {
         $price = new Price(value: 10.50, currency: 'EUR');
-        $expense1 = new Expense(price: $price, what: 'Coffee', location: 'Starbucks');
-        $expense2 = new Expense(price: $price, what: 'Coffee', location: 'Starbucks');
+        $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
+        $expense2 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
 
         $this->assertEquals($expense1->getId(), $expense2->getId());
     }
@@ -37,8 +39,8 @@ final class ExpenseTest extends TestCase
     public function test_generates_different_id_for_different_expenses(): void
     {
         $price = new Price(value: 10.50, currency: 'EUR');
-        $expense1 = new Expense(price: $price, what: 'Coffee', location: 'Starbucks');
-        $expense2 = new Expense(price: $price, what: 'Lunch', location: 'Restaurant');
+        $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
+        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food Expenses', location: 'Restaurant');
 
         $this->assertNotEquals($expense1->getId(), $expense2->getId());
     }
@@ -46,7 +48,7 @@ final class ExpenseTest extends TestCase
     public function test_id_is_uuid_v5(): void
     {
         $price = new Price(value: 10.50, currency: 'EUR');
-        $expense = new Expense(price: $price, what: 'Coffee', location: 'Starbucks');
+        $expense = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
 
         $id = $expense->getId();
 
@@ -59,7 +61,7 @@ final class ExpenseTest extends TestCase
         $this->expectException(\App\Invariant\InvariantException::class);
 
         $price = new Price(value: 10.50, currency: 'EUR');
-        new Expense(price: $price, what: '', location: 'Starbucks');
+        new Expense(price: $price, what: '', type: 'Groceries', location: 'Starbucks');
     }
 
     public function test_rejects_empty_location(): void
@@ -67,6 +69,6 @@ final class ExpenseTest extends TestCase
         $this->expectException(\App\Invariant\InvariantException::class);
 
         $price = new Price(value: 10.50, currency: 'EUR');
-        new Expense(price: $price, what: 'Coffee', location: '');
+        new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: '');
     }
 }

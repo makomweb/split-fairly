@@ -23,8 +23,8 @@ class CalculateExpensesController extends AbstractController
     public function calculate(): JsonResponse
     {
         $expenses = $this->calculator->calculate();
-        
-        Ensure::that(count($expenses) === 2);
+
+        Ensure::that(2 === count($expenses));
 
         $compensation = $expenses[0]->substract($expenses[1]);
 
@@ -38,13 +38,13 @@ class CalculateExpensesController extends AbstractController
                 ],
                 $expenses
             ),
-            'compensation' => $compensation ? [
+            'compensation' => [
                 'value' => $compensation->value,
                 'currency' => $compensation->currency,
                 'from' => $compensation->value > 0 ? $expenses[1]->userEmail : $expenses[0]->userEmail,
                 'to' => $compensation->value > 0 ? $expenses[0]->userEmail : $expenses[1]->userEmail,
                 'amount' => abs($compensation->value),
-            ] : null,
+            ],
         ]);
     }
 }

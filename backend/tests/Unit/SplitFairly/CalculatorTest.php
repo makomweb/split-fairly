@@ -41,15 +41,15 @@ final class CalculatorTest extends TestCase
         $user2 = 'user-456';
 
         $price = new Price(value: 10.50, currency: 'EUR');
-        $expense1 = new Expense(price: $price, what: 'Coffee', location: 'Starbucks');
-        $expense2 = new Expense(price: $price, what: 'Lunch', location: 'Restaurant');
-        $expense3 = new Expense(price: $price, what: 'Dinner', location: 'Pizzeria');
+        $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
+        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food Expenses', location: 'Restaurant');
+        $expense3 = new Expense(price: $price, what: 'Dinner', type: 'Out-of-pocket Expenses', location: 'Pizzeria');
 
         $event1 = new Event(
             subjectType: 'Expense',
             subjectId: 'exp-1',
             eventType: 'tracked',
-            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Coffee', 'location' => 'Starbucks'],
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'],
             createdAt: new \DateTimeImmutable(),
             createdBy: $user1
         );
@@ -57,7 +57,7 @@ final class CalculatorTest extends TestCase
             subjectType: 'Expense',
             subjectId: 'exp-2',
             eventType: 'tracked',
-            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'location' => 'Restaurant'],
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'type' => 'Non-Food Expenses', 'location' => 'Restaurant'],
             createdAt: new \DateTimeImmutable(),
             createdBy: $user1
         );
@@ -65,7 +65,7 @@ final class CalculatorTest extends TestCase
             subjectType: 'Expense',
             subjectId: 'exp-3',
             eventType: 'tracked',
-            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'location' => 'Pizzeria'],
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'type' => 'Out-of-pocket Expenses', 'location' => 'Pizzeria'],
             createdAt: new \DateTimeImmutable(),
             createdBy: $user2
         );
