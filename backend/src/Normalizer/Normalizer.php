@@ -23,7 +23,17 @@ final readonly class Normalizer implements ContractNormalizerInterface, Contract
      */
     public function fromArray(mixed $data, string $type): mixed
     {
-        return $this->denormalizer->denormalize($data, $type);
+        $object = $this->denormalizer->denormalize($data, $type);
+
+        // Provide a sensible default for Expense.type when old events don't include it
+        if ($type === \App\SplitFairly\Expense::class && is_array($data) && !array_key_exists('type', $data)) {
+            // try to set the property via reflection for DTOs or arrays returned by denormalizer
+            if (is_object($object) && property_exists($object, 'type')) {
+                $object->type = 'Groceries';
+            }
+        }
+
+        return $object;
     }
 
     /**
