@@ -9,7 +9,6 @@ use App\Invariant\Ensure;
 final class Category
 {
     private function __construct(
-        public readonly string $what,
         public readonly string $type,
         public readonly Price $sum,
     ) {
@@ -17,13 +16,13 @@ final class Category
 
     public static function initial(Expense $expense): self
     {
-        return new self($expense->what, $expense->type, $expense->price);
+        return new self($expense->type, $expense->price);
     }
 
     public function with(Expense $expense): self
     {
-        Ensure::that($this->what === $expense->what);
+        Ensure::that($this->type === $expense->type);
 
-        return new self($this->what, $this->type, $this->sum->add($expense->price));
+        return new self($this->type, $this->sum->add($expense->price));
     }
 }

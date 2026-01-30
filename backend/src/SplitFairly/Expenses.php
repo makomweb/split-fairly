@@ -27,6 +27,8 @@ final class Expenses
     }
 
     /**
+     * @param string[] $filter
+     *
      * @return array<int, Category>
      */
     public function categories(array $filter = [/* no filter */]): array
@@ -49,7 +51,7 @@ final class Expenses
 
                 foreach ($carry as $key => $category) {
                     assert($category instanceof Category);
-                    if ($category->what === $expense->what) {
+                    if ($category->type === $expense->type) {
                         $found = $category;
                         $foundKey = $key;
                         break;
