@@ -12,7 +12,7 @@ final readonly class Expense
     public function __construct(
         public Price $price,
         public string $what,
-        public string $type = 'Groceries',
+        public string $type,
         public string $location,
     ) {
         Ensure::that(!empty($what));

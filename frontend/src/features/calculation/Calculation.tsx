@@ -105,8 +105,8 @@ export function Calculation() {
                   <div className="text-center">
                     <p className="text-sm text-blue-700 mb-1">Amount</p>
                     <p className="text-3xl font-bold text-blue-900">
-                      {data.compensation.amount.toFixed(2)}
-                      <span className="text-lg ml-2">{data.compensation.currency}</span>
+                      {data.compensation.settlement.value.toFixed(2)}
+                      <span className="text-lg ml-2">{data.compensation.settlement.currency}</span>
                     </p>
                   </div>
                 </CardContent>

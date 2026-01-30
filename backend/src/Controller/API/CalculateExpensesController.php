@@ -4,6 +4,7 @@ namespace App\Controller\API;
 
 use App\Invariant\Ensure;
 use App\SplitFairly\Calculator;
+use App\SplitFairly\Compensation;
 use App\SplitFairly\Expenses;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,7 @@ class CalculateExpensesController extends AbstractController
 
         Ensure::that(2 === count($expenses));
 
-        $compensation = $expenses[0]->substract($expenses[1]);
+        $compensation = Compensation::calculate($expenses[0], $expenses[1]);
 
         $this->logger->debug('Calculated', ['expenses' => $expenses, 'compensation' => $compensation]);
 
@@ -38,13 +39,7 @@ class CalculateExpensesController extends AbstractController
                 ],
                 $expenses
             ),
-            'compensation' => [
-                'value' => $compensation->value,
-                'currency' => $compensation->currency,
-                'from' => $compensation->value > 0 ? $expenses[1]->userEmail : $expenses[0]->userEmail,
-                'to' => $compensation->value > 0 ? $expenses[0]->userEmail : $expenses[1]->userEmail,
-                'amount' => abs($compensation->value),
-            ],
+            'compensation' => $compensation,
         ]);
     }
 }

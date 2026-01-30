@@ -15,6 +15,11 @@ final readonly class Price implements \Stringable
         Ensure::that(!empty($currency));
     }
 
+    public static function ABS(self $price): self
+    {
+        return new self(abs($price->value), $price->currency);
+    }
+
     public static function ZERO(): self
     {
         return new self(0.0, 'EUR');

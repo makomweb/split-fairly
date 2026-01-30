@@ -14,11 +14,9 @@ export interface Expenses {
 }
 
 interface Compensation {
-  value: number
-  currency: string
+  settlement: Price
   from: string
   to: string
-  amount: number
 }
 
 export interface CalculationResponse {

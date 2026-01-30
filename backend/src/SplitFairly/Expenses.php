@@ -74,9 +74,4 @@ final class Expenses
             Price::ZERO()
         );
     }
-
-    public function substract(self $other): Price
-    {
-        return $this->spent()->substract($other->spent());
-    }
 }
