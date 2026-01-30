@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 export function Calculation() {
   const [data, setData] = useState<CalculationResponse | null>(null)
@@ -117,9 +118,16 @@ export function Calculation() {
               
               return (
                 <Card key={expenses.user_email}>
-                  <CardHeader className="pb-3 px-3">
-                    <CardTitle className="text-base font-semibold flex items-center justify-between px-3">
-                      <span className="truncate">{expenses.user_email}</span>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base font-semibold flex items-center justify-between min-w-0">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Avatar className="h-8 w-8 shrink-0">
+                          <AvatarFallback className="text-xs font-semibold">
+                            {expenses.user_email.substring(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="truncate">{expenses.user_email}</span>
+                      </div>
                       <Badge variant="secondary" className="ml-2 shrink-0">
                         {expenses.categories.length} items
                       </Badge>
