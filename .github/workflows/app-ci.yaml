@@ -1,0 +1,46 @@
+name: App CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  PHP:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+      
+    strategy:
+      matrix:
+        php-version: [8.4]
+
+    env:
+      DATABASE_URL: "sqlite:///:memory:"
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, json, opentelemetry
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-scripts
+
+      - name: Run static code analysis
+        run: vendor/bin/phpstan analyse
+
+      - name: Run code style checks
+        run: vendor/bin/php-cs-fixer check
+
+      - name: Run automated tests
+        run: vendor/bin/phpunit
+
+      - name: Run architecture analysis
+        run: vendor/bin/deptrac analyse

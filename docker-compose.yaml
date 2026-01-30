@@ -1,5 +1,5 @@
 networks:
-    web-app-project-skeleton:
+    split-fairly:
 services:
     web: 
         image: ${NGINX_IMAGE}
@@ -12,7 +12,7 @@ services:
             - app
             - worker
         networks:
-            - web-app-project-skeleton
+            - split-fairly
     app:
         image: ${APP_IMAGE}
         ports:
@@ -29,12 +29,12 @@ services:
             ADMIN_EMAIL: ${ADMIN_EMAIL}
             ADMIN_PASSWORD: ${ADMIN_PASSWORD}
         networks:
-            - web-app-project-skeleton
+            - split-fairly
     worker:
         image: ${APP_IMAGE}
         volumes:
             - ./backend:/var/www/project
-        command: ["bin/console", "messenger:consume", "async"]
+        command: ["bin/console", "messenger:consume", "async", "-vv"]
         depends_on:
             db:
                 condition: service_healthy
@@ -42,8 +42,10 @@ services:
             APP_ENV: ${APP_ENV}
             APP_VERSION: ${APP_VERSION}
             DATABASE_URL: "mysql://root:secret@db:3306/app?serverVersion=8.0.31&charset=utf8mb4"
+            ADMIN_EMAIL: ${ADMIN_EMAIL}
+            ADMIN_PASSWORD: ${ADMIN_PASSWORD}
         networks:
-            - web-app-project-skeleton
+            - split-fairly
     db:
         image: ${MYSQL_IMAGE}
         ports:
@@ -60,7 +62,7 @@ services:
             timeout: 5s
             retries: 55
         networks:
-            - web-app-project-skeleton
+            - split-fairly
     db-admin:
         image: ${ADMINER_IMAGE}
         environment:
@@ -71,7 +73,7 @@ services:
             db:
                 condition: service_healthy
         networks:
-            - web-app-project-skeleton
+            - split-fairly
     dashboard:
         image: b4bz/homer:latest
         volumes:
@@ -83,7 +85,7 @@ services:
         user: "1000:1001"
         restart: unless-stopped
         networks:
-            - web-app-project-skeleton
+            - split-fairly
     npm-dev:
         image: ${NODE_IMAGE}
         working_dir: /var/www/frontend
@@ -97,6 +99,6 @@ services:
         environment:
             - CHOKIDAR_USEPOLLING=true
         networks:
-            - web-app-project-skeleton
+            - split-fairly
 volumes:
     mysql_data: {}

@@ -3,6 +3,7 @@
 namespace App\Controller\API;
 
 use App\Entity\User;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,9 +13,16 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 #[Route('/api', name: 'api.')]
 class LoginController extends AbstractController
 {
+    public function __construct(
+        private readonly LoggerInterface $logger,
+    ) {
+    }
+
     #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(#[CurrentUser] ?User $user): JsonResponse
     {
+        $this->logger->debug('Entering '.__METHOD__);
+
         if (!$user) {
             return $this->json(
                 ['message' => 'missing credentials'],

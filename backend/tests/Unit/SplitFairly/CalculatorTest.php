@@ -1,0 +1,136 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Unit\SplitFairly;
+
+use App\SplitFairly\Calculator;
+use App\SplitFairly\DenormalizerInterface;
+use App\SplitFairly\EmailProviderInterface;
+use App\SplitFairly\Event;
+use App\SplitFairly\EventStoreInterface;
+use App\SplitFairly\Expense;
+use App\SplitFairly\Expenses;
+use App\SplitFairly\Price;
+use App\SplitFairly\QueryOptions;
+use PHPUnit\Framework\TestCase;
+
+final class CalculatorTest extends TestCase
+{
+    public function test_calculate_returns_empty_array_when_no_users(): void
+    {
+        $eventStore = $this->createMock(EventStoreInterface::class);
+        $eventStore->method('getUserIds')->willReturn([]);
+        $eventStore->method('getEvents')->willReturn([]);
+
+        $denormalizer = $this->createMock(DenormalizerInterface::class);
+
+        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider->method('getEmailFor')->willReturn('test@example.com');
+
+        $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
+
+        $result = $calculator->calculate();
+
+        $this->assertSame([], $result);
+    }
+
+    public function test_calculate_groups_expenses_by_multiple_users(): void
+    {
+        $user1 = 'user-123';
+        $user2 = 'user-456';
+
+        $price = new Price(value: 10.50, currency: 'EUR');
+        $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
+        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food Expenses', location: 'Restaurant');
+        $expense3 = new Expense(price: $price, what: 'Dinner', type: 'Out-of-pocket Expenses', location: 'Pizzeria');
+
+        $event1 = new Event(
+            subjectType: 'Expense',
+            subjectId: 'exp-1',
+            eventType: 'tracked',
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'],
+            createdAt: new \DateTimeImmutable(),
+            createdBy: $user1
+        );
+        $event2 = new Event(
+            subjectType: 'Expense',
+            subjectId: 'exp-2',
+            eventType: 'tracked',
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'type' => 'Non-Food Expenses', 'location' => 'Restaurant'],
+            createdAt: new \DateTimeImmutable(),
+            createdBy: $user1
+        );
+        $event3 = new Event(
+            subjectType: 'Expense',
+            subjectId: 'exp-3',
+            eventType: 'tracked',
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'type' => 'Out-of-pocket Expenses', 'location' => 'Pizzeria'],
+            createdAt: new \DateTimeImmutable(),
+            createdBy: $user2
+        );
+
+        $eventStore = $this->createMock(EventStoreInterface::class);
+        $eventStore
+            ->method('getUserIds')
+            ->willReturn([$user1, $user2]);
+
+        $eventStore
+            ->expects($this->once())
+            ->method('getEvents')
+            ->with($this->callback(function (QueryOptions $options) use ($user1, $user2) {
+                return $options->createdBy === [$user1, $user2]
+                    && $options->subjectTypes === ['Expense']
+                    && $options->eventTypes === ['tracked'];
+            }))
+            ->willReturn([$event1, $event2, $event3]);
+
+        $denormalizer = $this->createMock(DenormalizerInterface::class);
+        $denormalizer
+            ->method('fromArray')
+            ->willReturnOnConsecutiveCalls($expense1, $expense2, $expense3);
+
+        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider->method('getEmailFor')->willReturn('test@example.com');
+
+        $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
+
+        $result = $calculator->calculate();
+
+        $this->assertCount(2, $result);
+
+        // Find user1's expenses
+        $user1Expenses = array_filter($result, fn ($e) => $e->userUuid === $user1);
+        $user1Expenses = array_values($user1Expenses)[0];
+        $this->assertInstanceOf(Expenses::class, $user1Expenses);
+        $this->assertSame($user1, $user1Expenses->userUuid);
+        $this->assertCount(2, $user1Expenses->expenses);
+
+        // Find user2's expenses
+        $user2Expenses = array_filter($result, fn ($e) => $e->userUuid === $user2);
+        $user2Expenses = array_values($user2Expenses)[0];
+        $this->assertInstanceOf(Expenses::class, $user2Expenses);
+        $this->assertSame($user2, $user2Expenses->userUuid);
+        $this->assertCount(1, $user2Expenses->expenses);
+    }
+
+    public function test_calculate_calls_get_user_ids(): void
+    {
+        $eventStore = $this->createMock(EventStoreInterface::class);
+        $eventStore
+            ->expects($this->once())
+            ->method('getUserIds')
+            ->willReturn([]);
+
+        $eventStore->method('getEvents')->willReturn([]);
+
+        $denormalizer = $this->createMock(DenormalizerInterface::class);
+
+        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider->method('getEmailFor')->willReturn('test@example.com');
+
+        $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
+
+        $calculator->calculate();
+    }
+}

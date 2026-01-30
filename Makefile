@@ -1,4 +1,4 @@
-APP_NAME = web-app-project-skeleton
+APP_NAME = split-fairly
 VERSION = 0.1.1
 
 .DEFAULT_GOAL := help

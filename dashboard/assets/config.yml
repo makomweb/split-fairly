@@ -1,5 +1,11 @@
 title: "Developer Dashboard"
-subtitle: "Web app project skeleton"
+subtitle: "Split Fairly"
+
+message:
+  style: "is-info"
+  title: "Welcome!"
+  icon: "fa-solid fa-circle-info"
+  content: "Split Fairly - splitting fairly made easy."
 
 header: true
 footer: '<p>Created with ☯️ by <a href="https://github.com/makomweb/">Martin Komischke</a></p>'
@@ -8,7 +14,7 @@ theme: default
 
 services:
   - name: "Application"
-    icon: "fas fa-book"
+    icon: "fa-solid fa-laptop-code"
     items:
       - name: "Application"
         subtitle: "Enable prod + make npm-build"
@@ -22,12 +28,12 @@ services:
         target: "_blank"
       - name: "Accounts"
         subtitle: "Management"
-        icon: "fas fa-file-alt"
+        icon: "fa-solid fa-users"
         url: "http://localhost:8080/admin"
         target: "_blank"
 
   - name: "Persistence"
-    icon: "fas fa-credit-card-alt"
+    icon: "fa-solid fa-database"
     items:
       - name: "Database administration"
         subtitle: "Adminer"
@@ -41,5 +47,5 @@ services:
       - name: "Source code"
         subtitle: "Github"
         icon: "fa-brands fa-github"
-        url: "https://github.com/makomweb/web-app-project-skeleton"
+        url: "https://github.com/makomweb/split-fairly"
         target: "_blank"

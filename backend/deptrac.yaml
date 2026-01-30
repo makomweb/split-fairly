@@ -1,0 +1,82 @@
+deptrac:
+  paths:
+    - ./src
+    - ./tests
+  exclude_files: ~
+    # - '#.*test.*#'
+  layers:
+    - name: Core
+      collectors:
+        - type: classLike
+          value: .*App\\Invariant\\.*
+        - type: classLike
+          value: .*Psr\\.*
+        - type: classLike
+          value: .*App\\SplitFairly\\.*
+        - type: classLike
+          value: .*Symfony\\Component\\Uid\\.*
+    - name: Generic
+      collectors:
+        - type: classLike
+          value: .*AutoMapper\\.*
+        - type: classLike
+          value: .*Doctrine\\.*
+        - type: classLike
+          value: .*EasyCorp\\Bundle\\EasyAdminBundle\\.*
+        - type: classLike
+          value: .*Faker\\Factory.*
+        - type: classLike
+          value: .*Monolog\\.*
+        - type: classLike
+          value: .*OpenApi\\Attributes\\.*
+        - type: classLike
+          value: .*OpenTelemetry\\.*
+        - type: classLike
+          value: .*phpDocumentor\\Reflection\\.*
+        - type: classLike
+          value: .*PhpParser\\.*
+        - type: bool
+          must:
+            - type: classLike
+              value: .*Symfony\\.*
+          must_not:
+            - type: classLike
+              value: .*Symfony\\Component\\Uid\\.*
+        - type: classLike
+          value: .*Twig\\.*
+    - name: Supporting
+      collectors:
+        - type: classLike
+          value: .*App\\Async\\.*
+        - type: classLike
+          value: .*App\\Auth\\.*
+        - type: classLike
+          value: .*App\\Command\\.*
+        - type: classLike
+          value: .*App\\Controller\\.*
+        - type: classLike
+          value: .*App\\DataFixtures\\.*
+        - type: classLike
+          value: .*App\\Entity\\.*
+        - type: classLike
+          value: .*App\\EventListener\\.*
+        - type: classLike
+          value: .*App\\Normalizer\\.*
+        - type: classLike
+          value: .*App\\Repository\\.*
+    - name: Tests
+      collectors:
+        - type: classLike
+          value: .*App\\Tests\\.*
+        - type: classLike
+          value: .*PHPUnit\\Framework\\.*  
+  ruleset:
+    Generic: ~
+    Core: ~
+    Supporting:
+      - Generic
+      - Core
+    Tests:
+      - Generic
+      - Core
+      - Supporting
