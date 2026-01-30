@@ -68,8 +68,8 @@ export function TrackExpense() {
               <div className="mt-2">
                 <RadioGroup value={type} onValueChange={(v) => setType(v as any)} className="flex gap-2">
                   <RadioOption value="Groceries">Groceries</RadioOption>
-                  <RadioOption value="Non-Food Expenses">Non-Food</RadioOption>
-                  <RadioOption value="Out-of-pocket Expenses">Out-of-pocket</RadioOption>
+                  <RadioOption value="Non-Food">Non-Food</RadioOption>
+                  <RadioOption value="Lent">Lent</RadioOption>
                 </RadioGroup>
               </div>
             </div>

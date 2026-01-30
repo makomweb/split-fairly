@@ -6,7 +6,7 @@ interface Price {
 interface ExpenseData {
   price: Price
   what: string
-  type: 'Groceries' | 'Non-Food Expenses' | 'Out-of-pocket Expenses'
+  type: 'Groceries' | 'Non-Food' | 'Lent'
   location: string
 }
 

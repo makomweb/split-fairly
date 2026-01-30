@@ -29,7 +29,7 @@ final class Expenses
     /**
      * @return array<int, Category>
      */
-    public function categories(): array
+    public function categories(array $filter = [/* no filter */]): array
     {
         /** @var array<int, Category> $result */
         $result = array_reduce(
@@ -63,13 +63,25 @@ final class Expenses
             []
         );
 
-        return $result;
+        return array_filter(
+            $result,
+            static fn (Category $c) => array_find() // < TODO
+        );
     }
 
     public function spent(): Price
     {
         return array_reduce(
-            $this->categories(),
+            $this->categories(['Groceries', 'Non-Food']),
+            static fn (Price $spent, Category $category) => $spent->add($category->sum),
+            Price::ZERO()
+        );
+    }
+
+    public function lent(): Price
+    {
+        return array_reduce(
+            $this->categories(['Lent']),
             static fn (Price $spent, Category $category) => $spent->add($category->sum),
             Price::ZERO()
         );
