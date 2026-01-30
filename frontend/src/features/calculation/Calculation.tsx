@@ -134,7 +134,7 @@ export function Calculation() {
                           className="flex justify-between items-center gap-3 p-3 bg-muted/50 rounded-lg"
                         >
                           <span className="font-medium text-sm truncate">
-                            {category.what}
+                            {category.type}
                           </span>
                           <span className="font-mono text-sm shrink-0">
                             {category.sum.value.toFixed(2)} {category.sum.currency}

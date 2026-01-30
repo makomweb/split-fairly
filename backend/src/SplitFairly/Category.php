@@ -10,19 +10,20 @@ final class Category
 {
     private function __construct(
         public readonly string $what,
+        public readonly string $type,
         public readonly Price $sum,
     ) {
     }
 
     public static function initial(Expense $expense): self
     {
-        return new self($expense->what, $expense->price);
+        return new self($expense->what, $expense->type, $expense->price);
     }
 
     public function with(Expense $expense): self
     {
         Ensure::that($this->what === $expense->what);
 
-        return new self($this->what, $this->sum->add($expense->price));
+        return new self($this->what, $this->type, $this->sum->add($expense->price));
     }
 }

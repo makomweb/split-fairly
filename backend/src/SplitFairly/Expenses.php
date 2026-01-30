@@ -39,7 +39,11 @@ final class Expenses
              *
              * @return array<int, Category>
              */
-            static function (array $carry, Expense $expense): array {
+            static function (array $carry, Expense $expense) use ($filter): array {
+                if (!empty($filter) && !in_array($expense->type, $filter, true)) {
+                    return $carry;
+                }
+
                 $found = null;
                 $foundKey = null;
 
@@ -63,10 +67,7 @@ final class Expenses
             []
         );
 
-        return array_filter(
-            $result,
-            static fn (Category $c) => array_find() // < TODO
-        );
+        return $result;
     }
 
     public function spent(): Price

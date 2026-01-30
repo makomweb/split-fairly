@@ -23,13 +23,13 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(20.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
         $expenses1->add(new Expense(
             price: new Price(30.0, 'EUR'),
             what: 'Dinner',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Restaurant'
         ));
 
@@ -37,7 +37,7 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(25.0, 'EUR'),
             what: 'Lunch',
-            type: 'Food',
+            type: 'Non-Food',
             location: 'Cafe'
         ));
 
@@ -60,7 +60,7 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(15.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
 
@@ -68,13 +68,13 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(20.0, 'EUR'),
             what: 'Lunch',
-            type: 'Food',
+            type: 'Non-Food',
             location: 'Cafe'
         ));
         $expenses2->add(new Expense(
             price: new Price(30.0, 'EUR'),
             what: 'Dinner',
-            type: 'Food',
+            type: 'Non-Food',
             location: 'Restaurant'
         ));
 
@@ -97,7 +97,7 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(25.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
 
@@ -105,7 +105,7 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(25.0, 'EUR'),
             what: 'Lunch',
-            type: 'Food',
+            type: 'Non-Food',
             location: 'Cafe'
         ));
 
@@ -128,7 +128,7 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(50.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
 
@@ -151,7 +151,7 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(75.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
 
@@ -192,13 +192,13 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(15.75, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
         $expenses1->add(new Expense(
             price: new Price(12.50, 'EUR'),
             what: 'Coffee',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Cafe'
         ));
 
@@ -206,7 +206,7 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(10.25, 'EUR'),
             what: 'Lunch',
-            type: 'Food',
+            type: 'Non-Food',
             location: 'Restaurant'
         ));
 
@@ -229,7 +229,7 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(100.0, 'EUR'),
             what: 'Rent split',
-            type: 'Housing',
+            type: 'Groceries',
             location: 'Apartment'
         ));
 
@@ -237,13 +237,12 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(25.0, 'EUR'),
             what: 'Utilities split',
-            type: 'Utilities',
+            type: 'Non-Food',
             location: 'Apartment'
         ));
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        // Difference is 75.0, and it should be positive (absolute value)
         $this->assertSame(75.0, $compensation->settlement->value);
         $this->assertGreaterThan(0, $compensation->settlement->value);
     }
@@ -259,19 +258,19 @@ final class CompensationTest extends TestCase
         $expenses1->add(new Expense(
             price: new Price(30.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
         $expenses1->add(new Expense(
             price: new Price(30.0, 'EUR'),
             what: 'Groceries',
-            type: 'Food',
+            type: 'Groceries',
             location: 'Market'
         ));
         $expenses1->add(new Expense(
             price: new Price(20.0, 'EUR'),
             what: 'Gas',
-            type: 'Transport',
+            type: 'Non-Food',
             location: 'Gas Station'
         ));
 
@@ -279,15 +278,104 @@ final class CompensationTest extends TestCase
         $expenses2->add(new Expense(
             price: new Price(40.0, 'EUR'),
             what: 'Lunch',
-            type: 'Food',
+            type: 'Non-Food',
             location: 'Restaurant'
         ));
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        // User 1 spent 80, User 2 spent 40, difference is 40
         $this->assertSame($user2Email, $compensation->from);
         $this->assertSame($user1Email, $compensation->to);
         $this->assertSame(40.0, $compensation->settlement->value);
+    }
+
+    public function test_categories_filter_by_type(): void
+    {
+        $userEmail = 'user@example.com';
+        $expenses = Expenses::initial('user-1', $userEmail);
+        $expenses->add(new Expense(
+            price: new Price(10.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses->add(new Expense(
+            price: new Price(20.0, 'EUR'),
+            what: 'Tool',
+            type: 'Non-Food',
+            location: 'Hardware'
+        ));
+        $expenses->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Lent Money',
+            type: 'Lent',
+            location: 'Friend'
+        ));
+
+        $groceriesCategories = $expenses->categories(['Groceries']);
+        $this->assertCount(1, $groceriesCategories);
+        $this->assertSame(10.0, $groceriesCategories[0]->sum->value);
+
+        $nonFoodCategories = $expenses->categories(['Non-Food']);
+        $this->assertCount(1, $nonFoodCategories);
+        $this->assertSame(20.0, $nonFoodCategories[0]->sum->value);
+
+        $lentCategories = $expenses->categories(['Lent']);
+        $this->assertCount(1, $lentCategories);
+        $this->assertSame(50.0, $lentCategories[0]->sum->value);
+    }
+
+    public function test_categories_with_empty_filter_returns_all(): void
+    {
+        $userEmail = 'user@example.com';
+        $expenses = Expenses::initial('user-1', $userEmail);
+        $expenses->add(new Expense(
+            price: new Price(10.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses->add(new Expense(
+            price: new Price(20.0, 'EUR'),
+            what: 'Tool',
+            type: 'Non-Food',
+            location: 'Hardware'
+        ));
+        $expenses->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Lent Money',
+            type: 'Lent',
+            location: 'Friend'
+        ));
+
+        $allCategories = $expenses->categories();
+        $this->assertCount(3, $allCategories);
+    }
+
+    public function test_categories_filter_multiple_types(): void
+    {
+        $userEmail = 'user@example.com';
+        $expenses = Expenses::initial('user-1', $userEmail);
+        $expenses->add(new Expense(
+            price: new Price(10.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses->add(new Expense(
+            price: new Price(20.0, 'EUR'),
+            what: 'Tool',
+            type: 'Non-Food',
+            location: 'Hardware'
+        ));
+        $expenses->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Lent Money',
+            type: 'Lent',
+            location: 'Friend'
+        ));
+
+        $filtered = $expenses->categories(['Groceries', 'Lent']);
+        $this->assertCount(2, $filtered);
     }
 }

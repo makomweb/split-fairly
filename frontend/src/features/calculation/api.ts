@@ -5,6 +5,7 @@ interface Price {
 
 interface Category {
   what: string
+  type: string
   sum: Price
 }
 
