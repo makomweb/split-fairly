@@ -1,22 +1,26 @@
-# Lizenz / License
+The MIT License (MIT)
+=====================
 
-**Copyright (c) 2024–2026 Martin Komischke**  
-**All rights reserved / Alle Rechte vorbehalten**
+Copyright © Martin Komischke
 
----
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the “Software”), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
 
-## DEUTSCH
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
-Dieser Quellcode ist ausschließlich für den privaten Gebrauch durch Personen bestimmt, denen ich den Quellcode ausdrücklich zur Verfügung gestellt habe.  
-Eine Vervielfältigung, Verbreitung, Veröffentlichung oder Weitergabe – ganz oder in Teilen – an Dritte ist ohne meine ausdrückliche schriftliche Zustimmung nicht gestattet.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
 
-Zuwiderhandlungen werden urheberrechtlich verfolgt.
-
----
-
-## ENGLISH
-
-This source code is intended solely for private use by individuals to whom I have explicitly provided access.  
-Reproduction, distribution, publication, or sharing – in whole or in part – with third parties is strictly prohibited without my prior written consent.
-
-Violations will be prosecuted under copyright law.
