@@ -115,12 +115,6 @@ export function Calculation() {
                 return acc
               }, {} as Record<string, number>)
               
-              const lentTotals = lentCategories.reduce((acc, category) => {
-                const currency = category.sum.currency
-                acc[currency] = (acc[currency] || 0) + category.sum.value
-                return acc
-              }, {} as Record<string, number>)
-              
               return (
                 <Card key={expenses.user_email}>
                   <CardHeader className="pb-3 px-3">
@@ -151,27 +145,6 @@ export function Calculation() {
                           ))}
                         </div>
                       )}
-                      
-                      {lentCategories.length > 0 && (
-                        <div className="space-y-2">
-                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Lent Money</p>
-                          {lentCategories.map((category, idx) => (
-                            <div
-                              key={idx}
-                              className="flex justify-between items-center gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200"
-                            >
-                              <span className="font-medium text-sm truncate">
-                                {category.type}
-                              </span>
-                              <span className="font-mono text-sm shrink-0 text-amber-900">
-                                {category.sum.value.toFixed(2)} {category.sum.currency}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                       
-                      <Separator className="my-3" />
                        
                       <div className="space-y-1.5">
                         {Object.entries(spentTotals).map(([currency, total]) => (
@@ -179,24 +152,35 @@ export function Calculation() {
                             key={`spent-${currency}`}
                             className="flex justify-between items-center text-sm px-3"
                           >
-                            <span className="text-muted-foreground">Split Total</span>
+                            <span className="font-semibold">Split</span>
                             <span className="font-mono font-semibold">
                               {total.toFixed(2)} {currency}
                             </span>
                           </div>
                         ))}
-                        {Object.entries(lentTotals).map(([currency, total]) => (
-                          <div 
-                            key={`lent-${currency}`}
-                            className="flex justify-between items-center text-sm px-3"
-                          >
-                            <span className="text-amber-700 font-semibold">Lent Total</span>
-                            <span className="font-mono font-semibold text-amber-700">
-                              {total.toFixed(2)} {currency}
-                            </span>
-                          </div>
-                        ))}
                       </div>
+                      
+                      {lentCategories.length > 0 && (
+                        <>
+                          <Separator className="my-3" />
+                          <div className="space-y-2">
+                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Lent Money</p>
+                            {lentCategories.map((category, idx) => (
+                              <div
+                                key={idx}
+                                className="flex justify-between items-center gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200"
+                              >
+                                <span className="font-medium text-sm truncate">
+                                  {category.type}
+                                </span>
+                                <span className="font-mono text-sm shrink-0 text-amber-900">
+                                  {category.sum.value.toFixed(2)} {category.sum.currency}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

@@ -16,10 +16,10 @@ function AppContent() {
   return (
     <div className="min-h-svh flex flex-col">
       {/* Sticky header */}
-      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-lg font-semibold">Split Fairly</h1>
-          <Button onClick={logout} variant="outline" size="sm">
+      <header className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-white">Split Fairly</h1>
+          <Button onClick={logout} variant="secondary" size="sm">
             Logout
           </Button>
         </div>
@@ -27,18 +27,18 @@ function AppContent() {
       
       {/* Main content with tabs */}
       <Tabs defaultValue="track" className="flex-1 flex flex-col">
-        <div className="border-b">
+        <div className="border-b bg-gradient-to-r from-slate-100 to-slate-200">
           <div className="max-w-4xl mx-auto px-4">
-            <TabsList className="w-full h-12 grid grid-cols-2 bg-transparent p-0">
+            <TabsList className="w-full h-14 grid grid-cols-2 bg-transparent p-0">
               <TabsTrigger 
                 value="track" 
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="rounded-none border-b-4 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-none bg-slate-200 text-slate-600 hover:bg-slate-300 font-semibold transition-all"
               >
                 💰 Track
               </TabsTrigger>
               <TabsTrigger 
                 value="calculate"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="rounded-none border-b-4 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-none bg-slate-200 text-slate-600 hover:bg-slate-300 font-semibold transition-all"
               >
                 📊 Calculate
               </TabsTrigger>
