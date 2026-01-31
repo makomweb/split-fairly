@@ -20,9 +20,9 @@ final readonly class Price implements \Stringable
         return new self(abs($price->value), $price->currency);
     }
 
-    public static function ZERO(): self
+    public static function ZERO(string $currency = 'EUR'): self
     {
-        return new self(0.0, 'EUR');
+        return new self(0.0, $currency);
     }
 
     public function add(self $other): self

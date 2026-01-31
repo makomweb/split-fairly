@@ -20,7 +20,7 @@ final readonly class ExpenseTracker
             subjectType: array_last(explode('\\', get_class($expense))),
             subjectId: $expense->getId()->toRfc4122(),
             eventType: 'tracked',
-            payload: $this->normalizer->toArray($expense, ['id'])
+            payload: $this->normalizer->toArray($expense, ignoreFields: ['id'])
         );
 
         $this->eventStore->persist(event: $event, dontCommit: false);

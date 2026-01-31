@@ -26,14 +26,14 @@ Visit `http://localhost:8000` in your browser.
 
 ## Screenshots
 
-<div style="display: flex; gap: 20px; flex-wrap: wrap;">
-  <div style="flex: 1; min-width: 300px;">
-    <img src="./images/login.png" alt="login-screenshot" style="width: 100%;">
+<div style="display: flex; gap: 20px">
+  <div style="width: 300px">
+    <img src="./images/login.png" alt="login-screenshot">
   </div>
-  <div style="flex: 1; min-width: 300px;">
-    <img src="./images/track.png" alt="track-screenshot" style="width: 100%;">
+  <div style="width: 300px">
+    <img src="./images/track.png" alt="track-screenshot">
   </div>
-  <div style="flex: 1; min-width: 300px;">
-    <img src="./images/calculate.png" alt="calculate-screenshot" style="width: 100%;">
+  <div style="width: 300px">
+    <img src="./images/calculate.png" alt="calculate-screenshot">
   </div>
 </div>
