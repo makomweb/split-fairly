@@ -39,6 +39,9 @@ jobs:
       - name: Run code style checks
         run: vendor/bin/php-cs-fixer check
 
+      - name: Run migrations
+        run: bin/console doctrine:migrations:migrate --env=test --no-interaction
+
       - name: Run automated tests
         run: vendor/bin/phpunit
 
