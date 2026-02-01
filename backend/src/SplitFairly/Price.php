@@ -39,6 +39,13 @@ final readonly class Price implements \Stringable
         return new self($this->value - $other->value, $this->currency);
     }
 
+    public function divide(float $divisor): self
+    {
+        Ensure::that($divisor > 0);
+
+        return new self($this->value / $divisor, $this->currency);
+    }
+
     public function __toString(): string
     {
         return sprintf('%.2f %s', $this->value, $this->currency);
