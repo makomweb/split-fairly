@@ -31,13 +31,18 @@ function AppContent() {
             <HeartHandshake className="h-6 w-6 text-white" />
             <h1 className="text-xl font-bold text-white">Split Fairly</h1>
           </div>
-          <Button 
-            onClick={() => logout()}
-            variant="secondary" 
-            size="sm"
-          >
-            Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="text-white text-sm">
+              {user.email}
+            </div>
+            <Button 
+              onClick={() => logout()}
+              variant="secondary" 
+              size="sm"
+            >
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
       
