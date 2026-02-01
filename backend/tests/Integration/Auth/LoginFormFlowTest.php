@@ -18,8 +18,15 @@ class LoginFormFlowTest extends WebTestCase
         parent::setUp();
         static::bootKernel();
 
-        $this->entityManager = $this->getContainer()->get(EntityManagerInterface::class);
-        $this->passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
+        $container = $this->getContainer();
+        $entityManager = $container->get(EntityManagerInterface::class);
+        $passwordHasher = $container->get(UserPasswordHasherInterface::class);
+
+        \assert($entityManager instanceof EntityManagerInterface);
+        \assert($passwordHasher instanceof UserPasswordHasherInterface);
+
+        $this->entityManager = $entityManager;
+        $this->passwordHasher = $passwordHasher;
 
         // Clean up before each test
         $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
@@ -41,7 +48,7 @@ class LoginFormFlowTest extends WebTestCase
         // Clean up after tests
         $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
         $this->entityManager->close();
-        
+
         static::ensureKernelShutdown();
     }
 
@@ -52,7 +59,8 @@ class LoginFormFlowTest extends WebTestCase
         $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Welcome Back', $client->getResponse()->getContent());
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertStringContainsString('Welcome Back', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_admin_login_page_is_accessible(): void
@@ -62,7 +70,8 @@ class LoginFormFlowTest extends WebTestCase
         $client->request('GET', '/admin/login');
 
         $this->assertResponseIsSuccessful();
-        $this->assertStringContainsString('Admin Dashboard', $client->getResponse()->getContent());
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertStringContainsString('Admin Dashboard', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_user_login_with_valid_credentials(): void
@@ -109,7 +118,8 @@ class LoginFormFlowTest extends WebTestCase
         $client->followRedirect();
 
         // Should show error message
-        $this->assertStringContainsString('Invalid credentials', $client->getResponse()->getContent());
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertStringContainsString('Invalid credentials', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_user_login_with_non_existent_email(): void
@@ -132,7 +142,8 @@ class LoginFormFlowTest extends WebTestCase
         $client->followRedirect();
 
         // Should show error
-        $this->assertStringContainsString('Invalid credentials', $client->getResponse()->getContent());
+        $responseContent = $client->getResponse()->getContent();
+        $this->assertStringContainsString('Invalid credentials', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_admin_login_with_admin_user(): void

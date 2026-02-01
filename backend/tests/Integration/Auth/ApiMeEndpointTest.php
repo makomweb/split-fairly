@@ -18,8 +18,15 @@ class ApiMeEndpointTest extends WebTestCase
         parent::setUp();
         static::bootKernel();
 
-        $this->entityManager = $this->getContainer()->get(EntityManagerInterface::class);
-        $this->passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
+        $container = $this->getContainer();
+        $entityManager = $container->get(EntityManagerInterface::class);
+        $passwordHasher = $container->get(UserPasswordHasherInterface::class);
+
+        \assert($entityManager instanceof EntityManagerInterface);
+        \assert($passwordHasher instanceof UserPasswordHasherInterface);
+
+        $this->entityManager = $entityManager;
+        $this->passwordHasher = $passwordHasher;
 
         // Clean up before each test
         $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
@@ -40,7 +47,7 @@ class ApiMeEndpointTest extends WebTestCase
 
         $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
         $this->entityManager->close();
-        
+
         static::ensureKernelShutdown();
     }
 
@@ -51,7 +58,9 @@ class ApiMeEndpointTest extends WebTestCase
         $client->request('GET', '/api/me');
 
         $this->assertResponseStatusCodeSame(401);
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+        $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
+        $response = \is_array($response) ? $response : [];
         $this->assertArrayHasKey('error', $response);
     }
 
@@ -73,9 +82,11 @@ class ApiMeEndpointTest extends WebTestCase
         $client->request('GET', '/api/me');
 
         $this->assertResponseIsSuccessful();
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $responseContent = $client->getResponse()->getContent();
+        $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
+        $response = \is_array($response) ? $response : [];
         $this->assertArrayHasKey('user', $response);
-        $this->assertEquals('test@example.com', $response['user']);
+        $this->assertEquals('test@example.com', $response['user'] ?? null);
     }
 
     public function test_me_endpoint_with_different_users(): void
@@ -101,8 +112,10 @@ class ApiMeEndpointTest extends WebTestCase
 
         // Check /api/me returns first user
         $client->request('GET', '/api/me');
-        $response = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals('test@example.com', $response['user']);
+        $responseContent = $client->getResponse()->getContent();
+        $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
+        $response = \is_array($response) ? $response : [];
+        $this->assertEquals('test@example.com', $response['user'] ?? null);
     }
 
     public function test_me_endpoint_after_logout(): void
@@ -155,7 +168,9 @@ class ApiMeEndpointTest extends WebTestCase
         // Try /api/me
         $client->request('GET', '/api/me');
         $this->assertResponseIsSuccessful();
-        $response = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals('admin@example.com', $response['user']);
+        $responseContent = $client->getResponse()->getContent();
+        $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
+        $response = \is_array($response) ? $response : [];
+        $this->assertEquals('admin@example.com', $response['user'] ?? null);
     }
 }
