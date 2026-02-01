@@ -1,11 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sign In - Split Fairly{% endblock %}
+{% block title %}Admin Sign In - Split Fairly{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        html, body {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f97316 0%, #dc2626 100%) !important;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4) !important;
+        }
+
+        .form-control:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1) !important;
+        }
+
+        .form-control {
+            background-color: #f3f4f6;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
     <div class="login-container">
         <div class="card">
             <div class="card-body">
+                <div class="admin-badge">
+                    <i class="fas fa-shield-alt"></i> Administrator
+                </div>
+
                 {% if error %}
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-circle"></i>
@@ -16,13 +63,13 @@
                 {% if app.user %}
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle"></i>
-                        You are logged in as <strong>{{ app.user.userIdentifier }}</strong>
-                        <a href="{{ path('app.logout') }}" class="alert-link">Sign out</a>
+                        Logged in as <strong>{{ app.user.userIdentifier }}</strong>
+                        <a href="{{ path('admin.logout') }}" class="alert-link">Sign out</a>
                     </div>
                 {% endif %}
 
-                <h3>Welcome Back</h3>
-                <p class="card-subtitle">Sign in to your account</p>
+                <h3>Admin Dashboard</h3>
+                <p class="card-subtitle">Sign in with admin credentials</p>
 
                 <form method="post">
                     <div class="form-group">
@@ -33,7 +80,7 @@
                             name="_username" 
                             id="username" 
                             class="form-control" 
-                            placeholder="you@example.com"
+                            placeholder="admin@example.com"
                             autocomplete="email" 
                             required 
                             autofocus>
@@ -59,7 +106,7 @@
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
                     <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
+                        <i class="fas fa-sign-in-alt"></i> Sign In to Admin
                     </button>
                 </form>
             </div>
