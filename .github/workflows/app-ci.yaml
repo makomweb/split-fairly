@@ -34,9 +34,6 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-scripts
 
-      - name: Create test database
-        run: bin/console doctrine:database:create --if-not-exists
-
       - name: Run database migrations
         run: bin/console doctrine:migrations:migrate --no-interaction
 
