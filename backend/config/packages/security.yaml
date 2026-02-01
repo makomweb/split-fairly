@@ -22,6 +22,7 @@ security:
             form_login:
                 login_path: admin.login
                 check_path: admin.login_check
+                default_target_path: admin
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # seconds (1 week)
@@ -43,6 +44,7 @@ security:
             form_login:
                 login_path: app.login
                 check_path: app.login_check
+                default_target_path: app_spa
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # seconds (1 week)

@@ -71,7 +71,7 @@
                 <h3>Admin Dashboard</h3>
                 <p class="card-subtitle">Sign in with admin credentials</p>
 
-                <form method="post">
+                <form method="post" action="{{ path('admin.login_check') }}">
                     <div class="form-group">
                         <label for="username">Email Address</label>
                         <input 
@@ -113,4 +113,3 @@
         </div>
     </div>
 {% endblock %}
-

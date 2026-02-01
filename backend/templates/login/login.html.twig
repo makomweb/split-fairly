@@ -24,7 +24,7 @@
                 <h3>Welcome Back</h3>
                 <p class="card-subtitle">Sign in to your account</p>
 
-                <form method="post">
+                <form method="post" action="{{ path('app.login_check') }}">
                     <div class="form-group">
                         <label for="username">Email Address</label>
                         <input 
@@ -66,4 +66,3 @@
         </div>
     </div>
 {% endblock %}
-

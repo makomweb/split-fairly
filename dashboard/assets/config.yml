@@ -34,7 +34,7 @@ services:
       - name: "Admin Dashboard"
         subtitle: "Admin login - EasyAdmin"
         icon: "fa-solid fa-users-cog"
-        url: "http://localhost:8080/admin/login"
+        url: "http://localhost:8080/admin"
         target: "_blank"
 
   - name: "Persistence"
