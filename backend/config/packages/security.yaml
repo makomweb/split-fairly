@@ -22,7 +22,7 @@ security:
             form_login:
                 login_path: admin.login
                 check_path: admin.login_check
-                default_target_path: admin
+                default_target_path: /admin
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # seconds (1 week)
@@ -36,15 +36,10 @@ security:
             pattern: ^/
             lazy: true
             provider: app_user_provider
-            json_login:
-                login_path: api.login
-                check_path: api.login
-                username_path: email
-                password_path: password
             form_login:
                 login_path: app.login
                 check_path: app.login_check
-                default_target_path: app_spa
+                default_target_path: /
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # seconds (1 week)
@@ -65,6 +60,7 @@ security:
         - { path: ^/admin/login, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/login_check, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

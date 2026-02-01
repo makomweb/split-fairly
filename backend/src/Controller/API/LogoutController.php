@@ -23,13 +23,16 @@ class LogoutController extends AbstractController
     {
         $this->logger->debug('Entering '.__METHOD__);
 
+        // Invalidate the session
         $session->invalidate();
         $tokenStorage->setToken(null);
 
         $response = new Response(content: null, status: Response::HTTP_NO_CONTENT);
 
+        // Clear both session and remember-me cookies
         $response->headers->clearCookie('PHPSESSID', '/', null, false, false, 'lax');
         $response->headers->clearCookie('REMEMBERME', '/', null, false, false, 'lax');
+        $response->headers->clearCookie('ADMIN_REMEMBERME', '/admin', null, false, false, 'lax');
 
         return $response;
     }

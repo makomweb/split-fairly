@@ -32,7 +32,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('SplitFairly Admin');
+            ->setTitle('Split Fairly Admin');
     }
 
     public function configureMenuItems(): iterable

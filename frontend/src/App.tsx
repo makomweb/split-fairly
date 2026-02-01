@@ -1,17 +1,25 @@
 import './index.css'
 import { AuthProvider, useAuth } from './features/auth/AuthContext'
-import { Login } from './features/auth/Login'
 import { TrackExpense } from './features/expense/TrackExpense'
 import { Calculation } from './features/calculation/Calculation'
 import { Button } from './components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
-import { HeartHandshake } from 'lucide-react'
+import { HeartHandshake, Loader } from 'lucide-react'
 
 function AppContent() {
-  const { user, logout } = useAuth()
+  const { user, logout, isLoading } = useAuth()
 
+  if (isLoading) {
+    return (
+      <div className="min-h-svh flex items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    )
+  }
+
+  // If no user, AuthContext will have already redirected to /login
   if (!user) {
-    return <Login />
+    return null
   }
 
   return (
@@ -23,7 +31,11 @@ function AppContent() {
             <HeartHandshake className="h-6 w-6 text-white" />
             <h1 className="text-xl font-bold text-white">Split Fairly</h1>
           </div>
-          <Button onClick={logout} variant="secondary" size="sm">
+          <Button 
+            onClick={() => logout()}
+            variant="secondary" 
+            size="sm"
+          >
             Logout
           </Button>
         </div>
@@ -69,3 +81,5 @@ export default function App() {
     </AuthProvider>
   )
 }
+
+
