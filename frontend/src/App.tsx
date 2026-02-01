@@ -33,7 +33,7 @@ function AppContent() {
           </div>
           <div className="flex items-center gap-4">
             <div className="text-white text-sm">
-              {user.email}
+              {user.email.length > 16 ? user.email.substring(0, 16) + '...' : user.email}
             </div>
             <Button 
               onClick={() => logout()}
