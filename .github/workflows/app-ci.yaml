@@ -18,7 +18,7 @@ jobs:
         php-version: [8.4]
 
     env:
-      DATABASE_URL: "sqlite:///:memory:"
+      DATABASE_URL: "sqlite:////tmp/test_db.sqlite"
 
     steps:
       - uses: actions/checkout@v2
