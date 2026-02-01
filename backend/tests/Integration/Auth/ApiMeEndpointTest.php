@@ -16,12 +16,13 @@ class ApiMeEndpointTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        static::bootKernel();
 
         $this->entityManager = $this->getContainer()->get(EntityManagerInterface::class);
         $this->passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
 
         // Clean up before each test
-        $this->entityManager->createQuery('DELETE FROM App:User')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
 
         // Create a test user
         $this->testUser = User::create('test@example.com', ['ROLE_USER']);
@@ -37,12 +38,15 @@ class ApiMeEndpointTest extends WebTestCase
     {
         parent::tearDown();
 
-        $this->entityManager->createQuery('DELETE FROM App:User')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
         $this->entityManager->close();
+        
+        static::ensureKernelShutdown();
     }
 
     public function test_me_endpoint_returns_unauthorized_when_not_logged_in(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request('GET', '/api/me');
 
@@ -53,6 +57,7 @@ class ApiMeEndpointTest extends WebTestCase
 
     public function test_me_endpoint_returns_user_data_when_logged_in(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
 
         // First login
@@ -75,6 +80,7 @@ class ApiMeEndpointTest extends WebTestCase
 
     public function test_me_endpoint_with_different_users(): void
     {
+        static::ensureKernelShutdown();
         // Create a second user
         $user2 = User::create('user2@example.com', ['ROLE_USER']);
         $hashedPassword = $this->passwordHasher->hashPassword($user2, 'password123');
@@ -101,6 +107,7 @@ class ApiMeEndpointTest extends WebTestCase
 
     public function test_me_endpoint_after_logout(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
 
         // Login
@@ -126,6 +133,7 @@ class ApiMeEndpointTest extends WebTestCase
 
     public function test_me_endpoint_with_admin_user(): void
     {
+        static::ensureKernelShutdown();
         // Create admin user
         $adminUser = User::create('admin@example.com', ['ROLE_ADMIN']);
         $hashedPassword = $this->passwordHasher->hashPassword($adminUser, 'adminpass123');
@@ -135,13 +143,14 @@ class ApiMeEndpointTest extends WebTestCase
 
         $client = static::createClient();
 
-        // Login as admin via admin login page
-        $crawler = $client->request('GET', '/admin/login');
-        $form = $crawler->selectButton('Sign In to Admin')->form([
+        // Login as admin via regular login page
+        $crawler = $client->request('GET', '/login');
+        $form = $crawler->selectButton('Sign In')->form([
             '_username' => 'admin@example.com',
             '_password' => 'adminpass123',
         ]);
         $client->submit($form);
+        $client->followRedirect();
 
         // Try /api/me
         $client->request('GET', '/api/me');

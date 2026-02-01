@@ -16,12 +16,13 @@ class LoginFormFlowTest extends WebTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        static::bootKernel();
 
         $this->entityManager = $this->getContainer()->get(EntityManagerInterface::class);
         $this->passwordHasher = $this->getContainer()->get(UserPasswordHasherInterface::class);
 
         // Clean up before each test
-        $this->entityManager->createQuery('DELETE FROM App:User')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
 
         // Create a test user
         $this->testUser = User::create('test@example.com', ['ROLE_USER']);
@@ -38,12 +39,15 @@ class LoginFormFlowTest extends WebTestCase
         parent::tearDown();
 
         // Clean up after tests
-        $this->entityManager->createQuery('DELETE FROM App:User')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
         $this->entityManager->close();
+        
+        static::ensureKernelShutdown();
     }
 
     public function test_app_login_page_is_accessible(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request('GET', '/login');
 
@@ -53,6 +57,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_admin_login_page_is_accessible(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $client->request('GET', '/admin/login');
 
@@ -62,6 +67,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_user_login_with_valid_credentials(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
@@ -85,6 +91,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_user_login_with_invalid_password(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
@@ -107,6 +114,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_user_login_with_non_existent_email(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
@@ -129,6 +137,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_admin_login_with_admin_user(): void
     {
+        static::ensureKernelShutdown();
         // Create an admin user
         $adminUser = User::create('admin@example.com', ['ROLE_ADMIN']);
         $plainPassword = 'adminpassword123';
@@ -154,6 +163,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_regular_user_cannot_access_admin_page(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
 
         // Try to access admin directly (should redirect to login)
@@ -164,6 +174,7 @@ class LoginFormFlowTest extends WebTestCase
 
     public function test_session_is_created_after_successful_login(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
@@ -176,14 +187,13 @@ class LoginFormFlowTest extends WebTestCase
         $client->followRedirect();
 
         // Check that a session cookie is set
-        $cookies = $client->getRequest()->attributes->get('cookies');
-        // Or check via response headers
         $this->assertTrue($client->getResponse()->headers->has('Set-Cookie')
-                         || $client->getCookieJar()->count() > 0);
+                         || count($client->getCookieJar()->all()) > 0);
     }
 
     public function test_remember_me_checkbox_preserves_session(): void
     {
+        static::ensureKernelShutdown();
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
