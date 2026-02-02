@@ -5,8 +5,8 @@
 {% block stylesheets %}
     <style>
         * {
-            margin: 0 !important;
-            padding: 0 !important;
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif !important;
         }
@@ -16,14 +16,16 @@
             color: #000;
             font-size: 10pt;
             line-height: 1.4;
-            margin: 0 !important;
-            padding: 0 !important;
+            margin: 0;
+            padding: 0;
         }
 
         @page {
             size: A4 portrait;
             margin: 20mm 15mm;
         }
+        
+        h1 {
             font-size: 18pt;
             font-weight: bold;
             margin-bottom: 2mm;
@@ -67,46 +69,85 @@
 
         .header {
             text-align: center;
-            margin-bottom: 8mm;
+            margin-bottom: 2mm;
+            margin-top: 8mm;
         }
 
         .settlement-table {
             width: 100%;
-            margin-bottom: 8mm;
+            margin-bottom: 2mm;
+            margin-top: 0;
+            padding: 0 !important;
+            
         }
 
-        .settlement-table td {
-            padding: 3mm;
-            text-align: center;
-            border: 0.5pt solid #ccc;
+        .settlement-table-wrapper {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 12mm;
+            padding: 0 7mm !important;
         }
 
-        .settlement-table .label {
-            font-weight: bold;
-            font-size: 9pt;
-            color: #666;
+        .settlement-cell {
+            display: table-cell;
+            width: 33.33%;
+            padding: 0 !important;
         }
 
-        .settlement-table .value {
-            font-size: 12pt;
-            font-weight: bold;
-            color: #000;
+        .users-container {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 0;
+            margin-top: 0;
+            padding: 0 !important;
+        }
+
+        .user-column {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+            padding: 0 4mm !important;
         }
 
         .user-section {
             margin-bottom: 10mm;
+            padding: 3mm !important;
             page-break-inside: avoid;
         }
 
-        .user-name {
-            font-size: 10pt;
-            font-weight: bold;
-            margin-bottom: 2mm;
+        .expense-type-group {
+            margin-bottom: 4mm;
+            padding: 2mm 0 !important;
         }
 
-        .category-list {
-            margin-left: 3mm;
+        .user-header-label {
             font-size: 9pt;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 2mm;
+            text-transform: uppercase;
+        }
+
+        .user-email {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-bottom: 5mm;
+            padding-bottom: 2mm;
+            border-bottom: 1pt solid #ccc;
+        }
+
+        .expense-type-group {
+            margin-bottom: 4mm;
+        }
+
+        .expense-type-heading {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 1.5mm;
+            text-transform: uppercase;
         }
 
         .category-item {
@@ -120,6 +161,71 @@
             text-align: right;
             font-weight: bold;
             margin-left: 5mm;
+        }
+
+        .expense-item {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            padding: 1.5mm 0;
+            border-bottom: 0.5pt solid #eee;
+            font-size: 9pt;
+        }
+
+        .expense-details {
+            display: table-cell;
+            vertical-align: top;
+            width: 85%;
+        }
+
+        .expense-what {
+            font-weight: 500;
+        }
+
+        .expense-meta {
+            font-size: 8pt;
+            color: #666;
+            line-height: 1.3;
+        }
+
+        .expense-amount {
+            display: table-cell;
+            vertical-align: top;
+            width: 15%;
+            text-align: right;
+            font-weight: bold;
+            white-space: nowrap;
+            padding-left: 3mm;
+        }
+
+        .category-total {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            padding: 2mm 0 1.5mm 0;
+            margin-top: 1mm;
+            border-top: 1pt solid #999;
+            border-bottom: none;
+            font-size: 9pt;
+            font-weight: bold;
+        }
+
+        .category-total-label {
+            display: table-cell;
+            vertical-align: top;
+            width: 85%;
+            text-align: left;
+            padding-right: 3mm;
+        }
+
+        .category-total-amount {
+            display: table-cell;
+            vertical-align: top;
+            width: 15%;
+            text-align: right;
+            font-weight: bold;
+            white-space: nowrap;
+            padding-left: 3mm;
         }
 
         .section-title {
@@ -145,58 +251,63 @@
         <p class="timestamp">Generated on {{ "now"|date("F j, Y H:i") }}</p>
     </div>
 
-    <table class="settlement-table">
-        <tr>
-            <td>
-                <p class="label">From</p>
-                <p class="value">{{ compensation.from }}</p>
-            </td>
-            <td>
-                <p class="label">Pays</p>
-                <p class="value">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</p>
-            </td>
-            <td>
-                <p class="label">To</p>
-                <p class="value">{{ compensation.to }}</p>
-            </td>
-        </tr>
-    </table>
+    <div class="settlement-table-wrapper">
+        <table class="settlement-table">
+            <tr>
+                <td class="settlement-cell">
+                    <p class="label">From</p>
+                    <p class="value">{{ compensation.from }}</p>
+                </td>
+                <td class="settlement-cell">
+                    <p class="label">Pays</p>
+                    <p class="value">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</p>
+                </td>
+                <td class="settlement-cell">
+                    <p class="label">To</p>
+                    <p class="value">{{ compensation.to }}</p>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-    {% for expenses in expenses %}
-        <div class="user-section">
-            <p class="user-name">{{ expenses.userEmail }}</p>
+    <div class="users-container">
+        {% for expenses in expenses %}
+            <div class="user-column">
+                <div class="user-section">
+                    <p class="user-email">{{ expenses.userEmail }}</p>
 
-            {% set spentCategories = [] %}
-            {% set lentCategories = [] %}
-            {% for category in expenses.categories %}
-                {% if category.type == 'Lent' %}
-                    {% set lentCategories = lentCategories|merge([category]) %}
-                {% else %}
-                    {% set spentCategories = spentCategories|merge([category]) %}
-                {% endif %}
-            {% endfor %}
+                    {% set expensesByType = {} %}
+                    {% for expense in expenses.expenses %}
+                        {% if expensesByType[expense.type] is not defined %}
+                            {% set expensesByType = expensesByType|merge({(expense.type): []}) %}
+                        {% endif %}
+                        {% set expensesByType = expensesByType|merge({(expense.type): expensesByType[expense.type]|merge([expense])}) %}
+                    {% endfor %}
 
-            {% if spentCategories is not empty %}
-                <div class="category-list">
-                    {% for category in spentCategories %}
-                        <div class="category-item">
-                            <span class="category">{{ category.type }}</span>
-                            <span class="category">{{ category.sum.value|number_format(2) }} {{ category.sum.currency }}</span>
+                    {% for type, typeExpenses in expensesByType %}
+                        <div class="expense-type-group">
+                            <div class="expense-type-heading">{{ type }}</div>
+                            {% for expense in typeExpenses %}
+                                <div class="expense-item">
+                                    <div class="expense-details">
+                                        <div class="expense-what">{{ expense.what }}</div>
+                                    </div>
+                                    <div class="expense-amount">{{ expense.price.value|number_format(2) }} {{ expense.price.currency }}</div>
+                                </div>
+                            {% endfor %}
+                            {% set totalAmount = 0 %}
+                            {% set currency = typeExpenses[0].price.currency %}
+                            {% for expense in typeExpenses %}
+                                {% set totalAmount = totalAmount + expense.price.value %}
+                            {% endfor %}
+                            <div class="category-total">
+                                <div class="category-total-label">Total</div>
+                                <div class="category-total-amount">{{ totalAmount|number_format(2) }} {{ currency }}</div>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
-            {% endif %}
-
-            {% if lentCategories is not empty %}
-                <div class="category-list">
-                    {% for category in lentCategories %}
-                        <div class="category-item">
-                            <span class="category">{{ category.type }}</span>
-                            <span class="category">{{ category.sum.value|number_format(2) }} {{ category.sum.currency }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
