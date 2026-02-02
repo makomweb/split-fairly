@@ -18,7 +18,7 @@ jobs:
         php-version: [8.4]
 
     env:
-      DATABASE_URL: "sqlite:////tmp/test_db.sqlite"
+      DATABASE_URL: "sqlite:///:memory:"
       APP_ENV: test
 
     steps:
@@ -33,9 +33,6 @@ jobs:
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-scripts
-
-      - name: Run database migrations
-        run: bin/console doctrine:migrations:migrate --no-interaction
 
       - name: Run static code analysis
         run: vendor/bin/phpstan analyse

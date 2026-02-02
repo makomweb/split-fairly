@@ -27,14 +27,20 @@ final readonly class Price implements \Stringable
 
     public function add(self $other): self
     {
-        Ensure::that($this->currency === $other->currency);
+        Ensure::that(
+            $this->currency === $other->currency,
+            sprintf('Currencies %s and %s must be the same!', $this->currency, $other->currency)
+        );
 
         return new self($this->value + $other->value, $this->currency);
     }
 
     public function substract(self $other): self
     {
-        Ensure::that($this->currency === $other->currency);
+        Ensure::that(
+            $this->currency === $other->currency,
+            sprintf('Currencies %s and %s must be the same!', $this->currency, $other->currency)
+        );
 
         return new self($this->value - $other->value, $this->currency);
     }
