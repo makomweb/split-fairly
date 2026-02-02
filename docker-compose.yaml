@@ -79,7 +79,7 @@ services:
         volumes:
             - ./dashboard/assets:/www/assets
             - ./backend/report:/www/public/report
-            - ./backend/coverage:/www/public/coverage
+            - ./backend/coverage:/www/coverage
         ports:
             - "8000:8080"
         user: "1000:1001"
