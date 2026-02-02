@@ -40,7 +40,7 @@ jobs:
         run: vendor/bin/php-cs-fixer check
 
       - name: Create test database
-        run: bin/console doctrine:database:create --if-not-exists
+        run: bin/console doctrine:schema:create
 
       - name: Run automated tests
         run: vendor/bin/phpunit
