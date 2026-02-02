@@ -18,7 +18,6 @@ jobs:
         php-version: [8.4]
 
     env:
-      DATABASE_URL: "sqlite:///:memory:"
       APP_ENV: test
 
     steps:
