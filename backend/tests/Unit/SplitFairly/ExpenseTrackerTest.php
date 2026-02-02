@@ -23,17 +23,17 @@ final class ExpenseTrackerTest extends TestCase
         $currentUser = $this->createMock(CurrentUserInterface::class);
         $currentUser->method('getUuid')->willReturn('user-123');
 
-        $normalizedPayload = ['price' => (string)$price, 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'];
+        $normalizedPayload = ['price' => (string) $price, 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'];
         $normalizer = $this->createMock(NormalizerInterface::class);
         $normalizer->expects($this->once())->method('toArray')->with($expense, ['id'])->willReturn($normalizedPayload);
 
         $eventStore = $this->createMock(EventStoreInterface::class);
         $eventStore->expects($this->once())->method('persist')->with(
             $this->callback(function (Event $event) use ($expense, $normalizedPayload): bool {
-                return $event->createdBy === 'user-123'
-                    && $event->subjectType === 'Expense'
+                return 'user-123' === $event->createdBy
+                    && 'Expense' === $event->subjectType
                     && $event->subjectId === $expense->getId()->toRfc4122()
-                    && $event->eventType === 'tracked'
+                    && 'tracked' === $event->eventType
                     && $event->payload === $normalizedPayload;
             }),
             false
