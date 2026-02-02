@@ -18,7 +18,8 @@ jobs:
         php-version: [8.4]
 
     env:
-      DATABASE_URL: "sqlite:///:memory:"
+      APP_ENV: test
+      APP_VERSION: ${{ github.sha }}
 
     steps:
       - uses: actions/checkout@v2
@@ -38,6 +39,14 @@ jobs:
 
       - name: Run code style checks
         run: vendor/bin/php-cs-fixer check
+
+      - name: Create test database
+        run: bin/console doctrine:schema:create
+
+      - name: Create mock SPA build for tests
+        run: |
+          mkdir -p public/build
+          echo '<!DOCTYPE html><html><head><title>Test</title></head><body><div id="root"></div></body></html>' > public/build/index.html
 
       - name: Run automated tests
         run: vendor/bin/phpunit

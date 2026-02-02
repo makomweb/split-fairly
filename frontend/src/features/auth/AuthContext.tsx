@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { logout as apiLogout } from './api'
 
 interface User {
   email: string
@@ -6,44 +7,78 @@ interface User {
 
 interface AuthContextType {
   user: User | null
-  login: (email: string) => void
-  logout: () => void
+  logout: () => Promise<void>
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Get the API base URL - use backend URL if frontend is on different origin
+const getApiBaseUrl = () => {
+  const currentOrigin = window.location.origin
+  // If we're on localhost:5173 (Vite dev), point to backend at 8080
+  if (currentOrigin.includes('5173')) {
+    return 'http://localhost:8080'
+  }
+  // Otherwise use current origin
+  return currentOrigin
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is stored in localStorage
-    const storedUser = localStorage.getItem('user')
-    if (storedUser) {
+    // Check server session on app load
+    const checkAuth = async () => {
       try {
-        setUser(JSON.parse(storedUser))
-      } catch {
-        localStorage.removeItem('user')
+        const apiUrl = getApiBaseUrl()
+        const response = await fetch(`${apiUrl}/api/me`, {
+          method: 'GET',
+          credentials: 'include', // Include cookies for session auth
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          setUser({ email: data.user })
+        } else {
+          setUser(null)
+          // Redirect to login if not authenticated
+          window.location.href = `${apiUrl}/login`
+        }
+      } catch (error) {
+        console.error('Failed to check authentication:', error)
+        setUser(null)
+      } finally {
+        setIsLoading(false)
       }
     }
+
+    checkAuth()
   }, [])
 
-  const login = (email: string) => {
-    const newUser = { email }
-    setUser(newUser)
-    localStorage.setItem('user', JSON.stringify(newUser))
-  }
-
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
+  const logout = async () => {
+    try {
+      // Call API logout to destroy session on server
+      await apiLogout()
+    } catch (error) {
+      console.error('Error during logout:', error)
+    } finally {
+      // Redirect to login page
+      const apiUrl = getApiBaseUrl()
+      window.location.href = `${apiUrl}/login`
+    }
   }
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        login,
         logout,
+        isLoading,
       }}
     >
       {children}
@@ -58,3 +93,5 @@ export function useAuth() {
   }
   return context
 }
+
+

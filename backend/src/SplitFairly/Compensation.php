@@ -15,7 +15,9 @@ final class Compensation
 
     public static function calculate(Expenses $a, Expenses $b): self
     {
-        $spentDiff = $a->spent()->substract($b->spent());
+        $spentA = $a->spent()->divide(2);
+        $spentB = $b->spent()->divide(2);
+        $spentDiff = $spentA->substract($spentB);
         $lentDiff = $a->lent()->substract($b->lent());
 
         $totalDiff = $spentDiff->add($lentDiff);

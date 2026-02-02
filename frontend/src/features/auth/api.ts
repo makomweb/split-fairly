@@ -1,33 +1,33 @@
-interface LoginResponse {
-  user: string
-}
+// Logout API function - handles destroying session on server
+export async function logout(): Promise<void> {
+  // Get the API base URL - use backend URL if frontend is on different origin
+  const apiUrl = getApiBaseUrl()
 
-interface LoginError {
-  message: string
-}
+  try {
+    const response = await fetch(`${apiUrl}/api/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    })
 
-export async function login(
-  email: string,
-  password: string,
-  rememberMe: boolean = false
-): Promise<LoginResponse> {
-  const response = await fetch('http://localhost:8080/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    body: JSON.stringify({
-      email,
-      password,
-      _remember_me: rememberMe,
-    }),
-  })
-
-  if (!response.ok) {
-    const error = await response.json() as LoginError
-    throw new Error(error.message || 'Login failed')
+    if (!response.ok) {
+      console.error('Logout failed:', response.status)
+    }
+  } catch (error) {
+    console.error('Failed to logout:', error)
   }
-
-  return response.json() as Promise<LoginResponse>
 }
+
+// Get the API base URL - use backend URL if frontend is on different origin
+function getApiBaseUrl(): string {
+  const currentOrigin = window.location.origin
+  // If we're on localhost:5173 (Vite dev), point to backend at 8080
+  if (currentOrigin.includes('5173')) {
+    return 'http://localhost:8080'
+  }
+  // Otherwise use current origin
+  return currentOrigin
+}
+
+
+
+
