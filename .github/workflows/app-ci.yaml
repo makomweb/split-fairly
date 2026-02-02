@@ -19,6 +19,7 @@ jobs:
 
     env:
       APP_ENV: test
+      APP_VERSION: ${{ github.sha }}
 
     steps:
       - uses: actions/checkout@v2
