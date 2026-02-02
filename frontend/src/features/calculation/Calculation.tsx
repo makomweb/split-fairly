@@ -6,11 +6,14 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getAvatarColor } from '@/lib/avatar-colors'
+import { downloadCalculationReport } from './api'
 
 export function Calculation() {
   const [data, setData] = useState<CalculationResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [reportLoading, setReportLoading] = useState(false)
+  const [reportError, setReportError] = useState<string | null>(null)
 
   const loadCalculation = async () => {
     try {
@@ -74,8 +77,8 @@ export function Calculation() {
         ) : (
           <>
             {/* Compensation card */}
-            {data.compensation && (
-              <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+{data.compensation && (
+                <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base font-semibold text-blue-900 flex items-center gap-2">
                     <span className="text-xl">💸</span>
@@ -120,9 +123,46 @@ export function Calculation() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            )}
-            
+                </Card>
+              )}
+              
+              <div className="space-y-2">
+                <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  disabled={reportLoading}
+                  onClick={async () => {
+                    setReportLoading(true)
+                    setReportError(null)
+
+                    try {
+                      const reportResponse = await downloadCalculationReport()
+                      if (!reportResponse.ok) {
+                        throw new Error('Failed to download report')
+                      }
+
+                      const blob = await reportResponse.blob()
+                      const url = URL.createObjectURL(blob)
+                      const a = document.createElement('a')
+                      a.href = url
+                      a.download = 'split-fairly-calculation.pdf'
+                      a.click()
+                      URL.revokeObjectURL(url)
+                    } catch (err) {
+                      setReportError(err instanceof Error ? err.message : 'Failed to download report')
+                    } finally {
+                      setReportLoading(false)
+                    }
+                  }}
+                >
+                  {reportLoading ? 'Preparing...' : 'Download PDF'}
+                </Button>
+              </div>
+              {reportError && (
+                <div className="text-destructive text-sm text-right">{reportError}</div>
+              )}
+              </div>
+
             {/* User expenses */}
             {data.users.map((expenses) => {
               const spentCategories = expenses.categories.filter(c => c.type !== 'Lent')

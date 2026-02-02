@@ -35,3 +35,9 @@ export async function fetchCalculation(): Promise<CalculationResponse> {
 
   return response.json()
 }
+
+export async function downloadCalculationReport(): Promise<Response> {
+  return fetch('http://localhost:8080/api/report/calculation', {
+    credentials: 'include',
+  })
+}

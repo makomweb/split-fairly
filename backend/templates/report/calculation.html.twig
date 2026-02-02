@@ -1,0 +1,202 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Split Fairly Report{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        * {
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif !important;
+        }
+
+        html, body {
+            background: #fff;
+            color: #000;
+            font-size: 10pt;
+            line-height: 1.4;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        @page {
+            size: A4 portrait;
+            margin: 20mm 15mm;
+        }
+            font-size: 18pt;
+            font-weight: bold;
+            margin-bottom: 2mm;
+        }
+
+        h2 {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-top: 6mm;
+            margin-bottom: 3mm;
+            text-transform: uppercase;
+            color: #333;
+        }
+
+        h3 {
+            font-size: 10pt;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 4mm;
+        }
+
+        td, th {
+            padding: 2mm 3mm;
+            text-align: left;
+            border-bottom: 0.5pt solid #ddd;
+        }
+
+        th {
+            font-weight: bold;
+            background: #f5f5f5;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 8mm;
+        }
+
+        .settlement-table {
+            width: 100%;
+            margin-bottom: 8mm;
+        }
+
+        .settlement-table td {
+            padding: 3mm;
+            text-align: center;
+            border: 0.5pt solid #ccc;
+        }
+
+        .settlement-table .label {
+            font-weight: bold;
+            font-size: 9pt;
+            color: #666;
+        }
+
+        .settlement-table .value {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .user-section {
+            margin-bottom: 10mm;
+            page-break-inside: avoid;
+        }
+
+        .user-name {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-bottom: 2mm;
+        }
+
+        .category-list {
+            margin-left: 3mm;
+            font-size: 9pt;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5mm 0;
+            border-bottom: 0.5pt solid #eee;
+        }
+
+        .category {
+            text-align: right;
+            font-weight: bold;
+            margin-left: 5mm;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 9pt;
+            margin-top: 3mm;
+            margin-bottom: 1.5mm;
+            color: #333;
+        }
+
+        .timestamp {
+            font-size: 8pt;
+            color: #888;
+            text-align: center;
+            margin-bottom: 6mm;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="header">
+        <h1>Split Fairly Summary</h1>
+        <p class="timestamp">Generated on {{ "now"|date("F j, Y H:i") }}</p>
+    </div>
+
+    <table class="settlement-table">
+        <tr>
+            <td>
+                <p class="label">From</p>
+                <p class="value">{{ compensation.from }}</p>
+            </td>
+            <td>
+                <p class="label">Pays</p>
+                <p class="value">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</p>
+            </td>
+            <td>
+                <p class="label">To</p>
+                <p class="value">{{ compensation.to }}</p>
+            </td>
+        </tr>
+    </table>
+
+    {% for expenses in expenses %}
+        <div class="user-section">
+            <p class="user-name">{{ expenses.userEmail }}</p>
+
+            {% set spentCategories = [] %}
+            {% set lentCategories = [] %}
+            {% for category in expenses.categories %}
+                {% if category.type == 'Lent' %}
+                    {% set lentCategories = lentCategories|merge([category]) %}
+                {% else %}
+                    {% set spentCategories = spentCategories|merge([category]) %}
+                {% endif %}
+            {% endfor %}
+
+            {% if spentCategories is not empty %}
+                <div class="category-list">
+                    {% for category in spentCategories %}
+                        <div class="category-item">
+                            <span class="category">{{ category.type }}</span>
+                            <span class="category">{{ category.sum.value|number_format(2) }} {{ category.sum.currency }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if lentCategories is not empty %}
+                <div class="category-list">
+                    {% for category in lentCategories %}
+                        <div class="category-item">
+                            <span class="category">{{ category.type }}</span>
+                            <span class="category">{{ category.sum.value|number_format(2) }} {{ category.sum.currency }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% endblock %}
