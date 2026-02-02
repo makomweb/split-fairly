@@ -49,3 +49,8 @@ services:
         icon: "fa-brands fa-github"
         url: "https://github.com/makomweb/split-fairly"
         target: "_blank"
+      - name: "Code coverage"
+        subtitle: "PHPUnit coverage"
+        icon: "fa-solid fa-clipboard-check"
+        url: "http://localhost:8000/coverage/index.html"
+        target: "_blank"
