@@ -43,6 +43,11 @@ jobs:
       - name: Create test database
         run: bin/console doctrine:schema:create
 
+      - name: Create mock SPA build for tests
+        run: |
+          mkdir -p public/build
+          echo '<!DOCTYPE html><html><head><title>Test</title></head><body><div id="root"></div></body></html>' > public/build/index.html
+
       - name: Run automated tests
         run: vendor/bin/phpunit
 
