@@ -40,6 +40,9 @@ jobs:
       - name: Run code style checks
         run: vendor/bin/php-cs-fixer check
 
+      - name: Create test database
+        run: bin/console doctrine:database:create --if-not-exists
+
       - name: Run automated tests
         run: vendor/bin/phpunit
 
