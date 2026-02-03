@@ -22,6 +22,8 @@ deptrac:
         - type: classLike
           value: .*Doctrine\\.*
         - type: classLike
+          value: .*Dompdf\\.*
+        - type: classLike
           value: .*EasyCorp\\Bundle\\EasyAdminBundle\\.*
         - type: classLike
           value: .*Faker\\Factory.*
