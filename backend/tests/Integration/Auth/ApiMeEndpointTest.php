@@ -57,11 +57,11 @@ class ApiMeEndpointTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/api/me');
 
-        $this->assertResponseStatusCodeSame(401);
+        self::assertResponseStatusCodeSame(401);
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];
-        $this->assertArrayHasKey('error', $response);
+        self::assertArrayHasKey('error', $response);
     }
 
     public function test_me_endpoint_returns_user_data_when_logged_in(): void
@@ -81,12 +81,12 @@ class ApiMeEndpointTest extends WebTestCase
         // Now request /api/me
         $client->request('GET', '/api/me');
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];
-        $this->assertArrayHasKey('user', $response);
-        $this->assertEquals('test@example.com', $response['user'] ?? null);
+        self::assertArrayHasKey('user', $response);
+        self::assertEquals('test@example.com', $response['user'] ?? null);
     }
 
     public function test_me_endpoint_with_different_users(): void
@@ -115,7 +115,7 @@ class ApiMeEndpointTest extends WebTestCase
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];
-        $this->assertEquals('test@example.com', $response['user'] ?? null);
+        self::assertEquals('test@example.com', $response['user'] ?? null);
     }
 
     public function test_me_endpoint_after_logout(): void
@@ -134,14 +134,14 @@ class ApiMeEndpointTest extends WebTestCase
 
         // Verify logged in
         $client->request('GET', '/api/me');
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
 
         // Logout
         $client->request('GET', '/logout');
 
         // Try /api/me after logout
         $client->request('GET', '/api/me');
-        $this->assertResponseStatusCodeSame(401);
+        self::assertResponseStatusCodeSame(401);
     }
 
     public function test_me_endpoint_with_admin_user(): void
@@ -167,10 +167,10 @@ class ApiMeEndpointTest extends WebTestCase
 
         // Try /api/me
         $client->request('GET', '/api/me');
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];
-        $this->assertEquals('admin@example.com', $response['user'] ?? null);
+        self::assertEquals('admin@example.com', $response['user'] ?? null);
     }
 }

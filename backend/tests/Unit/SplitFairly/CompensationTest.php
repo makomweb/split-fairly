@@ -43,11 +43,11 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
         // User1 spent 50, so owes 25. User2 spent 25, so owes 12.5. Difference: 25 - 12.5 = 12.5
-        $this->assertSame(12.5, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(12.5, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_when_second_user_spent_more(): void
@@ -81,11 +81,11 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user1Email, $compensation->from);
-        $this->assertSame($user2Email, $compensation->to);
+        self::assertSame($user1Email, $compensation->from);
+        self::assertSame($user2Email, $compensation->to);
         // User1 spent 15, so owes 7.5. User2 spent 50, so owes 25. Difference: 25 - 7.5 = 17.5
-        $this->assertSame(17.5, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(17.5, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_with_equal_spending(): void
@@ -113,8 +113,8 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame(0.0, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(0.0, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_with_zero_expenses_for_first_user(): void
@@ -136,11 +136,11 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user1Email, $compensation->from);
-        $this->assertSame($user2Email, $compensation->to);
+        self::assertSame($user1Email, $compensation->from);
+        self::assertSame($user2Email, $compensation->to);
         // User1 spent 0, so owes 0. User2 spent 50, so owes 25. Difference: 25 - 0 = 25
-        $this->assertSame(25.0, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(25.0, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_with_zero_expenses_for_second_user(): void
@@ -162,11 +162,11 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
         // User1 spent 75, so owes 37.5. User2 spent 0, so owes 0. Difference: 37.5 - 0 = 37.5
-        $this->assertSame(37.5, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(37.5, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_with_zero_expenses_for_both_users(): void
@@ -181,8 +181,8 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame(0.0, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(0.0, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_with_decimal_values(): void
@@ -216,11 +216,11 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
         // User1 spent 28.25, so owes 14.125. User2 spent 10.25, so owes 5.125. Difference: 14.125 - 5.125 = 9.0
-        $this->assertSame(9.0, $compensation->settlement->value);
-        $this->assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(9.0, $compensation->settlement->value);
+        self::assertSame('EUR', $compensation->settlement->currency);
     }
 
     public function test_compensation_calculates_absolute_difference(): void
@@ -249,8 +249,8 @@ final class CompensationTest extends TestCase
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
         // User1 spent 100, so owes 50. User2 spent 25, so owes 12.5. Difference: 50 - 12.5 = 37.5
-        $this->assertSame(37.5, $compensation->settlement->value);
-        $this->assertGreaterThan(0, $compensation->settlement->value);
+        self::assertSame(37.5, $compensation->settlement->value);
+        self::assertGreaterThan(0, $compensation->settlement->value);
     }
 
     public function test_compensation_with_multiple_categories(): void
@@ -290,10 +290,10 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
         // User1 spent 80, so owes 40. User2 spent 40, so owes 20. Difference: 40 - 20 = 20
-        $this->assertSame(20.0, $compensation->settlement->value);
+        self::assertSame(20.0, $compensation->settlement->value);
     }
 
     public function test_categories_filter_by_type(): void
@@ -320,16 +320,16 @@ final class CompensationTest extends TestCase
         ));
 
         $groceriesCategories = $expenses->categories(['Groceries']);
-        $this->assertCount(1, $groceriesCategories);
-        $this->assertSame(10.0, $groceriesCategories[0]->sum->value);
+        self::assertCount(1, $groceriesCategories);
+        self::assertSame(10.0, $groceriesCategories[0]->sum->value);
 
         $nonFoodCategories = $expenses->categories(['Non-Food']);
-        $this->assertCount(1, $nonFoodCategories);
-        $this->assertSame(20.0, $nonFoodCategories[0]->sum->value);
+        self::assertCount(1, $nonFoodCategories);
+        self::assertSame(20.0, $nonFoodCategories[0]->sum->value);
 
         $lentCategories = $expenses->categories(['Lent']);
-        $this->assertCount(1, $lentCategories);
-        $this->assertSame(50.0, $lentCategories[0]->sum->value);
+        self::assertCount(1, $lentCategories);
+        self::assertSame(50.0, $lentCategories[0]->sum->value);
     }
 
     public function test_categories_with_empty_filter_returns_all(): void
@@ -356,7 +356,7 @@ final class CompensationTest extends TestCase
         ));
 
         $allCategories = $expenses->categories();
-        $this->assertCount(3, $allCategories);
+        self::assertCount(3, $allCategories);
     }
 
     public function test_categories_filter_multiple_types(): void
@@ -383,7 +383,7 @@ final class CompensationTest extends TestCase
         ));
 
         $filtered = $expenses->categories(['Groceries', 'Lent']);
-        $this->assertCount(2, $filtered);
+        self::assertCount(2, $filtered);
     }
 
     public function test_compensation_with_lent_money_from_first_user(): void
@@ -405,9 +405,9 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
-        $this->assertSame(50.0, $compensation->settlement->value);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
+        self::assertSame(50.0, $compensation->settlement->value);
     }
 
     public function test_compensation_with_lent_money_from_second_user(): void
@@ -429,9 +429,9 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user1Email, $compensation->from);
-        $this->assertSame($user2Email, $compensation->to);
-        $this->assertSame(75.0, $compensation->settlement->value);
+        self::assertSame($user1Email, $compensation->from);
+        self::assertSame($user2Email, $compensation->to);
+        self::assertSame(75.0, $compensation->settlement->value);
     }
 
     public function test_compensation_with_both_lent_and_spent(): void
@@ -465,12 +465,12 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
         // User1 spent 60, so owes 30. User2 spent 40, so owes 20. Spent diff: 30 - 20 = 10
         // User1 lent 100, User2 lent 0. Lent diff: 100 - 0 = 100
         // Total: 10 + 100 = 110
-        $this->assertSame(110.0, $compensation->settlement->value);
+        self::assertSame(110.0, $compensation->settlement->value);
     }
 
     public function test_compensation_with_lent_amounts_from_both_users(): void
@@ -510,12 +510,12 @@ final class CompensationTest extends TestCase
 
         $compensation = Compensation::calculate($expenses1, $expenses2);
 
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
         // User1 spent 50, so owes 25. User2 spent 50, so owes 25. Spent diff: 25 - 25 = 0
         // User1 lent 100, User2 lent 30. Lent diff: 100 - 30 = 70
         // Total: 0 + 70 = 70
-        $this->assertSame(70.0, $compensation->settlement->value);
+        self::assertSame(70.0, $compensation->settlement->value);
     }
 
     public function test_compensation_lent_adds_to_spent_difference(): void
@@ -552,8 +552,8 @@ final class CompensationTest extends TestCase
         // Spent diff: 60/2 - 40/2 = 30 - 20 = 10 (User 1 spent 10 more)
         // Lent diff: 20 - 0 = 20 (User 1 lent 20 more)
         // Total: 10 + 20 = 30
-        $this->assertSame($user2Email, $compensation->from);
-        $this->assertSame($user1Email, $compensation->to);
-        $this->assertSame(30.0, $compensation->settlement->value);
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
+        self::assertSame(30.0, $compensation->settlement->value);
     }
 }

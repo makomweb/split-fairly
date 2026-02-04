@@ -2,12 +2,12 @@
 
 namespace App\Controller\API;
 
+use App\Instrumentation\InstrumentationHolder;
 use App\Invariant\Ensure;
 use App\SplitFairly\Calculator;
 use App\SplitFairly\Compensation;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -17,7 +17,6 @@ final class ReportController extends AbstractController
 {
     public function __construct(
         private readonly Calculator $calculator,
-        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -43,7 +42,7 @@ final class ReportController extends AbstractController
         $pdfContent = $dompdf->output();
         $fileName = sprintf('split-fairly-report-%s.pdf', (new \DateTimeImmutable())->format('Y-m-d'));
 
-        $this->logger->info('Generated calculation report PDF', ['file' => $fileName]);
+        InstrumentationHolder::getLogging()->info(sprintf('Report generated: %s', $fileName));
 
         return new Response(
             $pdfContent,

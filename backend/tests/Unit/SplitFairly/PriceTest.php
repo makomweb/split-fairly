@@ -13,29 +13,29 @@ final class PriceTest extends TestCase
     {
         $price = new Price(value: 10.50, currency: 'EUR');
 
-        $this->assertSame(10.50, $price->value);
-        $this->assertSame('EUR', $price->currency);
+        self::assertSame(10.50, $price->value);
+        self::assertSame('EUR', $price->currency);
     }
 
     public function test_price_to_string(): void
     {
         $price = new Price(value: 10.50, currency: 'EUR');
 
-        $this->assertSame('10.50 EUR', (string) $price);
+        self::assertSame('10.50 EUR', (string) $price);
     }
 
     public function test_price_formats_correctly(): void
     {
         $price = new Price(value: 10.5, currency: 'USD');
 
-        $this->assertSame('10.50 USD', (string) $price);
+        self::assertSame('10.50 USD', (string) $price);
     }
 
     public function test_price_with_zero_value(): void
     {
         $price = new Price(value: 0.0, currency: 'EUR');
 
-        $this->assertSame('0.00 EUR', (string) $price);
+        self::assertSame('0.00 EUR', (string) $price);
     }
 
     public function test_rejects_empty_currency(): void

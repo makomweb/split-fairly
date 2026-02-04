@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SplitFairly;
 
-final class Compensation
+final class Compensation implements \Stringable
 {
     private function __construct(
         public readonly string $from,
@@ -27,5 +27,10 @@ final class Compensation
             to: $totalDiff->value > 0 ? $a->userEmail : $b->userEmail,
             settlement: Price::ABS($totalDiff)
         );
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('From: "%s" - to: "%s" - price: "%s"', $this->from, $this->to, $this->settlement);
     }
 }

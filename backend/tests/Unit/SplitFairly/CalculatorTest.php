@@ -32,7 +32,7 @@ final class CalculatorTest extends TestCase
 
         $result = $calculator->calculate();
 
-        $this->assertSame([], $result);
+        self::assertSame([], $result);
     }
 
     public function test_calculate_groups_expenses_by_multiple_users(): void
@@ -97,21 +97,21 @@ final class CalculatorTest extends TestCase
 
         $result = $calculator->calculate();
 
-        $this->assertCount(2, $result);
+        self::assertCount(2, $result);
 
         // Find user1's expenses
         $user1Expenses = array_filter($result, fn ($e) => $e->userUuid === $user1);
         $user1Expenses = array_values($user1Expenses)[0];
-        $this->assertInstanceOf(Expenses::class, $user1Expenses);
-        $this->assertSame($user1, $user1Expenses->userUuid);
-        $this->assertCount(2, $user1Expenses->expenses);
+        self::assertInstanceOf(Expenses::class, $user1Expenses);
+        self::assertSame($user1, $user1Expenses->userUuid);
+        self::assertCount(2, $user1Expenses->expenses);
 
         // Find user2's expenses
         $user2Expenses = array_filter($result, fn ($e) => $e->userUuid === $user2);
         $user2Expenses = array_values($user2Expenses)[0];
-        $this->assertInstanceOf(Expenses::class, $user2Expenses);
-        $this->assertSame($user2, $user2Expenses->userUuid);
-        $this->assertCount(1, $user2Expenses->expenses);
+        self::assertInstanceOf(Expenses::class, $user2Expenses);
+        self::assertSame($user2, $user2Expenses->userUuid);
+        self::assertCount(1, $user2Expenses->expenses);
     }
 
     public function test_calculate_calls_get_user_ids(): void

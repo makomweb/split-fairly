@@ -63,6 +63,8 @@ deptrac:
         - type: classLike
           value: .*App\\EventListener\\.*
         - type: classLike
+          value: .*App\\Instrumentation\\.*
+        - type: classLike
           value: .*App\\Normalizer\\.*
         - type: classLike
           value: .*App\\Repository\\.*

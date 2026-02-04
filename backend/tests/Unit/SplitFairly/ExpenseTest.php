@@ -21,10 +21,10 @@ final class ExpenseTest extends TestCase
             location: 'Starbucks'
         );
 
-        $this->assertSame($price, $expense->price);
-        $this->assertSame('Coffee', $expense->what);
-        $this->assertSame('Groceries', $expense->type);
-        $this->assertSame('Starbucks', $expense->location);
+        self::assertSame($price, $expense->price);
+        self::assertSame('Coffee', $expense->what);
+        self::assertSame('Groceries', $expense->type);
+        self::assertSame('Starbucks', $expense->location);
     }
 
     public function test_generates_consistent_id(): void
@@ -33,7 +33,7 @@ final class ExpenseTest extends TestCase
         $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
         $expense2 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
 
-        $this->assertEquals($expense1->getId(), $expense2->getId());
+        self::assertEquals($expense1->getId(), $expense2->getId());
     }
 
     public function test_generates_different_id_for_different_expenses(): void
@@ -42,7 +42,7 @@ final class ExpenseTest extends TestCase
         $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
         $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food Expenses', location: 'Restaurant');
 
-        $this->assertNotEquals($expense1->getId(), $expense2->getId());
+        self::assertNotEquals($expense1->getId(), $expense2->getId());
     }
 
     public function test_id_is_uuid_v5(): void
@@ -52,8 +52,8 @@ final class ExpenseTest extends TestCase
 
         $id = $expense->getId();
 
-        $this->assertInstanceOf(Uuid::class, $id);
-        $this->assertTrue(Uuid::isValid($id->toRfc4122()));
+        self::assertInstanceOf(Uuid::class, $id);
+        self::assertTrue(Uuid::isValid($id->toRfc4122()));
     }
 
     public function test_rejects_empty_what(): void

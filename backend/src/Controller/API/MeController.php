@@ -2,7 +2,7 @@
 
 namespace App\Controller\API;
 
-use Psr\Log\LoggerInterface;
+use App\Instrumentation\InstrumentationHolder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,15 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api', name: 'api.')]
 class MeController extends AbstractController
 {
-    public function __construct(
-        private readonly LoggerInterface $logger,
-    ) {
-    }
-
     #[Route('/me', name: 'me', methods: ['GET'])]
     public function me(): JsonResponse
     {
-        $this->logger->debug('Entering '.__METHOD__);
+        $tracer = InstrumentationHolder::getTracing()->createTracer(__METHOD__, __FILE__);
 
         $user = $this->getUser();
 

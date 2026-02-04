@@ -26,7 +26,7 @@ final readonly class EventStoredNotifier
 
     public function onPostPersist(EventEntity $entity, PostPersistEventArgs $args): void
     {
-        $message = Message::create('🛎️ new event persisted');
+        $message = Message::create('new event persisted');
 
         $this->bus->dispatch($message);
     }

@@ -58,9 +58,9 @@ class LoginFormFlowTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/login');
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
         $responseContent = $client->getResponse()->getContent();
-        $this->assertStringContainsString('Welcome Back', \is_string($responseContent) ? $responseContent : '');
+        self::assertStringContainsString('Welcome Back', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_admin_login_page_is_accessible(): void
@@ -69,9 +69,9 @@ class LoginFormFlowTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/admin/login');
 
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
         $responseContent = $client->getResponse()->getContent();
-        $this->assertStringContainsString('Admin Dashboard', \is_string($responseContent) ? $responseContent : '');
+        self::assertStringContainsString('Admin Dashboard', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_user_login_with_valid_credentials(): void
@@ -89,13 +89,13 @@ class LoginFormFlowTest extends WebTestCase
         $client->submit($form);
 
         // Should redirect after successful login
-        $this->assertResponseRedirects('/', 302);
+        self::assertResponseRedirects('/', 302);
 
         // Follow redirect
         $client->followRedirect();
 
         // Should be able to access the SPA
-        $this->assertResponseIsSuccessful();
+        self::assertResponseIsSuccessful();
     }
 
     public function test_user_login_with_invalid_password(): void
@@ -112,14 +112,14 @@ class LoginFormFlowTest extends WebTestCase
         $client->submit($form);
 
         // Should redirect back to login on invalid credentials
-        $this->assertResponseRedirects('/login', 302);
+        self::assertResponseRedirects('/login', 302);
 
         // Follow redirect
         $client->followRedirect();
 
         // Should show error message
         $responseContent = $client->getResponse()->getContent();
-        $this->assertStringContainsString('Invalid credentials', \is_string($responseContent) ? $responseContent : '');
+        self::assertStringContainsString('Invalid credentials', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_user_login_with_non_existent_email(): void
@@ -136,14 +136,14 @@ class LoginFormFlowTest extends WebTestCase
         $client->submit($form);
 
         // Should redirect back to login
-        $this->assertResponseRedirects('/login', 302);
+        self::assertResponseRedirects('/login', 302);
 
         // Follow redirect
         $client->followRedirect();
 
         // Should show error
         $responseContent = $client->getResponse()->getContent();
-        $this->assertStringContainsString('Invalid credentials', \is_string($responseContent) ? $responseContent : '');
+        self::assertStringContainsString('Invalid credentials', \is_string($responseContent) ? $responseContent : '');
     }
 
     public function test_admin_login_with_admin_user(): void
@@ -169,7 +169,7 @@ class LoginFormFlowTest extends WebTestCase
         $client->submit($form);
 
         // Should redirect to admin dashboard
-        $this->assertResponseRedirects('/admin', 302);
+        self::assertResponseRedirects('/admin', 302);
     }
 
     public function test_regular_user_cannot_access_admin_page(): void
@@ -180,7 +180,7 @@ class LoginFormFlowTest extends WebTestCase
         // Try to access admin directly (should redirect to login)
         $client->request('GET', '/admin');
 
-        $this->assertResponseRedirects('/admin/login', 302);
+        self::assertResponseRedirects('/admin/login', 302);
     }
 
     public function test_session_is_created_after_successful_login(): void
@@ -198,7 +198,7 @@ class LoginFormFlowTest extends WebTestCase
         $client->followRedirect();
 
         // Check that a session cookie is set
-        $this->assertTrue($client->getResponse()->headers->has('Set-Cookie')
+        self::assertTrue($client->getResponse()->headers->has('Set-Cookie')
                          || count($client->getCookieJar()->all()) > 0);
     }
 
@@ -220,6 +220,6 @@ class LoginFormFlowTest extends WebTestCase
         // Check that remember-me cookie is set
         $cookies = $client->getCookieJar()->all();
         $rememberMeCookie = array_filter($cookies, fn ($cookie) => 'REMEMBERME' === $cookie->getName());
-        $this->assertNotEmpty($rememberMeCookie);
+        self::assertNotEmpty($rememberMeCookie);
     }
 }
