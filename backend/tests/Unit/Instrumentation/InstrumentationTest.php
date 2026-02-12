@@ -8,6 +8,7 @@ use App\Instrumentation\InstrumentationHolder;
 use App\Instrumentation\LoggingInterface;
 use App\Instrumentation\MetricsInterface;
 use App\Instrumentation\TracingInterface;
+use App\Invariant\InvariantException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
@@ -79,7 +80,7 @@ final class InstrumentationTest extends TestCase
 
     public function test_provider_throws_on_uninitialized_access_logging(): void
     {
-        $this->expectException(\AssertionError::class);
+        $this->expectException(InvariantException::class);
         $this->expectExceptionMessage('Not yet initialized!');
 
         InstrumentationHolder::getLogging();
@@ -87,7 +88,7 @@ final class InstrumentationTest extends TestCase
 
     public function test_provider_throws_on_invalid_telemetry_option(): void
     {
-        $this->expectException(\AssertionError::class);
+        $this->expectException(InvariantException::class);
         $this->expectExceptionMessage('Either "PsrLog" or "Null" is allowed');
 
         InstrumentationHolder::initialize('InvalidOption', new NullLogger());

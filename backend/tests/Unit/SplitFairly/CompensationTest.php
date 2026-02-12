@@ -48,6 +48,10 @@ final class CompensationTest extends TestCase
         // User1 spent 50, so owes 25. User2 spent 25, so owes 12.5. Difference: 25 - 12.5 = 12.5
         self::assertSame(12.5, $compensation->settlement->value);
         self::assertSame('EUR', $compensation->settlement->currency);
+        self::assertSame(
+            sprintf('From: "%s" - to: "%s" - price: "%s"', $compensation->from, $compensation->to, (string) $compensation->settlement),
+            (string) $compensation
+        );
     }
 
     public function test_compensation_when_second_user_spent_more(): void
