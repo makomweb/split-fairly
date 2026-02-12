@@ -20,6 +20,7 @@ jobs:
     env:
       APP_ENV: test
       APP_VERSION: ${{ github.sha }}
+      APP_TELEMETRY: "Null"
 
     steps:
       - uses: actions/checkout@v2
