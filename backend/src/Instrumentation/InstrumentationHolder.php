@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Instrumentation;
 
+use App\Invariant\Ensure;
 use Psr\Log\LoggerInterface;
 
 final class InstrumentationHolder
@@ -12,7 +13,7 @@ final class InstrumentationHolder
 
     public static function initialize(string $telemetry, LoggerInterface $logger): void
     {
-        assert(in_array($telemetry, ['PsrLog', 'Null'], strict: true), 'Either "PsrLog" or "Null" is allowed for parameter $telemetry!');
+        Ensure::that(in_array($telemetry, ['PsrLog', 'Null'], strict: true), 'Either "PsrLog" or "Null" is allowed for parameter $telemetry!');
 
         if (is_null(self::$instance)) {
             self::$instance = new Instrumentation($telemetry, $logger);
@@ -21,21 +22,21 @@ final class InstrumentationHolder
 
     public static function getLogging(): LoggingInterface
     {
-        assert(!is_null(self::$instance), 'Not yet initialized!');
+        Ensure::that(!is_null(self::$instance), 'Not yet initialized!');
 
         return self::$instance->getLogging();
     }
 
     public static function getMetrics(): MetricsInterface
     {
-        assert(!is_null(self::$instance), 'Not yet initialized!');
+        Ensure::that(!is_null(self::$instance), 'Not yet initialized!');
 
         return self::$instance->getMetrics();
     }
 
     public static function getTracing(): TracingInterface
     {
-        assert(!is_null(self::$instance), 'Not yet initialized!');
+        Ensure::that(!is_null(self::$instance), 'Not yet initialized!');
 
         return self::$instance->getTracing();
     }
