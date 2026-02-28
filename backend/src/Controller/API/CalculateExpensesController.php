@@ -27,7 +27,7 @@ class CalculateExpensesController extends AbstractController
 
         $expenses = $this->calculator->calculate();
 
-        Ensure::that(2 === count($expenses));
+        Ensure::that(2 === count($expenses), 'Track your expenses first!');
 
         $compensation = Compensation::calculate($expenses[0], $expenses[1]);
 

@@ -32,8 +32,6 @@ deptrac:
         - type: classLike
           value: .*OpenApi\\Attributes\\.*
         - type: classLike
-          value: .*OpenTelemetry\\.*
-        - type: classLike
           value: .*phpDocumentor\\Reflection\\.*
         - type: classLike
           value: .*PhpParser\\.*

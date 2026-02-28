@@ -30,7 +30,8 @@ export async function fetchCalculation(): Promise<CalculationResponse> {
   })
 
   if (!response.ok) {
-    throw new Error('Failed to fetch calculation')
+    const error = await response.json()
+    throw new Error(error.detail || 'Failed to fetch calculation')
   }
 
   return response.json()

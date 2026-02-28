@@ -9,6 +9,48 @@ Track shared costs, calculate who owes whom, and manage group finances effortles
 
 Follows DDD principles for separting the application into generic, core, and supporting domains - enforced by [deptrac](https://github.com/deptrac/deptrac).
 
+## Architecture diagram
+
+```
+                        Browser / Client
+                               │
+              ┌────────────────┼─────────────────┐
+              │ :8000          │ :8080           │ :5173 (dev)
+              ▼                ▼                 ▼
+       ┌────────────┐  ┌──────────────┐  ┌───────────────┐
+       │  dashboard │  │  web (Nginx) │  │  npm-dev      │
+       │  (Homer)   │  │              │  │  (Vite/React/ │
+       └────────────┘  └──────┬───────┘  │   TypeScript) │
+                              │ FastCGI  └───────────────┘
+                              │ :9000
+                              ▼
+                    ┌──────────────────┐     async       ┌──────────────┐
+                    │  app (PHP-FPM)   │────messages────▶│  worker      │
+                    │  Symfony         │                 │  (Messenger) │
+                    └──────────────────┘                 └──────────────┘
+                              │                                 │
+                              └────────────────┬────────────────┘
+                                               │ SQL
+                                               ▼
+                                      ┌─────────────────┐
+                                      │  db (MySQL)     │
+                                      └─────────────────┘
+
+  ───────────────────────── Backend Layers ─────────────────────────
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  Supporting  │ Controllers · Auth · Repositories · Async        │
+  │              │ Normalizers · Instrumentation · EventListeners   │
+  ├──────────────┴──────────────────────────────────────────────────┤
+  │  Core        │ ExpenseTracker · Calculator                      │
+  │  (Domain)    │ Event Sourcing · Expenses · Compensation         │
+  ├──────────────┴──────────────────────────────────────────────────┤
+  │  Generic     │ Symfony · Doctrine · Twig · DomPDF · Monolog     |
+  |              │ PhpParser · phpDocumenter · OpenAPI              |
+  └─────────────────────────────────────────────────────────────────┘
+         Supporting depends on Core & Generic · Core has no deps
+```
+
 ## Prerequisites
 
 - [Make](https://www.gnu.org/software/make/)
