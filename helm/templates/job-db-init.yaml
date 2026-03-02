@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "split-fairly.fullname" . }}-db-init
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  # Run only once - must be manually deleted and recreated to run again
+  backoffLimit: 3
+  ttlSecondsAfterFinished: null
+  template:
+    metadata:
+      labels:
+        app: {{ include "split-fairly.fullname" . }}-db-init
+    spec:
+      serviceAccountName: default
+      restartPolicy: Never
+      # Wait for MySQL to be ready
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.35
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for MySQL to be ready..."
+              until nc -z {{ include "split-fairly.fullname" . }}-db {{ .Values.service.mysql.port }}; do
+                echo "MySQL not ready, waiting..."
+                sleep 2
+              done
+              echo "MySQL is ready!"
+      containers:
+        - name: db-init
+          image: "{{ .Values.image.app.repository }}:{{ .Values.image.app.tag }}"
+          imagePullPolicy: {{ .Values.image.app.pullPolicy }}
+          env:
+            - name: APP_ENV
+              value: "{{ .Values.env.APP_ENV }}"
+            - name: APP_SECRET
+              value: "{{ .Values.env.APP_SECRET }}"
+            - name: DATABASE_URL
+              value: "{{ tpl .Values.env.DATABASE_URL . }}"
+            - name: ADMIN_EMAIL
+              value: "{{ .Values.env.ADMIN_EMAIL }}"
+            - name: ADMIN_PASSWORD
+              value: "{{ .Values.env.ADMIN_PASSWORD }}"
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "================================================"
+              echo "Starting Database Initialization"
+              echo "================================================"
+              
+              echo "1. Creating database if not exists..."
+              php bin/console doctrine:database:create --if-not-exists
+              
+              echo "2. Creating database schema (if not exists)..."
+              php bin/console doctrine:schema:create 2>/dev/null || echo "Schema already exists or error - continuing..."
+              
+              echo "3. Loading fixtures (admin user)..."
+              # Only load fixtures if admin user doesn't exist
+              ADMIN_EXISTS=$(php bin/console doctrine:query:dql "SELECT COUNT(u) FROM App\\Entity\\User u WHERE u.email = '{{ .Values.env.ADMIN_EMAIL }}'" 2>/dev/null | grep -oP '\d+' | head -1 || echo "0")
+              if [ "$ADMIN_EXISTS" = "0" ]; then
+                echo "   Admin user does not exist - loading fixtures..."
+                php bin/console doctrine:fixtures:load --no-interaction --append
+              else
+                echo "   Admin user already exists - skipping fixture load"
+              fi
+              
+              echo "================================================"
+              echo "Database initialization completed successfully!"
+              echo "================================================"

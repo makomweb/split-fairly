@@ -1,0 +1,88 @@
+================================================================================
+{{ include "split-fairly.fullname" . | upper }} - Deployment Complete
+================================================================================
+{{ if eq .Values.service.web.type "NodePort" }}
+🚀 Direct Access (NodePort):
+   The application is available at:
+   → http://localhost:{{ .Values.service.web.nodePort }}
+   → http://localhost:{{ .Values.service.web.nodePort }}/admin
+   
+   This works on Docker Desktop and Minikube without port-forwarding.
+{{ else if eq .Values.service.web.type "LoadBalancer" }}
+🚀 LoadBalancer Access:
+   Wait for an external IP to be assigned (may take a moment):
+   $ kubectl get svc {{ include "split-fairly.fullname" . }}-web
+   
+   Once assigned, visit:
+   → http://<EXTERNAL-IP>:{{ .Values.service.web.port }}
+   → http://<EXTERNAL-IP>:{{ .Values.service.web.port }}/admin
+{{ end }}
+================================================================================
+📌 Alternative Access Methods:
+
+1. Using kubectl port-forward (any service type):
+   $ kubectl port-forward svc/{{ include "split-fairly.fullname" . }}-web 8080:80
+   → http://localhost:8080
+
+2. Using NodePort directly (if service type is NodePort):
+   $ kubectl get svc {{ include "split-fairly.fullname" . }}-web
+   → Access via the listed NodePort (default: {{ .Values.service.web.nodePort }})
+
+3. Inside the cluster:
+   → http://{{ include "split-fairly.fullname" . }}-web:{{ .Values.service.web.port }}
+
+================================================================================
+🔐 Initial Login:
+   Email:    {{ .Values.env.ADMIN_EMAIL }}
+   Password: {{ .Values.env.ADMIN_PASSWORD }}
+
+================================================================================
+📊 Service Information:
+   Release:     {{ .Release.Name }}
+   Chart:       {{ .Chart.Name }}-{{ .Chart.Version }}
+   Namespace:   {{ .Release.Namespace }}
+   Backend URL: http://{{ include "split-fairly.fullname" . }}-app:{{ .Values.service.app.port }}
+   Database:    {{ include "split-fairly.fullname" . }}-db:{{ .Values.service.mysql.port }}
+
+================================================================================
+🗄️  Database Initialization:
+   The database schema and initial fixtures (admin user) are managed by a 
+   separate Kubernetes Job ({{ include "split-fairly.fullname" . }}-db-init).
+   
+   ✓ The Job runs once automatically after deployment
+   ✓ App and worker pods wait for the Job to complete before starting
+   ✓ The Job is idempotent - it safely handles already-existing data
+   
+   Check job status:
+   $ kubectl get job {{ include "split-fairly.fullname" . }}-db-init
+   
+   View job logs:
+   $ kubectl logs job/{{ include "split-fairly.fullname" . }}-db-init
+   
+   🔄 To re-initialize the database:
+      1. Delete the existing database:
+         $ kubectl delete statefulset {{ include "split-fairly.fullname" . }}-db
+         $ kubectl delete pvc data-{{ include "split-fairly.fullname" . }}-db-0
+      
+      2. Wait for the MySQL pod to restart and become ready
+      
+      3. Delete the completed Job to trigger re-initialization:
+         $ kubectl delete job {{ include "split-fairly.fullname" . }}-db-init
+      
+      4. Redeploy the app (triggers Job recreation):
+         $ helm upgrade {{ .Release.Name }} ./helm
+
+================================================================================
+📋 Useful Commands:
+
+   Check all resources:
+   $ kubectl get all
+
+   View deployment logs:
+   $ kubectl logs deployment/{{ include "split-fairly.fullname" . }}-app
+   $ kubectl logs deployment/{{ include "split-fairly.fullname" . }}-worker
+
+   Describe pods (for troubleshooting):
+   $ kubectl describe pod -l app={{ include "split-fairly.fullname" . }}-app
+
+================================================================================

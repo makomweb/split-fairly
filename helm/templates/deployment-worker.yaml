@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "split-fairly.fullname" . }}-worker
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount.worker }}
+  selector:
+    matchLabels:
+      app: {{ include "split-fairly.fullname" . }}-worker
+  template:
+    metadata:
+      labels:
+        app: {{ include "split-fairly.fullname" . }}-worker
+    spec:
+      serviceAccountName: {{ include "split-fairly.fullname" . }}
+      initContainers:
+        - name: wait-for-db-init
+          image: bitnami/kubectl:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for database initialization job to complete..."
+              until kubectl get job {{ include "split-fairly.fullname" . }}-db-init -o jsonpath='{.status.succeeded}' 2>/dev/null | grep -q '1'; do
+                STATUS=$(kubectl get job {{ include "split-fairly.fullname" . }}-db-init -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null || echo "NotFound")
+                if [ "$STATUS" = "True" ]; then
+                  echo "Database initialization completed successfully!"
+                  exit 0
+                fi
+                echo "Database initialization job not yet completed. Status: $STATUS"
+                sleep 2
+              done
+              echo "Database initialization completed successfully!"
+      containers:
+        - name: worker
+          image: "{{ .Values.image.app.repository }}:{{ .Values.image.app.tag }}"
+          imagePullPolicy: {{ .Values.image.app.pullPolicy }}
+          command: ["bin/console", "messenger:consume", "--all", "-vv"]
+          env:
+            - name: APP_ENV
+              value: "{{ .Values.env.APP_ENV }}"
+            - name: APP_VERSION
+              value: "{{ .Values.env.APP_VERSION }}"
+            - name: DATABASE_URL
+              value: "{{ tpl .Values.env.DATABASE_URL . }}"
+            - name: ADMIN_EMAIL
+              value: "{{ .Values.env.ADMIN_EMAIL }}"
+            - name: ADMIN_PASSWORD
+              value: "{{ .Values.env.ADMIN_PASSWORD }}"
+          resources: {{ toYaml .Values.resources.worker | nindent 12 }}

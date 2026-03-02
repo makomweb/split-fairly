@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { logout as apiLogout } from './api'
+import { getApiBaseUrl, getApiUrl } from '../../api/config'
 
 interface User {
   email: string
@@ -13,17 +14,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Get the API base URL - use backend URL if frontend is on different origin
-const getApiBaseUrl = () => {
-  const currentOrigin = window.location.origin
-  // If we're on localhost:5173 (Vite dev), point to backend at 8080
-  if (currentOrigin.includes('5173')) {
-    return 'http://localhost:8080'
-  }
-  // Otherwise use current origin
-  return currentOrigin
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -32,8 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check server session on app load
     const checkAuth = async () => {
       try {
-        const apiUrl = getApiBaseUrl()
-        const response = await fetch(`${apiUrl}/api/me`, {
+        const response = await fetch(getApiUrl('/api/me'), {
           method: 'GET',
           credentials: 'include', // Include cookies for session auth
           headers: {
@@ -47,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setUser(null)
           // Redirect to login if not authenticated
-          window.location.href = `${apiUrl}/login`
+          window.location.href = `${getApiBaseUrl()}/login`
         }
       } catch (error) {
         console.error('Failed to check authentication:', error)
@@ -68,8 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Error during logout:', error)
     } finally {
       // Redirect to login page
-      const apiUrl = getApiBaseUrl()
-      window.location.href = `${apiUrl}/login`
+      window.location.href = `${getApiBaseUrl()}/login`
     }
   }
 
@@ -93,5 +81,3 @@ export function useAuth() {
   }
   return context
 }
-
-
