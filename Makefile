@@ -6,8 +6,9 @@ VERSION = 0.1.1
 help:
 	@echo "📋 Available targets:\n"
 	@echo "🏗️  Build & Setup:"
-	@echo "  make build              Build development image, boot stack, and open browser"
-	@echo "  make image              Build development Docker image"
+	@echo "  make start              Build development image, boot stack, initialize db, and open browser"
+	@echo "  make dev                Build development Docker image"
+	@echo "  make prod               Build production Docker images (app + web)"
 	@echo "  make up                 Boot the Docker stack"
 	@echo "  make down               Shut down the Docker stack"
 	@echo "  make init               Initialize app (composer, database, fixtures)"
@@ -30,12 +31,17 @@ help:
 	@echo "  make clear              Clear all caches"
 	@echo "  make open               Open application in browser\n"
 
-build: image up open
+start: build up init open
 
-image:
-	@echo "🏗️  Building development image..."
-	docker build . -f ./build/php/Dockerfile --target dev -t ${APP_NAME}-dev:${VERSION}
-	
+build:
+	@echo "🏗️  Building development image(s)..."
+	docker build . -f ./build/php/Dockerfile --target dev --no-cache -t ${APP_NAME}-dev:${VERSION}
+
+prod:
+	@echo "🛳️  Building procution image(s)..."
+	docker build . -f ./build/php/Dockerfile --target prod --no-cache -t ${APP_NAME}:${VERSION}
+	docker build . -f ./build/nginx/Dockerfile --no-cache -t ${APP_NAME}-web:${VERSION}
+
 up:
 	@echo "🚀 Booting Docker stack..."
 	docker compose up -d --remove-orphans
