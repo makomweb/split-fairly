@@ -130,7 +130,7 @@ test-backend:
 frontend-test: test-frontend
 test-frontend:
 	@echo "🧪 Running frontend tests..."
-	docker compose exec -it npm-dev npm test
+	docker compose exec -it npm-dev npm test -- --run
 	
 arch:
 	@echo "🏛️  Testing architecture..."

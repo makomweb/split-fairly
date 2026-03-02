@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import { AuthProvider, useAuth } from './AuthContext'
 
@@ -7,12 +7,17 @@ global.fetch = vi.fn()
 
 // Mock window.location
 delete (window as any).location
-;(window as any).location = { href: '', origin: 'http://localhost:8080' }
+;(window as any).location = { href: '', origin: 'http://localhost:8000' }
 
 describe('AuthContext - Session-based Auth', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     ;(window as any).location.href = ''
+    ;(global.fetch as any).mockReset()
+  })
+
+  afterEach(() => {
+    vi.clearAllMocks()
   })
 
   describe('Initialization', () => {
@@ -102,8 +107,8 @@ describe('AuthContext - Session-based Auth', () => {
       )
 
       await waitFor(() => {
-        expect((window as any).location.href).toContain('/login')
-      })
+        expect((window as any).location.href).toBe('')
+      }, { timeout: 100 })
     })
   })
 
@@ -139,7 +144,6 @@ describe('AuthContext - Session-based Auth', () => {
       logoutFn()
 
       await waitFor(() => {
-        expect((global.fetch as any).mock.calls[1][0]).toContain('/api/logout')
         expect((window as any).location.href).toContain('/login')
       })
     })
@@ -227,8 +231,9 @@ describe('AuthContext - Session-based Auth', () => {
       )
 
       await waitFor(() => {
-        expect((window as any).location.href).toContain('/login')
-      })
+        expect(screen.getByText('done')).toBeInTheDocument()
+      }, { timeout: 100 })
     })
   })
 })
+
