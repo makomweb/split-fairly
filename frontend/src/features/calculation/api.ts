@@ -1,3 +1,5 @@
+import { getApiUrl } from '../../api/config'
+
 interface Price {
   value: number
   currency: string
@@ -25,7 +27,7 @@ export interface CalculationResponse {
 }
 
 export async function fetchCalculation(): Promise<CalculationResponse> {
-  const response = await fetch('http://localhost:8080/api/calculate', {
+  const response = await fetch(getApiUrl('/api/calculate'), {
     credentials: 'include',
   })
 
@@ -38,7 +40,7 @@ export async function fetchCalculation(): Promise<CalculationResponse> {
 }
 
 export async function downloadCalculationReport(): Promise<Response> {
-  return fetch('http://localhost:8080/api/report/calculation', {
+  return fetch(getApiUrl('/api/report/calculation'), {
     credentials: 'include',
   })
 }

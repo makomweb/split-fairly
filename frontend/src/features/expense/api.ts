@@ -1,3 +1,5 @@
+import { getApiUrl } from '../../api/config'
+
 interface Price {
   value: number
   currency: string
@@ -11,7 +13,7 @@ interface ExpenseData {
 }
 
 export async function trackExpense(expense: ExpenseData): Promise<void> {
-  const response = await fetch('http://localhost:8080/api/track', {
+  const response = await fetch(getApiUrl('/api/track'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
