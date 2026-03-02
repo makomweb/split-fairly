@@ -60,21 +60,37 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------
+# Frontend-Stage (build React app)
+# -----------------------------------
+FROM node:22-alpine AS frontend
+
+WORKDIR /frontend
+
+COPY frontend .
+
+RUN npm install && npm run build
+
+# The vite config builds to ../backend/public/build which is /backend/public/build in this context
+# Copy it to /dist for the prod stage to access it
+RUN cp -r /backend/public/build /dist
+
+# -----------------------------------
 # Production-Stage (no Composer, no XDebug)
 # Note: from vendor!
 # -----------------------------------
 FROM base AS prod
 
 COPY --from=vendor /var/www/project/vendor ./vendor
+COPY --from=frontend /dist ./public/build
 
 COPY backend/.env .
 COPY backend/bin ./bin
+COPY backend/composer.json .
 COPY backend/config ./config
 COPY backend/migrations ./migrations
 COPY backend/public ./public
 COPY backend/src ./src
 COPY backend/templates ./templates
 
-#RUN mkdir -p var/cache var/log && chmod -R 777 var
-# The following might not be required once we have the shared cache - check it!
-#RUN mkdir var && chmod -R 777 var
+RUN mkdir -p var/cache var/log && chmod -R 777 var && \
+    sed -i 's/^APP_ENV=.*/APP_ENV=prod/' .env
