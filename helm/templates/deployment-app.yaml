@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "split-fairly.fullname" . }}-app
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount.app }}
+  selector:
+    matchLabels:
+      app: {{ include "split-fairly.fullname" . }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ include "split-fairly.fullname" . }}-app
+    spec:
+      serviceAccountName: {{ include "split-fairly.fullname" . }}
+      initContainers:
+        - name: wait-for-db-init
+          image: bitnami/kubectl:latest
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for database initialization job to complete..."
+              until kubectl get job {{ include "split-fairly.fullname" . }}-db-init -o jsonpath='{.status.succeeded}' 2>/dev/null | grep -q '1'; do
+                STATUS=$(kubectl get job {{ include "split-fairly.fullname" . }}-db-init -o jsonpath='{.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null || echo "NotFound")
+                if [ "$STATUS" = "True" ]; then
+                  echo "Database initialization completed successfully!"
+                  exit 0
+                fi
+                echo "Database initialization job not yet completed. Status: $STATUS"
+                sleep 2
+              done
+              echo "Database initialization completed successfully!"
+      containers:
+        - name: app
+          image: "{{ .Values.image.app.repository }}:{{ .Values.image.app.tag }}"
+          imagePullPolicy: {{ .Values.image.app.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.app.port }}
+          env:
+            - name: APP_SECRET
+              value: "{{ .Values.env.APP_SECRET }}"
+            - name: APP_ENV
+              value: "{{ .Values.env.APP_ENV }}"
+            - name: APP_VERSION
+              value: "{{ .Values.env.APP_VERSION }}"
+            - name: DATABASE_URL
+              value: "{{ tpl .Values.env.DATABASE_URL . }}"
+            - name: ADMIN_EMAIL
+              value: "{{ .Values.env.ADMIN_EMAIL }}"
+            - name: ADMIN_PASSWORD
+              value: "{{ .Values.env.ADMIN_PASSWORD }}"
+          volumeMounts:
+            - name: app-var
+              mountPath: /var/www/project/var
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.app.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.app.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources: {{ toYaml .Values.resources.app | nindent 12 }}
+      volumes:
+        - name: app-var
+          emptyDir: {}

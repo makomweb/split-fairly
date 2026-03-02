@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "split-fairly.fullname" . }}-db
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "split-fairly.fullname" . }}-db
+  serviceName: {{ include "split-fairly.fullname" . }}-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ include "split-fairly.fullname" . }}-db
+    spec:
+      containers:
+        - name: mysql
+          image: "{{ .Values.image.mysql.repository }}:{{ .Values.image.mysql.tag }}"
+          imagePullPolicy: {{ .Values.image.mysql.pullPolicy }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.mysql.rootPassword }}"
+            - name: MYSQL_PASSWORD
+              value: "{{ .Values.mysql.password }}"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h 127.0.0.1 --silent
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources: {{ toYaml .Values.resources.mysql | nindent 12 }}
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+{{- if not .Values.mysql.persistence.enabled }}
+      volumes:
+        - name: mysql-data
+          emptyDir: {}
+{{- end }}
+{{- if .Values.mysql.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ .Values.mysql.persistence.size }}
+{{- if .Values.mysql.persistence.storageClass }}
+        storageClassName: "{{ .Values.mysql.persistence.storageClass }}"
+{{- end }}
+{{- end }}

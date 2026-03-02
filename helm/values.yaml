@@ -1,0 +1,112 @@
+replicaCount:
+  app: 1
+  worker: 1
+  web: 1
+
+image:
+  app:
+    repository: "split-fairly"
+    tag: "0.1.1"
+    pullPolicy: IfNotPresent
+  web:
+    repository: "split-fairly-web"
+    tag: "0.1.1"
+    pullPolicy: IfNotPresent
+  mysql:
+    repository: "mysql"
+    tag: "8"
+    pullPolicy: IfNotPresent
+
+service:
+  web:
+    type: NodePort
+    port: 80
+    nodePort: 30190
+  app:
+    port: 9000
+  mysql:
+    port: 3306
+
+resources:
+  app: {}
+  worker: {}
+  web: {}
+  mysql: {}
+
+env:
+  APP_SECRET: "F3E46580-5F9A-4524-B218-90490B033192"
+  APP_ENV: "prod"
+  APP_VERSION: "0.1.1"
+  DATABASE_URL: "mysql://{{ .Values.mysql.user }}:{{ .Values.mysql.password }}@{{ include \"split-fairly.fullname\" . }}-db:{{ .Values.service.mysql.port }}/{{ default \"app\" .Values.mysql.database }}?serverVersion=8.0.31&charset=utf8mb4"
+  ADMIN_EMAIL: "admin@example.com"
+  ADMIN_PASSWORD: "secret"
+
+mysql:
+  rootPassword: "secret"
+  password: "secret"
+  user: "root"
+  persistence:
+    enabled: true
+    size: 8Gi
+    storageClass: ""
+
+webConfig: |
+  server {
+      listen 80;
+      server_name localhost;
+
+      root /var/www/project/public;
+      index index.php index.html;
+
+      # Serve built frontend assets with long cache headers
+      location /build/ {
+          alias /var/www/project/public/build/;
+          access_log off;
+          add_header Cache-Control "public, max-age=31536000, immutable";
+      }
+
+      # Static assets
+      location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?)$ {
+          try_files $uri =404;
+          access_log off;
+          add_header Cache-Control "public, max-age=86400";
+      }
+
+      # SPA and app entrypoint - serve built index.html for SPA
+      location = / {
+          rewrite ^ /build/index.html break;
+      }
+
+      # API endpoints - directly proxy to PHP
+      location ^~ /api/ {
+          fastcgi_pass {{ include "split-fairly.fullname" . }}-app:9000;
+          fastcgi_split_path_info ^(.+\.php)(/.*)$;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+          fastcgi_param SCRIPT_NAME /index.php;
+          fastcgi_param REQUEST_URI $request_uri;
+          fastcgi_param PATH_INFO $uri;
+          fastcgi_param DOCUMENT_ROOT $document_root;
+          fastcgi_param HTTPS off;
+      }
+
+      location / {
+          try_files $uri $uri/ /index.php$is_args$args;
+      }
+
+      # PHP-FPM handling for internal redirect to index.php
+      location ~ ^/index\.php(/|$) {
+          fastcgi_pass {{ include "split-fairly.fullname" . }}-app:9000;
+          fastcgi_split_path_info ^(.+\.php)(/.*)$;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_param DOCUMENT_ROOT $document_root;
+          fastcgi_param HTTPS off;
+          internal;
+      }
+
+      # Deny direct .php access
+      location ~ \.php$ {
+          return 404;
+      }
+  }
