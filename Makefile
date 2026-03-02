@@ -18,7 +18,7 @@ help:
 	@echo "  make update-composer-dependencies  Update composer packages"
 	@echo "  make update-npm-dependencies  Update npm packages"
 	@echo "\n🧪 Testing & Quality:"
-	@echo "  make test               Run backend tests"
+	@echo "  make test               Run backend and frontend tests"
 	@echo "  make quality            Run quality checks"
 	@echo "  make phpstan            Run static code analysis"
 	@echo "  make style              Fix code style"
@@ -120,12 +120,17 @@ code-style:
 	@echo "💄 Fixing code style..."
 	docker compose exec -it app vendor/bin/php-cs-fixer fix
 
-test: test-backend
+test: test-backend test-frontend
 
 backend-test: test-backend
 test-backend:
 	@echo "🧪 Running backend tests..."
 	docker compose exec -it app bin/phpunit
+
+frontend-test: test-frontend
+test-frontend:
+	@echo "🧪 Running frontend tests..."
+	docker compose exec -it npm-dev npm test -- --run
 	
 arch:
 	@echo "🏛️  Testing architecture..."
