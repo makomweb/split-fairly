@@ -522,7 +522,7 @@ final class CompensationTest extends TestCase
         self::assertSame(70.0, $compensation->settlement->value);
     }
 
-    public function test_compensation_lent_adds_to_spent_difference(): void
+    public function test_compensation_with_filtered_types_groceries_only(): void
     {
         $user1Id = 'user-1';
         $user1Email = 'user1@example.com';
@@ -531,16 +531,22 @@ final class CompensationTest extends TestCase
 
         $expenses1 = Expenses::initial($user1Id, $user1Email);
         $expenses1->add(new Expense(
-            price: new Price(60.0, 'EUR'),
+            price: new Price(100.0, 'EUR'),
             what: 'Groceries',
             type: 'Groceries',
             location: 'Market'
         ));
         $expenses1->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Non-Food',
+            type: 'Non-Food',
+            location: 'Store'
+        ));
+        $expenses1->add(new Expense(
             price: new Price(20.0, 'EUR'),
-            what: 'Money Lent',
+            what: 'Cash',
             type: 'Lent',
-            location: 'Transfer'
+            location: 'user2@example.com'
         ));
 
         $expenses2 = Expenses::initial($user2Id, $user2Email);
@@ -551,13 +557,91 @@ final class CompensationTest extends TestCase
             location: 'Market'
         ));
 
-        $compensation = Compensation::calculate($expenses1, $expenses2);
+        // Include only Groceries
+        $compensation = Compensation::calculate($expenses1, $expenses2, ['Groceries']);
 
-        // Spent diff: 60/2 - 40/2 = 30 - 20 = 10 (User 1 spent 10 more)
-        // Lent diff: 20 - 0 = 20 (User 1 lent 20 more)
-        // Total: 10 + 20 = 30
+        // Spent diff: 100/2 - 40/2 = 50 - 20 = 30 (User 1 spent 30 more)
+        // Lent diff: 0 (not included)
+        // Non-Food: 0 (not included)
+        // Total: 30
         self::assertSame($user2Email, $compensation->from);
         self::assertSame($user1Email, $compensation->to);
         self::assertSame(30.0, $compensation->settlement->value);
+    }
+
+    public function test_compensation_with_filtered_types_lent_only(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+        $expenses1->add(new Expense(
+            price: new Price(100.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses1->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Cash',
+            type: 'Lent',
+            location: 'user2@example.com'
+        ));
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+        $expenses2->add(new Expense(
+            price: new Price(40.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+        $expenses2->add(new Expense(
+            price: new Price(10.0, 'EUR'),
+            what: 'Cash',
+            type: 'Lent',
+            location: 'user1@example.com'
+        ));
+
+        // Include only Lent
+        $compensation = Compensation::calculate($expenses1, $expenses2, ['Lent']);
+
+        // Spent diff: 0 (not included)
+        // Lent diff: 50 - 10 = 40 (User 1 lent 40 more)
+        // Total: 40
+        self::assertSame($user2Email, $compensation->from);
+        self::assertSame($user1Email, $compensation->to);
+        self::assertSame(40.0, $compensation->settlement->value);
+    }
+
+    public function test_compensation_with_filtered_types_no_types(): void
+    {
+        $user1Id = 'user-1';
+        $user1Email = 'user1@example.com';
+        $user2Id = 'user-2';
+        $user2Email = 'user2@example.com';
+
+        $expenses1 = Expenses::initial($user1Id, $user1Email);
+        $expenses1->add(new Expense(
+            price: new Price(100.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+
+        $expenses2 = Expenses::initial($user2Id, $user2Email);
+        $expenses2->add(new Expense(
+            price: new Price(50.0, 'EUR'),
+            what: 'Groceries',
+            type: 'Groceries',
+            location: 'Market'
+        ));
+
+        // Include no types (empty array)
+        $compensation = Compensation::calculate($expenses1, $expenses2, []);
+
+        // No types included, so no compensation needed
+        self::assertSame(0.0, $compensation->settlement->value);
     }
 }

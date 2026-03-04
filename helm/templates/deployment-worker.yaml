@@ -14,8 +14,15 @@ spec:
     metadata:
       labels:
         app: {{ include "split-fairly.fullname" . }}-worker
+        component: worker
+        technology: php
+        app.kubernetes.io/version: "{{ .Values.env.APP_VERSION }}"
+        environment: "{{ .Values.env.APP_ENV }}"
+      annotations:
+        kubernetes.io/log-format: "json"
     spec:
       serviceAccountName: {{ include "split-fairly.fullname" . }}
+      terminationGracePeriodSeconds: 3600
       initContainers:
         - name: wait-for-db-init
           image: bitnami/kubectl:latest
@@ -38,7 +45,20 @@ spec:
         - name: worker
           image: "{{ .Values.image.app.repository }}:{{ .Values.image.app.tag }}"
           imagePullPolicy: {{ .Values.image.app.pullPolicy }}
-          command: ["bin/console", "messenger:consume", "--all", "-vv"]
+          # One-shot worker pattern: handle single message per process, then exit
+          # This prevents memory leaks and improves scalability by using fresh processes
+          # See: https://symfony.com/doc/current/messenger.html#deploying-messages-to-multiple-transports
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while ! [ -f /tmp/kill_me ]; do
+                bin/console messenger:consume async --limit=1 --time-limit=60 -vv
+              done
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "touch /tmp/kill_me"]
           env:
             - name: APP_ENV
               value: "{{ .Values.env.APP_ENV }}"

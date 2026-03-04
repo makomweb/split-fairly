@@ -12,6 +12,10 @@ final readonly class Logging implements LoggingInterface
     {
     }
 
+    public function debug(string|\Stringable $message): void
+    {
+    }
+
     public function exception(\Throwable $ex): void
     {
     }

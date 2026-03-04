@@ -1,4 +1,7 @@
-FROM php:8.4-fpm AS base
+# -----------------------------------
+# Base stage for Development (Debian-based)
+# -----------------------------------
+FROM php:8.4-fpm AS base-dev
 
 WORKDIR /var/www/project
 
@@ -15,9 +18,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY build/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # -----------------------------------
-# Development-Stage (with Composer + XDebug)
+# Base stage for Production (Alpine-based, minimal)
 # -----------------------------------
-FROM base AS dev
+FROM php:8.4.3-fpm-alpine3.20 AS base-prod
+
+WORKDIR /var/www/project
+
+RUN apk add --no-cache --virtual .build-deps \
+    build-base autoconf icu-dev libzip-dev \
+    && apk add --no-cache libintl git zip icu-libs \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl pdo opcache pdo_mysql zip \
+    && pecl install opentelemetry redis \
+    && docker-php-ext-enable opentelemetry redis \
+    && apk del .build-deps icu-dev libzip-dev
+
+COPY build/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+
+# -----------------------------------
+# Development-Stage (with Composer + XDebug, from Debian base)
+# -----------------------------------
+FROM base-dev AS dev
 
 RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini
 
@@ -33,9 +54,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------
-# Vendor-Stage (for Production)
+# Vendor-Stage (from Debian base for build compatibility)
 # -----------------------------------
-FROM base AS vendor
+FROM base-dev AS vendor
 
 COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 
@@ -48,7 +69,6 @@ COPY backend/public ./public
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libicu-dev git zip unzip \
     && composer install \
@@ -70,15 +90,12 @@ COPY frontend .
 
 RUN npm install && npm run build
 
-# The vite config builds to ../backend/public/build which is /backend/public/build in this context
-# Copy it to /dist for the prod stage to access it
 RUN cp -r /backend/public/build /dist
 
 # -----------------------------------
-# Production-Stage (no Composer, no XDebug)
-# Note: from vendor!
+# Production-Stage (Alpine-based, lean runtime)
 # -----------------------------------
-FROM base AS prod
+FROM base-prod AS prod
 
 COPY --from=vendor /var/www/project/vendor ./vendor
 COPY --from=frontend /dist ./public/build
@@ -92,5 +109,4 @@ COPY backend/public ./public
 COPY backend/src ./src
 COPY backend/templates ./templates
 
-RUN mkdir -p var/cache var/log && chmod -R 777 var && \
-    sed -i 's/^APP_ENV=.*/APP_ENV=prod/' .env
+RUN mkdir -p var/cache var/log && chmod -R 777 var

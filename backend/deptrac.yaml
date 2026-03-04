@@ -61,6 +61,8 @@ deptrac:
         - type: classLike
           value: .*App\\EventListener\\.*
         - type: classLike
+          value: .*App\\Form\\DataTransformer\\.*
+        - type: classLike
           value: .*App\\Instrumentation\\.*
         - type: classLike
           value: .*App\\Normalizer\\.*

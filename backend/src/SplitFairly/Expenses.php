@@ -72,19 +72,25 @@ final class Expenses
         return $result;
     }
 
-    public function spent(): Price
+    /**
+     * @param array<string> $includeTypes
+     */
+    public function spent(array $includeTypes = ['Groceries', 'Non-Food']): Price
     {
         return array_reduce(
-            $this->categories(['Groceries', 'Non-Food']),
+            $this->categories($includeTypes),
             static fn (Price $spent, Category $category) => $spent->add($category->sum),
             Price::ZERO()
         );
     }
 
-    public function lent(): Price
+    /**
+     * @param array<string> $includeTypes
+     */
+    public function lent(array $includeTypes = ['Lent']): Price
     {
         return array_reduce(
-            $this->categories(['Lent']),
+            $this->categories($includeTypes),
             static fn (Price $spent, Category $category) => $spent->add($category->sum),
             Price::ZERO()
         );

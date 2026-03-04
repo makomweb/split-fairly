@@ -34,7 +34,16 @@ services:
         image: ${APP_IMAGE}
         volumes:
             - ./backend:/var/www/project
-        command: ["bin/console", "messenger:consume", "async", "-vv"]
+        # One-shot worker pattern: processes single message, then exits
+        # Prevents memory leaks and improves resource predictability
+        command: 
+          - sh
+          - -c
+          - |
+            while true; do
+              bin/console messenger:consume async --limit=1 --time-limit=60 -vv
+              sleep 1
+            done
         depends_on:
             db:
                 condition: service_healthy

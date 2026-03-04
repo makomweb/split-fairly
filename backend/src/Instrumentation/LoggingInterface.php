@@ -8,5 +8,7 @@ interface LoggingInterface
 {
     public function info(string|\Stringable $message): void;
 
+    public function debug(string|\Stringable $message): void;
+
     public function exception(\Throwable $ex): void;
 }
