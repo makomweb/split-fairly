@@ -112,19 +112,6 @@ webConfig: |
   }
 
 logging:
-  promtail:
-    enabled: false
-    image:
-      repository: "grafana/promtail"
-      tag: "2.9.1"
-      pullPolicy: IfNotPresent
-    # Grafana Cloud Loki push endpoint, e.g.:
-    # https://logs-prod-XXX.grafana.net/loki/api/v1/push
-    lokiAddress: "http://loki:3100/loki/api/v1/push"
-    basicAuth:
-      enabled: false
-      # Grafana Cloud numeric user ID
-      username: ""
-      # Grafana Cloud API key / token
-      password: ""
+  # Log shipping is handled by Grafana Alloy (k8s-monitoring Helm chart).
+  # See: helm upgrade grafana-k8s-monitoring grafana/k8s-monitoring
 
