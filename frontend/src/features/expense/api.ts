@@ -12,6 +12,11 @@ interface ExpenseData {
   location: string
 }
 
+export interface User {
+  id: string
+  email: string
+}
+
 export async function trackExpense(expense: ExpenseData): Promise<void> {
   const response = await fetch(getApiUrl('/api/track'), {
     method: 'POST',
@@ -24,8 +29,26 @@ export async function trackExpense(expense: ExpenseData): Promise<void> {
 
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.message || 'Failed to track expense')
+    throw new Error(error.error || error.message || 'Failed to track expense')
   }
 
   return response.json()
 }
+
+export async function fetchUsers(): Promise<User[]> {
+  const response = await fetch(getApiUrl('/api/users'), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch users')
+  }
+
+  const data = await response.json()
+  return data.users
+}
+

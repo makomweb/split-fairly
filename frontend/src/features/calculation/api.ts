@@ -26,14 +26,20 @@ export interface CalculationResponse {
   compensation: Compensation | null
 }
 
-export async function fetchCalculation(): Promise<CalculationResponse> {
-  const response = await fetch(getApiUrl('/api/calculate'), {
+export async function fetchCalculation(withUser?: string): Promise<CalculationResponse> {
+  const url = new URL(getApiUrl('/api/calculate'), window.location.origin)
+  
+  if (withUser) {
+    url.searchParams.set('with_user', withUser)
+  }
+
+  const response = await fetch(url.toString(), {
     credentials: 'include',
   })
 
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.detail || 'Failed to fetch calculation')
+    throw new Error(error.detail || error.error || 'Failed to fetch calculation')
   }
 
   return response.json()

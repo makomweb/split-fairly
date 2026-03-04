@@ -1,13 +1,19 @@
 import './index.css'
+import { useState, useRef } from 'react'
 import { AuthProvider, useAuth } from './features/auth/AuthContext'
 import { TrackExpense } from './features/expense/TrackExpense'
 import { Calculation } from './features/calculation/Calculation'
 import { Button } from './components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
-import { HeartHandshake, Loader } from 'lucide-react'
+import { HeartHandshake, Loader, Plus } from 'lucide-react'
 
 function AppContent() {
   const { user, logout, isLoading } = useAuth()
+  const [currentTab, setCurrentTab] = useState('track')
+  const [showTrackForm, setShowTrackForm] = useState(true)
+  const [isFormValid, setIsFormValid] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [hasUserSelected, setHasUserSelected] = useState(false)
+  const trackFormRef = useRef<{ submit: () => Promise<void> }>(null)
 
   if (isLoading) {
     return (
@@ -23,9 +29,9 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-svh flex flex-col">
+    <div className="min-h-svh flex flex-col pb-safe">
       {/* Sticky header */}
-      <header className="sticky top-0 z-10 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md">
+      <header className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md">
         <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <HeartHandshake className="h-6 w-6 text-white" />
@@ -46,35 +52,74 @@ function AppContent() {
         </div>
       </header>
       
-      {/* Main content with tabs */}
-      <Tabs defaultValue="track" className="flex-1 flex flex-col">
-        <div className="border-b bg-gradient-to-r from-slate-100 to-slate-200">
-          <div className="max-w-4xl mx-auto px-4">
-            <TabsList className="w-full h-14 grid grid-cols-2 bg-transparent p-0">
-              <TabsTrigger 
-                value="track" 
-                className="rounded-none border-b-4 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-none bg-slate-200 text-slate-600 hover:bg-slate-300 font-semibold transition-all"
-              >
-                🛍️ Track
-              </TabsTrigger>
-              <TabsTrigger 
-                value="calculate"
-                className="rounded-none border-b-4 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-none bg-slate-200 text-slate-600 hover:bg-slate-300 font-semibold transition-all"
-              >
-                📊 Calculate
-              </TabsTrigger>
-            </TabsList>
+      {/* Main content */}
+      <div className="flex-1">
+        {currentTab === 'calculate' && (
+          <Calculation onUserSelected={setHasUserSelected} />
+        )}
+        {currentTab === 'track' && !showTrackForm && (
+          <div className="w-full p-4 md:p-6 flex items-center justify-center min-h-full">
+            <div className="text-center text-muted-foreground">
+              <p>Use the "+ Track" button to add a new expense</p>
+            </div>
           </div>
-        </div>
+        )}
+        {showTrackForm && (
+          <TrackExpense 
+            ref={trackFormRef}
+            onComplete={() => setShowTrackForm(false)}
+            onValidityChange={setIsFormValid}
+            onLoadingChange={setIsSubmitting}
+          />
+        )}
+      </div>
 
-        <TabsContent value="track" className="flex-1 mt-0">
-          <TrackExpense />
-        </TabsContent>
-        
-        <TabsContent value="calculate" className="flex-1 mt-0">
-          <Calculation />
-        </TabsContent>
-      </Tabs>
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 border-t bg-white shadow-lg">
+        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+          <button
+            onClick={() => {
+              if (showTrackForm && isFormValid && !isSubmitting) {
+                // If tracking and form is valid, submit it
+                trackFormRef.current?.submit()
+              } else {
+                // Otherwise navigate to tracking view
+                setShowTrackForm(true)
+                setCurrentTab('track')
+                // Focus on what input after state updates
+                setTimeout(() => {
+                  trackFormRef.current?.focus?.()
+                }, 0)
+              }
+            }}
+            className={`flex-1 h-12 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 text-sm ${
+              showTrackForm
+                ? isFormValid
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                  : 'bg-blue-200 text-blue-600 cursor-default opacity-75'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            {showTrackForm ? (isSubmitting ? 'Saving...' : '➕ Track') : '➕ Track'}
+          </button>
+          
+          <button
+            onClick={() => {
+              setCurrentTab('calculate')
+              setShowTrackForm(false)
+            }}
+            className={`flex-1 h-12 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 text-sm ${
+              currentTab === 'calculate'
+                ? hasUserSelected
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-200 text-blue-600 opacity-75'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            📊 Calculate
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

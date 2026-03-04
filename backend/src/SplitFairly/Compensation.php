@@ -13,12 +13,19 @@ final class Compensation implements \Stringable
     ) {
     }
 
-    public static function calculate(Expenses $a, Expenses $b): self
+    public static function calculate(Expenses $a, Expenses $b, array $includeTypes = ['Groceries', 'Non-Food', 'Lent']): self
     {
-        $spentA = $a->spent()->divide(2);
-        $spentB = $b->spent()->divide(2);
+        // Determine which amounts to include based on filters
+        $spentTypes = array_intersect($includeTypes, ['Groceries', 'Non-Food']);
+        $lentTypes = array_intersect($includeTypes, ['Lent']);
+
+        $spentA = !empty($spentTypes) ? $a->spent($spentTypes)->divide(2) : Price::ZERO();
+        $spentB = !empty($spentTypes) ? $b->spent($spentTypes)->divide(2) : Price::ZERO();
         $spentDiff = $spentA->substract($spentB);
-        $lentDiff = $a->lent()->substract($b->lent());
+
+        $lentA = !empty($lentTypes) ? $a->lent($lentTypes) : Price::ZERO();
+        $lentB = !empty($lentTypes) ? $b->lent($lentTypes) : Price::ZERO();
+        $lentDiff = $lentA->substract($lentB);
 
         $totalDiff = $spentDiff->add($lentDiff);
 
