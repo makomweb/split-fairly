@@ -14,6 +14,12 @@ spec:
     metadata:
       labels:
         app: {{ include "split-fairly.fullname" . }}-worker
+        component: worker
+        technology: php
+        app.kubernetes.io/version: "{{ .Values.env.APP_VERSION }}"
+        environment: "{{ .Values.env.APP_ENV }}"
+      annotations:
+        kubernetes.io/log-format: "json"
     spec:
       serviceAccountName: {{ include "split-fairly.fullname" . }}
       initContainers:

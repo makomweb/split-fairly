@@ -1,0 +1,42 @@
+{{- if .Values.logging.promtail.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "split-fairly.fullname" . }}-promtail
+  labels:
+    app.kubernetes.io/name: {{ include "split-fairly.name" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "split-fairly.fullname" . }}-promtail
+  template:
+    metadata:
+      labels:
+        app: {{ include "split-fairly.fullname" . }}-promtail
+    spec:
+      serviceAccountName: {{ include "split-fairly.fullname" . }}-promtail
+      tolerations:
+        - operator: "Exists"
+      containers:
+        - name: promtail
+          image: "{{ .Values.logging.promtail.image.repository }}:{{ .Values.logging.promtail.image.tag }}"
+          imagePullPolicy: {{ .Values.logging.promtail.image.pullPolicy }}
+          args:
+            - -config.file=/etc/promtail/promtail.yaml
+          volumeMounts:
+            - name: promtail-config
+              mountPath: /etc/promtail/
+            - name: varlog
+              mountPath: /var/log
+            - name: positions
+              mountPath: /tmp
+      volumes:
+        - name: promtail-config
+          configMap:
+            name: {{ include "split-fairly.fullname" . }}-promtail
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: positions
+          emptyDir: {}
+{{- end }}

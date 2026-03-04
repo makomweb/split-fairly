@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "split-fairly.fullname" . }}-promtail
+  labels:
+    app.kubernetes.io/name: {{ include "split-fairly.fullname" . }}
+data:
+  promtail.yaml: |
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+    positions:
+      filename: /tmp/positions.yaml
+    clients:
+      - url: {{ .Values.logging.promtail.lokiAddress }}
+        {{- if .Values.logging.promtail.basicAuth.enabled }}
+        basic_auth:
+          username: "{{ .Values.logging.promtail.basicAuth.username }}"
+          password: "{{ .Values.logging.promtail.basicAuth.password }}"
+        {{- end }}
+    scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_component]
+            target_label: component
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            target_label: container
+          # Only scrape pods in this release
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+            action: keep
+            regex: {{ .Release.Name }}
+        pipeline_stages:
+          - docker: {}
