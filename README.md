@@ -88,22 +88,21 @@ Visit `http://localhost:8000` in your browser.
 make prod
 
 # Deploy to cluster
+helm install app ./helm
+# or:
 helm upgrade --install app ./helm
 
 # Watch pods come up
 kubectl get pods -w
 
-# View application logs
-kubectl logs deployment/app-split-fairly-app -f
-kubectl logs deployment/app-split-fairly-worker -f
+# View logs for all pods with the PHP label (app + worker)
+kubectl logs -f -l technology=php
 
-# Access the application
-# - Direct: http://localhost:30190
-# - Port-forward: kubectl port-forward svc/app-split-fairly-web 8080:80
-
-# Login credentials (auto-loaded from fixtures)
-# Email: admin@example.com
-# Password: secret
+# Access the application via NodePort:
+# Link: http://localhost:30190
+# Or configure port forwarding via:
+kubectl port-forward svc/app-split-fairly-web 8080:80
+# Link: http://localhost:8080
 ```
 
 ### Kubernetes Architecture

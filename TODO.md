@@ -4,8 +4,8 @@
 - [x] fix CORS issue with backend when running the HELM app
 - [x] don't hard code http://localhost:8080 in frontend
 - [x] put frontend tests into the CI
-- check logoutput from app + worker and see if it can easily be aggregated
-- simplify Dockerfiles:
+- [x] check logoutput from app + worker and see if it can easily be aggregated
+- [x] simplify Dockerfiles:
     - flow of building docker images via Makefile
     - reduce complexity and keep dev, prod, debug stages at a comprehensible state
     - use alpine images for production and keep regular images for development
