@@ -101,11 +101,16 @@ class ListUsersEndpointTest extends WebTestCase
         $response = \is_array($response) ? $response : [];
 
         self::assertArrayHasKey('users', $response);
+        /** @var array<mixed> $users */
         $users = $response['users'] ?? [];
         self::assertCount(2, $users);
 
         // Verify other users are returned (not user1)
-        $emails = array_map(fn($u) => $u['email'] ?? null, $users);
+        $emails = array_map(function ($u) {
+            self::assertIsArray($u);
+
+            return $u['email'] ?? null;
+        }, $users);
         self::assertContains('user2@example.com', $emails);
         self::assertContains('user3@example.com', $emails);
         self::assertNotContains('user1@example.com', $emails);
@@ -131,10 +136,12 @@ class ListUsersEndpointTest extends WebTestCase
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];
+        /** @var array<mixed> $users */
         $users = $response['users'] ?? [];
 
         // Verify each user has id and email
         foreach ($users as $user) {
+            self::assertIsArray($user);
             self::assertArrayHasKey('id', $user);
             self::assertArrayHasKey('email', $user);
             self::assertNotEmpty($user['id']);
@@ -162,10 +169,15 @@ class ListUsersEndpointTest extends WebTestCase
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];
+        /** @var array<mixed> $users */
         $users = $response['users'] ?? [];
 
         // Verify user2 is not in the list
-        $emails = array_map(fn($u) => $u['email'] ?? null, $users);
+        $emails = array_map(function ($u) {
+            self::assertIsArray($u);
+
+            return $u['email'] ?? null;
+        }, $users);
         self::assertNotContains('user2@example.com', $emails);
         self::assertContains('user1@example.com', $emails);
         self::assertContains('user3@example.com', $emails);

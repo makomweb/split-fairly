@@ -32,7 +32,7 @@ class TrackExpenseController extends AbstractController
         }
 
         // Validate Lend expenses: location must be recipient's email and must differ from current user
-        if ($expense->type === 'Lend') {
+        if ('Lend' === $expense->type) {
             $currentUserEmail = $currentUser->getUserIdentifier();
             $recipientEmail = $expense->location;
 

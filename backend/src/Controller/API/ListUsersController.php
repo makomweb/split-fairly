@@ -29,9 +29,9 @@ class ListUsersController extends AbstractController
 
         // Get all users except the current user
         $allUsers = $this->userRepository->findAll();
-        $otherUsers = array_filter($allUsers, fn($user) => $user->getUserIdentifier() !== $currentUser->getUserIdentifier());
+        $otherUsers = array_filter($allUsers, fn ($user) => $user->getUserIdentifier() !== $currentUser->getUserIdentifier());
 
-        $users = array_map(fn($user) => [
+        $users = array_map(fn ($user) => [
             'id' => $user->getUuid()->toRfc4122(),
             'email' => $user->getEmail(),
         ], $otherUsers);

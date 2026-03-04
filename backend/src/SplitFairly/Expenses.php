@@ -72,6 +72,9 @@ final class Expenses
         return $result;
     }
 
+    /**
+     * @param array<string> $includeTypes
+     */
     public function spent(array $includeTypes = ['Groceries', 'Non-Food']): Price
     {
         return array_reduce(
@@ -81,6 +84,9 @@ final class Expenses
         );
     }
 
+    /**
+     * @param array<string> $includeTypes
+     */
     public function lent(array $includeTypes = ['Lent']): Price
     {
         return array_reduce(

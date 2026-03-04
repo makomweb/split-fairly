@@ -75,12 +75,13 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->followRedirect();
 
         // Track a Lend expense to user2
-        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $content = json_encode([
             'price' => ['value' => 50.00, 'currency' => 'EUR'],
             'what' => 'cash',
             'type' => 'Lend',
             'location' => 'user2@example.com',
-        ]));
+        ]);
+        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');
 
         self::assertResponseIsSuccessful();
         $responseContent = $client->getResponse()->getContent();
@@ -109,12 +110,13 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->followRedirect();
 
         // Try to track a Lend expense to self
-        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $content = json_encode([
             'price' => ['value' => 50.00, 'currency' => 'EUR'],
             'what' => 'cash',
             'type' => 'Lend',
             'location' => 'user1@example.com',
-        ]));
+        ]);
+        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');
 
         self::assertResponseStatusCodeSame(400);
         $responseContent = $client->getResponse()->getContent();
@@ -122,7 +124,9 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $response = \is_array($response) ? $response : [];
 
         self::assertArrayHasKey('error', $response);
-        self::assertStringContainsString('Cannot lend money to yourself', $response['error'] ?? '');
+        /** @var string $errorMessage */
+        $errorMessage = $response['error'] ?? '';
+        self::assertStringContainsString('Cannot lend money to yourself', $errorMessage);
     }
 
     public function test_track_lend_expense_to_nonexistent_user_fails(): void
@@ -140,12 +144,13 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->followRedirect();
 
         // Try to track a Lend expense to non-existent user
-        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $content = json_encode([
             'price' => ['value' => 50.00, 'currency' => 'EUR'],
             'what' => 'cash',
             'type' => 'Lend',
             'location' => 'nonexistent@example.com',
-        ]));
+        ]);
+        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');
 
         self::assertResponseStatusCodeSame(400);
         $responseContent = $client->getResponse()->getContent();
@@ -153,7 +158,9 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $response = \is_array($response) ? $response : [];
 
         self::assertArrayHasKey('error', $response);
-        self::assertStringContainsString('not found', $response['error'] ?? '');
+        /** @var string $errorMessage */
+        $errorMessage = $response['error'] ?? '';
+        self::assertStringContainsString('not found', $errorMessage);
     }
 
     public function test_track_regular_expense_no_validation(): void
@@ -171,12 +178,13 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->followRedirect();
 
         // Track a regular Groceries expense (location can be anything)
-        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $content = json_encode([
             'price' => ['value' => 25.50, 'currency' => 'EUR'],
             'what' => 'Coffee',
             'type' => 'Groceries',
             'location' => 'Starbucks',
-        ]));
+        ]);
+        $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');
 
         self::assertResponseIsSuccessful();
         $responseContent = $client->getResponse()->getContent();

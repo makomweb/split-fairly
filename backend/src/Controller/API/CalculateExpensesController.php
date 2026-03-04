@@ -41,7 +41,7 @@ class CalculateExpensesController extends AbstractController
 
         // Check if specific user requested
         $withUserEmail = $request->query->get('with_user');
-        
+
         if ($withUserEmail) {
             // Find the specific user to calculate with
             $selectedUser = $this->userRepository->findOneBy(['email' => $withUserEmail]);
