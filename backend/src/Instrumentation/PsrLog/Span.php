@@ -22,7 +22,7 @@ final class Span implements SpanInterface
 
     public function open(): void
     {
-        $this->logger->info('Entering '.$this->methodName);
+        $this->logger->debug('Entering '.$this->methodName);
     }
 
     public function recordException(string $context, \Throwable $ex): void
@@ -42,9 +42,9 @@ final class Span implements SpanInterface
                     ]
                 );
             }
-            $this->logger->info('Leaving '.$this->methodName);
+            $this->logger->debug('Leaving '.$this->methodName);
         } else {
-            $this->logger->info('Exiting '.$this->methodName);
+            $this->logger->debug('Exiting '.$this->methodName);
         }
     }
 }

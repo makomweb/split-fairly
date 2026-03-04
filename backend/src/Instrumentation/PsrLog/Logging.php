@@ -18,6 +18,11 @@ final readonly class Logging implements LoggingInterface
         $this->logger->info($message);
     }
 
+    public function debug(string|\Stringable $message): void
+    {
+        $this->logger->debug($message);
+    }
+
     public function exception(\Throwable $ex): void
     {
         $this->logger

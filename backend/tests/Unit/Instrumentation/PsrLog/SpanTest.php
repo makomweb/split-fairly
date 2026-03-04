@@ -21,7 +21,7 @@ final class SpanTest extends TestCase
     public function test_open_logs_debug_message(): void
     {
         $this->logger->expects($this->once())
-            ->method('info')
+            ->method('debug')
             ->with('Entering testMethod');
 
         $span = new Span('testMethod', $this->logger);
@@ -31,7 +31,7 @@ final class SpanTest extends TestCase
     public function test_close_without_exception_logs_exiting(): void
     {
         $this->logger->expects($this->atLeast(2))
-            ->method('info');
+            ->method('debug');
 
         $span = new Span('testMethod', $this->logger);
         $span->open();
@@ -43,7 +43,7 @@ final class SpanTest extends TestCase
         $exception = new \Exception('Test error');
 
         $this->logger->expects($this->atLeast(2))
-            ->method('info');
+            ->method('debug');
 
         $span = new Span('testMethod', $this->logger);
         $span->open();
@@ -54,7 +54,7 @@ final class SpanTest extends TestCase
     public function test_record_exception_does_not_log(): void
     {
         $this->logger->expects($this->once())
-            ->method('info');
+            ->method('debug');
 
         $span = new Span('testMethod', $this->logger);
         $span->open();
@@ -64,7 +64,7 @@ final class SpanTest extends TestCase
     public function test_span_lifecycle(): void
     {
         $this->logger->expects($this->exactly(2))
-            ->method('info');
+            ->method('debug');
 
         $span = new Span('method1', $this->logger);
         $span->open();
