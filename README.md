@@ -3,9 +3,13 @@
 ![app-ci-workflow](https://github.com/makomweb/split-fairly/actions/workflows/app-ci.yaml/badge.svg)
 [![codecov](https://codecov.io/gh/makomweb/split-fairly/graph/badge.svg?token=O6WQ8USL6T)](https://codecov.io/gh/makomweb/split-fairly)
 
-A modern web application for transparently splitting expenses and settling debts among groups. Built with **event sourcing** to maintain a complete audit trail of all financial transactions.
+## Goal
 
-Follows DDD principles for separating the application into generic, core, and supporting domains - enforced by [deptrac](https://github.com/deptrac/deptrac).
+This is a full-stack, cloud-native web application for tracking and splitting expenses and settling debts among individuals and groups. It is built on PHP 8.4, Symfony 8, MySQL 8, and React 19, and uses **event sourcing** to maintain a complete audit trail of all financial transactions.
+
+It follows DDD principles to separate the application into generic, core, and supporting domains — enforced by [deptrac](https://github.com/deptrac/deptrac). This makes it easy to achieve full code coverage for the core domain.
+
+It also showcases Kubernetes deployment using Helm.
 
 ## Screenshots
 
@@ -108,45 +112,51 @@ kubectl port-forward svc/app-split-fairly-web 8080:80
 ### Kubernetes Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Kubernetes Cluster                       │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌──────────────────┐  ┌──────────────────┐                 │
-│  │   nginx (web)    │  │ app (PHP-FPM)    │                 │
-│  │ Split-Fairly     │  │ Deployment       │                 │
-│  │ NodePort:30190   │─→│ Pods × 1         │                 │
-│  └──────────────────┘  └──────────────────┘                 │
-│         │                       │                           │
-│         │ Serves SPA            │ Processes requests        │
-│         │ EasyAdmin             │ Event sourcing            │
-│         │                       │ Session management        │
-│         │                 ┌─────▼──────┐                    │
-│         │                 │   worker   │                    │
-│         │                 │ Pod × 1    │                    │
-│         │                 │ Async jobs │                    │
-│         │                 └────────────┘                    │
-│         │                       │                           │
-│         └───────────┬───────────┘                           │
-│                     │                                       │
-│              ┌──────▼──────┐                                │
-│              │   MySQL     │                                │
-│              │ StatefulSet │                                │
-│              │ PVC Storage │                                │
-│              └─────────────┘                                │
-│                     △                                       │
-│                     │ init Job                              │
-│              ┌──────┴──────┐                                │
-│              │ db-init     │                                │
-│              │ (one-time)  │                                │
-│              └─────────────┘                                │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────┐
+│                          Kubernetes Cluster                            │
+├────────────────────────────────────────────────────────────────────────┤
+│                                                                        │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐      │
+│  │   nginx (web)    │  │ app (PHP-FPM)    │  │ worker           │      │
+│  │ Deployment       │  │ Deployment       │  │ (Messenger)      │      │
+│  │ NodePort:30190   │  │ Pod × 1          │  │ Pod × 1          │      │
+│  │ Pods × 1         │─→│ FastCGI :9000    │  │ One-shot pattern │      │
+│  └──────────────────┘  └──────────────────┘  └──────────────────┘      │
+│         │                       │                       │              │
+│         │ Serves SPA            │ Business logic        │ Async tasks  │
+│         │ EasyAdmin             │ API endpoints         │ from queue   │
+│         │ Static assets         │ Session mgmt (DB)     │              │
+│         │                       │ Event sourcing (DB)   │              │
+│         │                       │                       │              │
+│         └───────────┬───────────┴───────────┬───────────┘              │
+│                     │                       │                          │
+│              ┌──────▼───────────────────────▼──┐                       │
+│              │   MySQL StatefulSet             │                       │
+│              │   PVC Storage (8Gi)             │                       │
+│              │   - Event store                 │                       │
+│              │   - Sessions                    │                       │
+│              │   - Application data            │                       │
+│              └─────────────────────────────────┘                       │
+│                     △                                                  │
+│                     │ init Job                                         │
+│              ┌──────┴──────┐                                           │
+│              │ db-init     │                                           │
+│              │ (one-time)  │                                           │
+│              └─────────────┘                                           │
+│                                                                        │
+│  ┌──────────────────────────────────────────────────────────────┐      │
+│  │ Grafana Alloy (k8s-monitoring)                               │      │
+│  │ - Collects logs from all pods                                │      │
+│  │ - Metrics collection & forwarding                            │      │
+│  └──────────────────────────────────────────────────────────────┘      │
+│                                                                        │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Components:**
-- **nginx (web)**: Serves React SPA frontend, EasyAdmin assets, proxies API to PHP
-- **PHP-FPM (app)**: Symfony backend, handles business logic & API endpoints
-- **Worker**: Processes async jobs via Messenger (background tasks)
-- **MySQL**: Persistent data storage with PVC
-- **db-init Job**: One-time database initialization (schema + fixtures)
+- **nginx (web)**: Serves React SPA frontend, static assets, EasyAdmin UI. Proxies API requests to PHP-FPM via FastCGI.
+- **PHP-FPM (app)**: Symfony backend handling business logic, API endpoints, and session management. Stores sessions in MySQL.
+- **Worker**: Processes async jobs via Messenger with one-shot pattern (processes single message per pod lifecycle, then restarts for fresh environment).
+- **MySQL**: Persistent data storage with StatefulSet and PVC. Stores event sourcing audit trail, sessions, and application data.
+- **db-init Job**: One-time database initialization (schema, fixtures, migrations).
+- **Grafana Alloy**: Log collection and forwarding for observability across all cluster components.
