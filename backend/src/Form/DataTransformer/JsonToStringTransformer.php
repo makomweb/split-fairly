@@ -8,12 +8,14 @@ use Symfony\Component\Form\DataTransformerInterface;
  * Converts between array (PHP) and JSON string (form display).
  * Used to handle JSON fields that Doctrine deserializes automatically.
  *
- * @implements DataTransformerInterface<mixed[], string>
+ * @implements DataTransformerInterface<mixed, mixed>
  */
 class JsonToStringTransformer implements DataTransformerInterface
 {
     /**
      * Transform array to JSON string for display in form.
+     *
+     * @param array<mixed>|string|null $value
      */
     public function transform($value): string
     {
@@ -27,23 +29,21 @@ class JsonToStringTransformer implements DataTransformerInterface
             return is_string($encoded) ? $encoded : '';
         }
 
-        if (is_string($value)) {
-            // Already a string, try to pretty-print it
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) {
-                $encoded = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        // Must be a string, try to pretty-print it
+        $decoded = json_decode($value, true);
+        if (is_array($decoded)) {
+            $encoded = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-                return is_string($encoded) ? $encoded : $value;
-            }
-
-            return $value;
+            return is_string($encoded) ? $encoded : $value;
         }
 
-        return '';
+        return $value;
     }
 
     /**
      * Transform JSON string from form back to array.
+     *
+     * @param string|array<mixed>|null $value
      *
      * @return array<mixed>
      */
@@ -57,11 +57,9 @@ class JsonToStringTransformer implements DataTransformerInterface
             return $value;
         }
 
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) {
-                return $decoded;
-            }
+        $decoded = json_decode($value, true);
+        if (is_array($decoded)) {
+            return $decoded;
         }
 
         return [];
