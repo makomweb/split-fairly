@@ -43,5 +43,11 @@ class DashboardController extends AbstractDashboardController
             'fa fa-user',
             'admin_user_index'
         );
+
+        yield MenuItem::linkToRoute(
+            'Events',
+            'fa fa-history',
+            'admin_event_index'
+        );
     }
 }
