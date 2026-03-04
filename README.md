@@ -5,7 +5,7 @@
 
 ## Goal
 
-This is a full-stack, cloud-native web application for tracking and splitting expenses and settling debts among individuals and groups. It is built on PHP 8.4, Symfony 8, MySQL 8, and React 19, and uses **event sourcing** to maintain a complete audit trail of all financial transactions.
+This is a full-stack, cloud-native web application for tracking and splitting expenses and settling debts among 2 individuals. It is built on PHP 8.4, Symfony 8, MySQL 8, and React 19, and uses **event sourcing** to maintain a complete audit trail of all financial transactions.
 
 It follows DDD principles to separate the application into generic, core, and supporting domains — enforced by [deptrac](https://github.com/deptrac/deptrac). This makes it easy to achieve full code coverage for the core domain.
 
