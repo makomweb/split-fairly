@@ -87,7 +87,7 @@ export function Calculation({ onUserSelected }: { onUserSelected?: (selected: bo
 
   if (error) {
     return (
-      <div className="w-full p-4 md:p-6 pb-safe">
+      <div className="w-full p-4 md:p-6 pb-64 md:pb-96">
         <div className="max-w-2xl mx-auto space-y-4">
           {/* Person Selector - Always visible at top */}
           <Card>
@@ -128,7 +128,7 @@ export function Calculation({ onUserSelected }: { onUserSelected?: (selected: bo
   }
 
   return (
-    <div className="w-full p-4 md:p-6 pb-safe">
+    <div className="w-full p-4 md:p-6 pb-64 md:pb-96">
       <div className="max-w-2xl mx-auto space-y-4">
         {/* Person Selector - Always visible at top */}
         <Card>
