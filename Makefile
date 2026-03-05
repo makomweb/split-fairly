@@ -3,6 +3,8 @@ VERSION = 0.1.2
 
 .DEFAULT_GOAL := help
 
+.PHONY: build prod start
+
 help:
 	@echo "📋 Available targets:\n"
 	@echo "🏗️  Build & Setup:"
