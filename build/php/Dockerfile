@@ -26,7 +26,7 @@ WORKDIR /var/www/project
 
 RUN apk add --no-cache --virtual .build-deps \
     build-base autoconf icu-dev libzip-dev \
-    && apk add --no-cache libintl git zip icu-libs \
+    && apk add --no-cache libintl git zip libzip icu-libs \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl pdo opcache pdo_mysql zip \
     && pecl install opentelemetry redis \
