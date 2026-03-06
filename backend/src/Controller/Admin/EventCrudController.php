@@ -2,8 +2,9 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Event;
+use App\Entity\Event as EventEntity;
 use App\Form\DataTransformer\JsonToStringTransformer;
+use App\SplitFairly\EventStoreInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -16,9 +17,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * @extends AbstractCrudController<Event>
+ * @extends AbstractCrudController<EventEntity>
  *
  * Admin interface for viewing and managing domain events stored in event sourcing.
  * Most event fields are immutable (id, createdAt, createdBy, subjectType, subjectId, eventType),
@@ -28,7 +31,11 @@ class EventCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Event::class;
+        return EventEntity::class;
+    }
+
+    public function __construct(private EventStoreInterface $eventRepository)
+    {
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -45,9 +52,14 @@ class EventCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        $wipe = Action::new('wipeEvents', 'Wipe Events', 'fa fa-trash')
+            ->addCssClass('btn btn-danger')
+            ->linkToCrudAction('wipeEvents');
+
         return $actions
             ->remove(Crud::PAGE_INDEX, Action::NEW)
-            ->add(Crud::PAGE_INDEX, Action::DETAIL);
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_INDEX, $wipe);
     }
 
     public function configureFields(string $pageName): iterable
@@ -112,5 +124,18 @@ class EventCrudController extends AbstractCrudController
         ]);
 
         $builder->get('payload')->addModelTransformer(new JsonToStringTransformer());
+    }
+
+    /** @param AdminContext<EventEntity> $context */
+    #[IsGranted('ROLE_ADMIN')]
+    public function wipeEvents(AdminContext $context): RedirectResponse
+    {
+        $this->eventRepository->reset();
+        $this->addFlash('success', 'All events have been deleted.');
+
+        $referrer = $context->getRequest()->headers->get('referer');
+        $route = $referrer ?? $this->generateUrl('admin_event_index');
+
+        return $this->redirect($route);
     }
 }

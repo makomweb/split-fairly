@@ -91,22 +91,19 @@ Visit `http://localhost:8000` in your browser.
 # Build production images
 make prod
 
-# Deploy to cluster
-helm install app ./helm
+# Deploy with 3 app pods + 2 worker pods
+helm install app ./helm --set replicaCount.app=3 --set replicaCount.worker=2
 # or:
 helm upgrade --install app ./helm
-
-# Watch pods come up
-kubectl get pods -w
-
-# View logs for all pods with the PHP label (app + worker)
-kubectl logs -f -l technology=php
 
 # Access the application via NodePort:
 # Link: http://localhost:30190
 # Or configure port forwarding via:
 kubectl port-forward svc/app-split-fairly-web 8080:80
 # Link: http://localhost:8080
+
+# View logs for all pods with the PHP label (app + worker)
+kubectl logs -f -l technology=php
 ```
 
 ### Kubernetes Architecture

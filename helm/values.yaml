@@ -6,11 +6,11 @@ replicaCount:
 image:
   app:
     repository: "split-fairly"
-    tag: "0.1.1"
+    tag: "0.1.2"
     pullPolicy: IfNotPresent
   web:
     repository: "split-fairly-web"
-    tag: "0.1.1"
+    tag: "0.1.2"
     pullPolicy: IfNotPresent
   mysql:
     repository: "mysql"
@@ -42,7 +42,7 @@ resources:
 env:
   APP_SECRET: "F3E46580-5F9A-4524-B218-90490B033192"
   APP_ENV: "prod"
-  APP_VERSION: "0.1.1"
+  APP_VERSION: "0.1.2"
   DATABASE_URL: "mysql://{{ .Values.mysql.user }}:{{ .Values.mysql.password }}@{{ include \"split-fairly.fullname\" . }}-db:{{ .Values.service.mysql.port }}/{{ default \"app\" .Values.mysql.database }}?serverVersion=8.0.31&charset=utf8mb4"
   ADMIN_EMAIL: "admin@example.com"
   ADMIN_PASSWORD: "secret"
