@@ -6,10 +6,9 @@ VERSION = 0.1.4
 .PHONY: build prod start
 
 help:
-	@echo "📋 Available targets:\n"
 	@echo "🏗️  Build & Setup:"
 	@echo "  make start - Build development image, boot stack, initialize db, and open browser"
-	@echo "  make build - Build development Docker image"
+	@echo "  make dev - Build development Docker image"
 	@echo "  make prod - Build production Docker images (app + web)"
 	@echo "  make up - Boot the Docker Compose stack"
 	@echo "  make down - Shut down the Docker Compose stack"
@@ -33,16 +32,18 @@ help:
 	@echo "  make clear - Clear all caches"
 	@echo "  make open - Open application in browser\n"
 
-start: build up init open
+start: dev up init open
 
-build:
+dev:
 	@echo "🏗️  Building development image(s)..."
-	docker build . -f ./build/php/Dockerfile --target dev --no-cache -t ${APP_NAME}-dev:${VERSION}
+	docker build . -f ./build/php/Dockerfile --target dev -t ${APP_NAME}-dev:${VERSION}
 
 prod:
 	@echo "🛳️  Building procution image(s)..."
 	docker build . -f ./build/php/Dockerfile --target prod --no-cache -t ${APP_NAME}:${VERSION}
 	docker build . -f ./build/nginx/Dockerfile --no-cache -t ${APP_NAME}-web:${VERSION}
+
+build: dev prod
 
 up:
 	@echo "🚀 Booting Docker stack..."

@@ -4,7 +4,7 @@ WORKDIR /frontend
 
 COPY frontend .
 
-RUN npm install && npm run build
+RUN npm ci && npm run build
 
 # The vite config outputs to ../backend/public/build from /frontend context
 # That path resolves to /backend/public/build, copy it to /dist
