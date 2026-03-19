@@ -6,6 +6,7 @@ export default defineConfig(({ command }) => ({
   plugins: [react()],
   root: __dirname,
   base: command === 'build' ? '/build/' : '/',
+  publicDir: resolve(__dirname, 'public'),
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),

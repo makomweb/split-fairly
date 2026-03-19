@@ -22,6 +22,9 @@ RUN mkdir -p /var/www/project/public/build && \
 # Copy built frontend assets
 COPY --from=frontend /dist /var/www/project/public/build
 
+# Copy favicon from frontend build (public files are copied to /dist root by Vite)
+COPY --from=frontend /dist/favicon.* /var/www/project/public/
+
 # Copy EasyAdmin bundles from backend source
 COPY backend/public/bundles /var/www/project/public/bundles
 
