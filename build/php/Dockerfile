@@ -82,7 +82,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # -----------------------------------
 # Frontend-Stage (build React app)
 # -----------------------------------
-FROM node:22-alpine AS frontend
+FROM node:25.2-alpine AS frontend
 
 WORKDIR /frontend
 

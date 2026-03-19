@@ -1,4 +1,4 @@
-FROM node:22-alpine AS frontend
+FROM node:25.2-alpine AS frontend
 
 WORKDIR /frontend
 
@@ -13,7 +13,7 @@ RUN cp -r /backend/public/build /dist
 # -----------------------------------
 # nginx-Stage (serve frontend + proxy API)
 # -----------------------------------
-FROM nginx:stable-alpine
+FROM nginx:stable-alpine3.23
 
 # Create public directory structure
 RUN mkdir -p /var/www/project/public/build && \

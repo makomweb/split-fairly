@@ -84,7 +84,7 @@ services:
         networks:
             - split-fairly
     dashboard:
-        image: b4bz/homer:latest
+        image: ${DASHBOARD_IMAGE}
         volumes:
             - ./dashboard/assets:/www/assets
             - ./backend/report:/www/public/report
