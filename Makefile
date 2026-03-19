@@ -1,5 +1,5 @@
 APP_NAME = split-fairly
-VERSION = 0.1.2
+VERSION = 0.1.4
 
 .DEFAULT_GOAL := help
 
@@ -11,8 +11,8 @@ help:
 	@echo "  make start - Build development image, boot stack, initialize db, and open browser"
 	@echo "  make build - Build development Docker image"
 	@echo "  make prod - Build production Docker images (app + web)"
-	@echo "  make up - Boot the Docker stack"
-	@echo "  make down - Shut down the Docker stack"
+	@echo "  make up - Boot the Docker Compose stack"
+	@echo "  make down - Shut down the Docker Compose stack"
 	@echo "  make init - Initialize app (composer, database, fixtures)"
 	@echo "\n🔄 Maintenance:"
 	@echo "  make maintain - Update composer and npm dependencies"
