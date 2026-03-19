@@ -88,7 +88,7 @@ WORKDIR /frontend
 
 COPY frontend .
 
-RUN npm install && npm run build
+RUN npm ci && npm run build
 
 RUN cp -r /backend/public/build /dist
 
