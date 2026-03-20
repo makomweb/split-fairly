@@ -8,42 +8,35 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif !important;
         }
 
         html, body {
             background: #fff;
-            color: #000;
-            font-size: 10pt;
-            line-height: 1.4;
-            margin: 0;
-            padding: 0;
+            color: #1a1a1a;
+            font-size: 11pt;
+            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
         }
 
         @page {
             size: A4 portrait;
-            margin: 20mm 15mm;
+            margin: 10mm 15mm;
         }
-        
+
         h1 {
-            font-size: 18pt;
-            font-weight: bold;
-            margin-bottom: 2mm;
+            font-size: 22pt;
+            font-weight: 600;
+            margin: 0 0 4mm 0;
+            color: #000;
         }
 
         h2 {
-            font-size: 11pt;
-            font-weight: bold;
-            margin-top: 6mm;
-            margin-bottom: 3mm;
-            text-transform: uppercase;
-            color: #333;
-        }
-
-        h3 {
-            font-size: 10pt;
-            font-weight: bold;
-            margin: 0;
+            font-size: 12pt;
+            font-weight: 600;
+            margin: 8mm 0 4mm 0;
+            color: #1a1a1a;
+            border-bottom: 1pt solid #e5e5e5;
+            padding-bottom: 2mm;
         }
 
         p {
@@ -53,260 +46,205 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 4mm;
+            margin: 0;
         }
 
         td, th {
-            padding: 2mm 3mm;
+            padding: 3mm;
             text-align: left;
-            border-bottom: 0.5pt solid #ddd;
-        }
-
-        th {
-            font-weight: bold;
-            background: #f5f5f5;
+            border: none;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 2mm;
-            margin-top: 8mm;
+            margin-bottom: 6mm;
+            padding-bottom: 4mm;
+            border-bottom: 1.5pt solid #333;
+        }
+
+        .timestamp {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 2mm;
+        }
+
+        .settlement-section {
+            margin-bottom: 10mm;
+            padding: 4mm;
+            background: #f9f9f9;
+            border-radius: 2pt;
         }
 
         .settlement-table {
             width: 100%;
-            margin-bottom: 2mm;
-            margin-top: 0;
-            padding: 0 !important;
-            
+            margin-top: 3mm;
         }
 
-        .settlement-table-wrapper {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-            margin-bottom: 12mm;
-            padding: 0 7mm !important;
-        }
-
-        .settlement-cell {
-            display: table-cell;
+        .settlement-table td {
             width: 33.33%;
-            padding: 0 !important;
+            padding: 3mm;
+            text-align: center;
+            vertical-align: top;
+            border-bottom: 1pt solid #e5e5e5;
+        }
+
+        .settlement-label {
+            font-size: 9pt;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 2mm;
+            display: block;
+        }
+
+        .settlement-value {
+            font-size: 11pt;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .settlement-amount {
+            color: #2d7d2d;
+            font-weight: 700;
         }
 
         .users-container {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-            margin-bottom: 0;
-            margin-top: 0;
-            padding: 0 !important;
-        }
-
-        .user-column {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            padding: 0 4mm !important;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6mm;
+            margin-top: 6mm;
         }
 
         .user-section {
-            margin-bottom: 10mm;
-            padding: 3mm !important;
+            padding: 4mm;
+            background: #fafafa;
+            border-left: 2pt solid #ddd;
             page-break-inside: avoid;
         }
 
-        .expense-type-group {
-            margin-bottom: 4mm;
-            padding: 2mm 0 !important;
-        }
-
-        .user-header-label {
-            font-size: 9pt;
-            font-weight: bold;
-            color: #666;
-            margin-bottom: 2mm;
-            text-transform: uppercase;
-        }
-
         .user-email {
-            font-size: 10pt;
-            font-weight: bold;
-            margin-bottom: 5mm;
+            font-size: 11pt;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 4mm;
             padding-bottom: 2mm;
-            border-bottom: 1pt solid #ccc;
+            border-bottom: 1pt solid #ddd;
         }
 
         .expense-type-group {
-            margin-bottom: 4mm;
+            margin-bottom: 5mm;
         }
 
         .expense-type-heading {
-            font-size: 8pt;
-            font-weight: bold;
+            font-size: 9pt;
+            font-weight: 600;
             color: #555;
-            margin-bottom: 1.5mm;
             text-transform: uppercase;
-        }
-
-        .category-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 1.5mm 0;
-            border-bottom: 0.5pt solid #eee;
-        }
-
-        .category {
-            text-align: right;
-            font-weight: bold;
-            margin-left: 5mm;
+            margin-bottom: 2mm;
+            letter-spacing: 0.3pt;
         }
 
         .expense-item {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-            padding: 1.5mm 0;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2mm;
+            padding: 2mm 0;
             border-bottom: 0.5pt solid #eee;
-            font-size: 9pt;
-        }
-
-        .expense-details {
-            display: table-cell;
-            vertical-align: top;
-            width: 85%;
+            font-size: 10pt;
+            align-items: center;
         }
 
         .expense-what {
             font-weight: 500;
-        }
-
-        .expense-meta {
-            font-size: 8pt;
-            color: #666;
-            line-height: 1.3;
+            color: #1a1a1a;
         }
 
         .expense-amount {
-            display: table-cell;
-            vertical-align: top;
-            width: 15%;
             text-align: right;
-            font-weight: bold;
+            font-weight: 600;
+            color: #1a1a1a;
             white-space: nowrap;
-            padding-left: 3mm;
         }
 
         .category-total {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-            padding: 2mm 0 1.5mm 0;
-            margin-top: 1mm;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2mm;
+            padding: 2mm 0;
+            margin-top: 2mm;
             border-top: 1pt solid #999;
-            border-bottom: none;
-            font-size: 9pt;
-            font-weight: bold;
-        }
-
-        .category-total-label {
-            display: table-cell;
-            vertical-align: top;
-            width: 85%;
-            text-align: left;
-            padding-right: 3mm;
+            font-size: 10pt;
+            font-weight: 600;
+            color: #1a1a1a;
         }
 
         .category-total-amount {
-            display: table-cell;
-            vertical-align: top;
-            width: 15%;
             text-align: right;
-            font-weight: bold;
             white-space: nowrap;
-            padding-left: 3mm;
-        }
-
-        .section-title {
-            font-weight: bold;
-            font-size: 9pt;
-            margin-top: 3mm;
-            margin-bottom: 1.5mm;
-            color: #333;
-        }
-
-        .timestamp {
-            font-size: 8pt;
-            color: #888;
-            text-align: center;
-            margin-bottom: 6mm;
         }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="header">
-        <h1>Split Fairly Summary</h1>
-        <p class="timestamp">Generated on {{ "now"|date("F j, Y H:i") }}</p>
+        <h1>Split Fairly Report</h1>
+        <p class="timestamp">Generated {{ "now"|date("F j, Y \\a\\t H:i") }}</p>
     </div>
 
-    <div class="settlement-table-wrapper">
+    <div class="settlement-section">
+        <h2>Settlement Summary</h2>
         <table class="settlement-table">
             <tr>
-                <td class="settlement-cell">
-                    <p class="label">From</p>
-                    <p class="value">{{ compensation.from }}</p>
+                <td>
+                    <span class="settlement-label">From</span>
+                    <div class="settlement-value">{{ compensation.from }}</div>
                 </td>
-                <td class="settlement-cell">
-                    <p class="label">Pays</p>
-                    <p class="value">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</p>
+                <td>
+                    <span class="settlement-label">Amount</span>
+                    <div class="settlement-value settlement-amount">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</div>
                 </td>
-                <td class="settlement-cell">
-                    <p class="label">To</p>
-                    <p class="value">{{ compensation.to }}</p>
+                <td>
+                    <span class="settlement-label">To</span>
+                    <div class="settlement-value">{{ compensation.to }}</div>
                 </td>
             </tr>
         </table>
     </div>
 
+    <h2>Expenses by User</h2>
     <div class="users-container">
         {% for expenses in expenses %}
-            <div class="user-column">
-                <div class="user-section">
-                    <p class="user-email">{{ expenses.userEmail }}</p>
+            <div class="user-section">
+                <p class="user-email">{{ expenses.userEmail }}</p>
 
-                    {% set expensesByType = {} %}
-                    {% for expense in expenses.expenses %}
-                        {% if expensesByType[expense.type] is not defined %}
-                            {% set expensesByType = expensesByType|merge({(expense.type): []}) %}
-                        {% endif %}
-                        {% set expensesByType = expensesByType|merge({(expense.type): expensesByType[expense.type]|merge([expense])}) %}
-                    {% endfor %}
+                {% set expensesByType = {} %}
+                {% for expense in expenses.expenses %}
+                    {% if expensesByType[expense.type] is not defined %}
+                        {% set expensesByType = expensesByType|merge({(expense.type): []}) %}
+                    {% endif %}
+                    {% set expensesByType = expensesByType|merge({(expense.type): expensesByType[expense.type]|merge([expense])}) %}
+                {% endfor %}
 
-                    {% for type, typeExpenses in expensesByType %}
-                        <div class="expense-type-group">
-                            <div class="expense-type-heading">{{ type }}</div>
-                            {% for expense in typeExpenses %}
-                                <div class="expense-item">
-                                    <div class="expense-details">
-                                        <div class="expense-what">{{ expense.what }}</div>
-                                    </div>
-                                    <div class="expense-amount">{{ expense.price.value|number_format(2) }} {{ expense.price.currency }}</div>
-                                </div>
-                            {% endfor %}
-                            {% set totalAmount = 0 %}
-                            {% set currency = typeExpenses[0].price.currency %}
-                            {% for expense in typeExpenses %}
-                                {% set totalAmount = totalAmount + expense.price.value %}
-                            {% endfor %}
-                            <div class="category-total">
-                                <div class="category-total-label">Total</div>
-                                <div class="category-total-amount">{{ totalAmount|number_format(2) }} {{ currency }}</div>
+                {% for type, typeExpenses in expensesByType %}
+                    <div class="expense-type-group">
+                        <div class="expense-type-heading">{{ type }}</div>
+                        {% for expense in typeExpenses %}
+                            <div class="expense-item">
+                                <div class="expense-what">{{ expense.what }}</div>
+                                <div class="expense-amount">{{ expense.price.value|number_format(2) }} {{ expense.price.currency }}</div>
                             </div>
+                        {% endfor %}
+                        {% set totalAmount = 0 %}
+                        {% set currency = typeExpenses[0].price.currency %}
+                        {% for expense in typeExpenses %}
+                            {% set totalAmount = totalAmount + expense.price.value %}
+                        {% endfor %}
+                        <div class="category-total">
+                            <div>Total</div>
+                            <div class="category-total-amount">{{ totalAmount|number_format(2) }} {{ currency }}</div>
                         </div>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
             </div>
         {% endfor %}
     </div>
