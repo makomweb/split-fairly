@@ -7,216 +7,164 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        html, body {
-            background: #fff;
-            color: #1a1a1a;
-            font-size: 11pt;
-            line-height: 1.5;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
-        }
-
-        @page {
-            size: A4 portrait;
-            margin: 10mm 15mm;
-        }
-
-        h1 {
-            font-size: 22pt;
-            font-weight: 600;
-            margin: 0 0 4mm 0;
-            color: #000;
-        }
-
-        h2 {
-            font-size: 12pt;
-            font-weight: 600;
-            margin: 8mm 0 4mm 0;
-            color: #1a1a1a;
-            border-bottom: 1pt solid #e5e5e5;
-            padding-bottom: 2mm;
-        }
-
-        p {
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+            width: 210mm;
             margin: 0;
+            padding: 15mm;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0;
-        }
-
-        td, th {
-            padding: 3mm;
-            text-align: left;
-            border: none;
+        .page {
+            width: 180mm;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 6mm;
-            padding-bottom: 4mm;
-            border-bottom: 1.5pt solid #333;
+            margin-bottom: 12mm;
+            padding-bottom: 8mm;
+            border-bottom: 2px solid #333;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            margin: 0 0 3mm 0;
+            color: #000;
         }
 
         .timestamp {
-            font-size: 9pt;
+            font-size: 9px;
             color: #666;
-            margin-top: 2mm;
+            margin: 0;
         }
 
-        .settlement-section {
-            margin-bottom: 10mm;
-            padding: 4mm;
+        .settlement-box {
             background: #f9f9f9;
-            border-radius: 2pt;
+            padding: 8mm;
+            margin: 8mm 0;
+            border-left: 3px solid #333;
         }
 
-        .settlement-table {
-            width: 100%;
-            margin-top: 3mm;
+        .settlement-summary {
+            font-size: 11px;
+            line-height: 1.7;
+            color: #333;
         }
 
-        .settlement-table td {
-            width: 33.33%;
-            padding: 3mm;
-            text-align: center;
-            vertical-align: top;
-            border-bottom: 1pt solid #e5e5e5;
+        .settlement-summary strong {
+            font-weight: bold;
+            color: #000;
         }
 
-        .settlement-label {
-            font-size: 9pt;
-            font-weight: 600;
-            color: #666;
-            text-transform: uppercase;
-            margin-bottom: 2mm;
-            display: block;
-        }
-
-        .settlement-value {
-            font-size: 11pt;
-            font-weight: 600;
-            color: #1a1a1a;
-        }
-
-        .settlement-amount {
+        .amount-highlight {
+            font-size: 14px;
+            font-weight: bold;
             color: #2d7d2d;
-            font-weight: 700;
         }
 
-        .users-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6mm;
-            margin-top: 6mm;
+        .expenses-section {
+            margin-top: 10mm;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 8mm 0 5mm 0;
+            color: #000;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3mm;
         }
 
         .user-section {
-            padding: 4mm;
-            background: #fafafa;
-            border-left: 2pt solid #ddd;
-            page-break-inside: avoid;
+            margin-bottom: 8mm;
         }
 
-        .user-email {
-            font-size: 11pt;
-            font-weight: 600;
+        .user-header {
+            font-size: 11px;
+            font-weight: bold;
             color: #000;
-            margin-bottom: 4mm;
-            padding-bottom: 2mm;
-            border-bottom: 1pt solid #ddd;
+            margin: 0 0 4mm 0;
         }
 
-        .expense-type-group {
-            margin-bottom: 5mm;
-        }
-
-        .expense-type-heading {
-            font-size: 9pt;
-            font-weight: 600;
-            color: #555;
-            text-transform: uppercase;
+        .expense-line {
+            display: table;
+            width: 100%;
             margin-bottom: 2mm;
-            letter-spacing: 0.3pt;
+            font-size: 10px;
         }
 
-        .expense-item {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 2mm;
-            padding: 2mm 0;
-            border-bottom: 0.5pt solid #eee;
-            font-size: 10pt;
-            align-items: center;
+        .expense-category {
+            display: table-cell;
+            width: 25%;
+            color: #666;
+            padding-right: 2mm;
         }
 
-        .expense-what {
-            font-weight: 500;
-            color: #1a1a1a;
+        .expense-description {
+            display: table-cell;
+            width: 55%;
+            color: #333;
+            padding: 0 3mm;
         }
 
         .expense-amount {
+            display: table-cell;
+            width: 20%;
             text-align: right;
-            font-weight: 600;
-            color: #1a1a1a;
-            white-space: nowrap;
+            color: #333;
+            font-weight: bold;
         }
 
-        .category-total {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 2mm;
-            padding: 2mm 0;
-            margin-top: 2mm;
-            border-top: 1pt solid #999;
-            font-size: 10pt;
-            font-weight: 600;
-            color: #1a1a1a;
+        .user-total {
+            display: table;
+            width: 100%;
+            margin-top: 4mm;
+            padding-top: 3mm;
+            border-top: 1px solid #ddd;
+            font-size: 10px;
+            font-weight: bold;
         }
 
-        .category-total-amount {
+        .total-label {
+            display: table-cell;
+            width: 80%;
+            color: #000;
+        }
+
+        .total-value {
+            display: table-cell;
+            width: 20%;
             text-align: right;
-            white-space: nowrap;
+            color: #000;
         }
     </style>
 {% endblock %}
 
 {% block body %}
+<div class="page">
     <div class="header">
         <h1>Split Fairly Report</h1>
-        <p class="timestamp">Generated {{ "now"|date("F j, Y \\a\\t H:i") }}</p>
+        <p class="timestamp">{{ "now"|date("d F Y") }}</p>
     </div>
 
-    <div class="settlement-section">
-        <h2>Settlement Summary</h2>
-        <table class="settlement-table">
-            <tr>
-                <td>
-                    <span class="settlement-label">From</span>
-                    <div class="settlement-value">{{ compensation.from }}</div>
-                </td>
-                <td>
-                    <span class="settlement-label">Amount</span>
-                    <div class="settlement-value settlement-amount">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</div>
-                </td>
-                <td>
-                    <span class="settlement-label">To</span>
-                    <div class="settlement-value">{{ compensation.to }}</div>
-                </td>
-            </tr>
-        </table>
+    <div class="settlement-box">
+        <div class="settlement-summary">
+            <strong>{{ compensation.from }}</strong> owes <strong>{{ compensation.to }}</strong> <span class="amount-highlight">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</span>.
+        </div>
     </div>
 
-    <h2>Expenses by User</h2>
-    <div class="users-container">
+    <div class="expenses-section">
+        <div class="section-title">Expense Details</div>
+        
         {% for expenses in expenses %}
             <div class="user-section">
-                <p class="user-email">{{ expenses.userEmail }}</p>
-
+                <div class="user-header">{{ expenses.userEmail }}</div>
+                
                 {% set expensesByType = {} %}
                 {% for expense in expenses.expenses %}
                     {% if expensesByType[expense.type] is not defined %}
@@ -226,26 +174,27 @@
                 {% endfor %}
 
                 {% for type, typeExpenses in expensesByType %}
-                    <div class="expense-type-group">
-                        <div class="expense-type-heading">{{ type }}</div>
-                        {% for expense in typeExpenses %}
-                            <div class="expense-item">
-                                <div class="expense-what">{{ expense.what }}</div>
-                                <div class="expense-amount">{{ expense.price.value|number_format(2) }} {{ expense.price.currency }}</div>
-                            </div>
-                        {% endfor %}
-                        {% set totalAmount = 0 %}
-                        {% set currency = typeExpenses[0].price.currency %}
-                        {% for expense in typeExpenses %}
-                            {% set totalAmount = totalAmount + expense.price.value %}
-                        {% endfor %}
-                        <div class="category-total">
-                            <div>Total</div>
-                            <div class="category-total-amount">{{ totalAmount|number_format(2) }} {{ currency }}</div>
+                    {% set totalAmount = 0 %}
+                    {% set currency = typeExpenses[0].price.currency %}
+                    {% for expense in typeExpenses %}
+                        {% set totalAmount = totalAmount + expense.price.value %}
+                    {% endfor %}
+
+                    {% for expense in typeExpenses %}
+                        <div class="expense-line">
+                            <div class="expense-category">{{ type }}</div>
+                            <div class="expense-description">{{ expense.what }}</div>
+                            <div class="expense-amount">{{ expense.price.value|number_format(2) }}</div>
                         </div>
+                    {% endfor %}
+                    
+                    <div class="user-total">
+                        <div class="total-label">{{ type }} Total</div>
+                        <div class="total-value">{{ totalAmount|number_format(2) }} {{ currency }}</div>
                     </div>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
+</div>
 {% endblock %}
