@@ -74,11 +74,11 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->submit($form);
         $client->followRedirect();
 
-        // Track a Lend expense to user2
+        // Track a Lent expense to user2
         $content = json_encode([
             'price' => ['value' => 50.00, 'currency' => 'EUR'],
             'what' => 'cash',
-            'type' => 'Lend',
+            'type' => 'Lent',
             'location' => 'user2@example.com',
         ]);
         $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');
@@ -109,11 +109,11 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->submit($form);
         $client->followRedirect();
 
-        // Try to track a Lend expense to self
+        // Try to track a Lent expense to self
         $content = json_encode([
             'price' => ['value' => 50.00, 'currency' => 'EUR'],
             'what' => 'cash',
-            'type' => 'Lend',
+            'type' => 'Lent',
             'location' => 'user1@example.com',
         ]);
         $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');
@@ -143,11 +143,11 @@ class TrackExpenseWithLendValidationTest extends WebTestCase
         $client->submit($form);
         $client->followRedirect();
 
-        // Try to track a Lend expense to non-existent user
+        // Try to track a Lent expense to non-existent user
         $content = json_encode([
             'price' => ['value' => 50.00, 'currency' => 'EUR'],
             'what' => 'cash',
-            'type' => 'Lend',
+            'type' => 'Lent',
             'location' => 'nonexistent@example.com',
         ]);
         $client->request('POST', '/api/track', [], [], ['CONTENT_TYPE' => 'application/json'], $content ?: '{}');

@@ -18,6 +18,10 @@ final readonly class Expense
         Ensure::that(!empty($what));
         Ensure::that(!empty($type));
         Ensure::that(!empty($location));
+        Ensure::that(
+            in_array($type, array_map(static fn (ExpenseType $e) => $e->value, ExpenseType::cases()), strict: true),
+            sprintf('Invalid expense type: %s', $type)
+        );
     }
 
     public function getId(): Uuid

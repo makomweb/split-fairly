@@ -40,7 +40,7 @@ final class ExpenseTest extends TestCase
     {
         $price = new Price(value: 10.50, currency: 'EUR');
         $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
-        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food Expenses', location: 'Restaurant');
+        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food', location: 'Restaurant');
 
         self::assertNotEquals($expense1->getId(), $expense2->getId());
     }
