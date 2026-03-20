@@ -4,4 +4,4 @@ monolog:
       type: stream
       path: "php://stdout"
       level: info
-      formatter: monolog.formatter.json
+      formatter: App\Instrumentation\PsrLog\CustomLineFormatter

@@ -7,307 +7,194 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif !important;
         }
 
-        html, body {
-            background: #fff;
-            color: #000;
-            font-size: 10pt;
-            line-height: 1.4;
-            margin: 0;
-            padding: 0;
-        }
-
-        @page {
-            size: A4 portrait;
-            margin: 20mm 15mm;
-        }
-        
-        h1 {
-            font-size: 18pt;
-            font-weight: bold;
-            margin-bottom: 2mm;
-        }
-
-        h2 {
-            font-size: 11pt;
-            font-weight: bold;
-            margin-top: 6mm;
-            margin-bottom: 3mm;
-            text-transform: uppercase;
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.6;
             color: #333;
-        }
-
-        h3 {
-            font-size: 10pt;
-            font-weight: bold;
+            background: white;
+            width: 210mm;
             margin: 0;
+            padding: 15mm;
         }
 
-        p {
-            margin: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 4mm;
-        }
-
-        td, th {
-            padding: 2mm 3mm;
-            text-align: left;
-            border-bottom: 0.5pt solid #ddd;
-        }
-
-        th {
-            font-weight: bold;
-            background: #f5f5f5;
+        .page {
+            width: 180mm;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 2mm;
-            margin-top: 8mm;
-        }
-
-        .settlement-table {
-            width: 100%;
-            margin-bottom: 2mm;
-            margin-top: 0;
-            padding: 0 !important;
-            
-        }
-
-        .settlement-table-wrapper {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
             margin-bottom: 12mm;
-            padding: 0 7mm !important;
+            padding-bottom: 8mm;
+            border-bottom: 2px solid #333;
         }
 
-        .settlement-cell {
-            display: table-cell;
-            width: 33.33%;
-            padding: 0 !important;
+        .header h1 {
+            font-size: 26px;
+            margin: 0 0 3mm 0;
+            color: #000;
         }
 
-        .users-container {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-            margin-bottom: 0;
-            margin-top: 0;
-            padding: 0 !important;
+        .timestamp {
+            font-size: 9px;
+            color: #666;
+            margin: 0;
         }
 
-        .user-column {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-            padding: 0 4mm !important;
+        .settlement-box {
+            background: #f9f9f9;
+            padding: 6mm 8mm;
+            margin: 4mm 0;
+            border-left: 3px solid #333;
+        }
+
+        .settlement-summary {
+            font-size: 11px;
+            line-height: 1.7;
+            color: #333;
+        }
+
+        .settlement-summary strong {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .amount-highlight {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2d7d2d;
+        }
+
+        .expenses-section {
+            margin-top: 6mm;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 8mm 0 5mm 0;
+            color: #000;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3mm;
         }
 
         .user-section {
-            margin-bottom: 10mm;
-            padding: 3mm !important;
-            page-break-inside: avoid;
+            margin-bottom: 6mm;
         }
 
-        .expense-type-group {
-            margin-bottom: 4mm;
-            padding: 2mm 0 !important;
-        }
-
-        .user-header-label {
-            font-size: 9pt;
+        .user-header {
+            font-size: 11px;
             font-weight: bold;
-            color: #666;
-            margin-bottom: 2mm;
-            text-transform: uppercase;
+            color: #000;
+            margin: 0 0 4mm 0;
         }
 
-        .user-email {
-            font-size: 10pt;
-            font-weight: bold;
-            margin-bottom: 5mm;
-            padding-bottom: 2mm;
-            border-bottom: 1pt solid #ccc;
-        }
-
-        .expense-type-group {
-            margin-bottom: 4mm;
-        }
-
-        .expense-type-heading {
-            font-size: 8pt;
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 1.5mm;
-            text-transform: uppercase;
-        }
-
-        .category-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 1.5mm 0;
-            border-bottom: 0.5pt solid #eee;
-        }
-
-        .category {
-            text-align: right;
-            font-weight: bold;
-            margin-left: 5mm;
-        }
-
-        .expense-item {
+        .expense-line {
             display: table;
             width: 100%;
-            table-layout: fixed;
-            padding: 1.5mm 0;
-            border-bottom: 0.5pt solid #eee;
-            font-size: 9pt;
+            margin-bottom: 2mm;
+            font-size: 10px;
         }
 
-        .expense-details {
+        .expense-category {
             display: table-cell;
-            vertical-align: top;
-            width: 85%;
-        }
-
-        .expense-what {
-            font-weight: 500;
-        }
-
-        .expense-meta {
-            font-size: 8pt;
+            width: 25%;
             color: #666;
-            line-height: 1.3;
+            padding-right: 2mm;
+        }
+
+        .expense-description {
+            display: table-cell;
+            width: 55%;
+            color: #333;
+            padding: 0 3mm;
         }
 
         .expense-amount {
             display: table-cell;
-            vertical-align: top;
-            width: 15%;
+            width: 20%;
             text-align: right;
+            color: #333;
             font-weight: bold;
-            white-space: nowrap;
-            padding-left: 3mm;
         }
 
-        .category-total {
+        .user-total {
             display: table;
             width: 100%;
-            table-layout: fixed;
-            padding: 2mm 0 1.5mm 0;
-            margin-top: 1mm;
-            border-top: 1pt solid #999;
-            border-bottom: none;
-            font-size: 9pt;
+            margin-top: 2mm;
+            padding-bottom: 3mm;
+            border-bottom: 1px solid #ddd;
+            font-size: 10px;
             font-weight: bold;
         }
 
-        .category-total-label {
+        .total-label {
             display: table-cell;
-            vertical-align: top;
-            width: 85%;
-            text-align: left;
-            padding-right: 3mm;
+            width: 80%;
+            color: #000;
         }
 
-        .category-total-amount {
+        .total-value {
             display: table-cell;
-            vertical-align: top;
-            width: 15%;
+            width: 20%;
             text-align: right;
-            font-weight: bold;
-            white-space: nowrap;
-            padding-left: 3mm;
-        }
-
-        .section-title {
-            font-weight: bold;
-            font-size: 9pt;
-            margin-top: 3mm;
-            margin-bottom: 1.5mm;
-            color: #333;
-        }
-
-        .timestamp {
-            font-size: 8pt;
-            color: #888;
-            text-align: center;
-            margin-bottom: 6mm;
+            color: #000;
         }
     </style>
 {% endblock %}
 
 {% block body %}
+<div class="page">
     <div class="header">
-        <h1>Split Fairly Summary</h1>
-        <p class="timestamp">Generated on {{ "now"|date("F j, Y H:i") }}</p>
+        <h1>Split Fairly Report</h1>
+        <p class="timestamp">{{ "now"|date("d F Y") }}</p>
     </div>
 
-    <div class="settlement-table-wrapper">
-        <table class="settlement-table">
-            <tr>
-                <td class="settlement-cell">
-                    <p class="label">From</p>
-                    <p class="value">{{ compensation.from }}</p>
-                </td>
-                <td class="settlement-cell">
-                    <p class="label">Pays</p>
-                    <p class="value">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</p>
-                </td>
-                <td class="settlement-cell">
-                    <p class="label">To</p>
-                    <p class="value">{{ compensation.to }}</p>
-                </td>
-            </tr>
-        </table>
+    <div class="settlement-box">
+        <div class="settlement-summary">
+            <strong>{{ compensation.from }}</strong> owes <strong>{{ compensation.to }}</strong> <span class="amount-highlight">{{ compensation.settlement.value|number_format(2) }} {{ compensation.settlement.currency }}</span>.
+        </div>
     </div>
 
-    <div class="users-container">
+    <div class="expenses-section">
+        <div class="section-title">Expense Details</div>
+        
         {% for expenses in expenses %}
-            <div class="user-column">
-                <div class="user-section">
-                    <p class="user-email">{{ expenses.userEmail }}</p>
+            <div class="user-section">
+                <div class="user-header">{{ expenses.userEmail }}</div>
+                
+                {% set expensesByType = {} %}
+                {% for expense in expenses.expenses %}
+                    {% if expensesByType[expense.type] is not defined %}
+                        {% set expensesByType = expensesByType|merge({(expense.type): []}) %}
+                    {% endif %}
+                    {% set expensesByType = expensesByType|merge({(expense.type): expensesByType[expense.type]|merge([expense])}) %}
+                {% endfor %}
 
-                    {% set expensesByType = {} %}
-                    {% for expense in expenses.expenses %}
-                        {% if expensesByType[expense.type] is not defined %}
-                            {% set expensesByType = expensesByType|merge({(expense.type): []}) %}
-                        {% endif %}
-                        {% set expensesByType = expensesByType|merge({(expense.type): expensesByType[expense.type]|merge([expense])}) %}
+                {% for type, typeExpenses in expensesByType %}
+                    {% set totalAmount = 0 %}
+                    {% set currency = typeExpenses[0].price.currency %}
+                    {% for expense in typeExpenses %}
+                        {% set totalAmount = totalAmount + expense.price.value %}
                     {% endfor %}
 
-                    {% for type, typeExpenses in expensesByType %}
-                        <div class="expense-type-group">
-                            <div class="expense-type-heading">{{ type }}</div>
-                            {% for expense in typeExpenses %}
-                                <div class="expense-item">
-                                    <div class="expense-details">
-                                        <div class="expense-what">{{ expense.what }}</div>
-                                    </div>
-                                    <div class="expense-amount">{{ expense.price.value|number_format(2) }} {{ expense.price.currency }}</div>
-                                </div>
-                            {% endfor %}
-                            {% set totalAmount = 0 %}
-                            {% set currency = typeExpenses[0].price.currency %}
-                            {% for expense in typeExpenses %}
-                                {% set totalAmount = totalAmount + expense.price.value %}
-                            {% endfor %}
-                            <div class="category-total">
-                                <div class="category-total-label">Total</div>
-                                <div class="category-total-amount">{{ totalAmount|number_format(2) }} {{ currency }}</div>
-                            </div>
+                    {% for expense in typeExpenses %}
+                        <div class="expense-line">
+                            <div class="expense-category">{{ type }}</div>
+                            <div class="expense-description">{{ expense.what }}</div>
+                            <div class="expense-amount">{{ expense.price.value|number_format(2) }}</div>
                         </div>
                     {% endfor %}
-                </div>
+                    
+                    <div class="user-total">
+                        <div class="total-label">{{ type }} Total</div>
+                        <div class="total-value">{{ totalAmount|number_format(2) }} {{ currency }}</div>
+                    </div>
+                {% endfor %}
             </div>
         {% endfor %}
     </div>
+</div>
 {% endblock %}

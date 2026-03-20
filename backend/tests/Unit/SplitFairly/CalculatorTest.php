@@ -42,8 +42,8 @@ final class CalculatorTest extends TestCase
 
         $price = new Price(value: 10.50, currency: 'EUR');
         $expense1 = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
-        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food Expenses', location: 'Restaurant');
-        $expense3 = new Expense(price: $price, what: 'Dinner', type: 'Out-of-pocket Expenses', location: 'Pizzeria');
+        $expense2 = new Expense(price: $price, what: 'Lunch', type: 'Non-Food', location: 'Restaurant');
+        $expense3 = new Expense(price: $price, what: 'Dinner', type: 'Lent', location: 'user@example.com');
 
         $event1 = new Event(
             subjectType: 'Expense',
@@ -57,7 +57,7 @@ final class CalculatorTest extends TestCase
             subjectType: 'Expense',
             subjectId: 'exp-2',
             eventType: 'tracked',
-            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'type' => 'Non-Food Expenses', 'location' => 'Restaurant'],
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'type' => 'Non-Food', 'location' => 'Restaurant'],
             createdAt: new \DateTimeImmutable(),
             createdBy: $user1
         );
@@ -65,7 +65,7 @@ final class CalculatorTest extends TestCase
             subjectType: 'Expense',
             subjectId: 'exp-3',
             eventType: 'tracked',
-            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'type' => 'Out-of-pocket Expenses', 'location' => 'Pizzeria'],
+            payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'type' => 'Lent', 'location' => 'user@example.com'],
             createdAt: new \DateTimeImmutable(),
             createdBy: $user2
         );
