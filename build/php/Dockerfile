@@ -1,7 +1,7 @@
 # -----------------------------------
 # Base stage for Development (Debian-based)
 # -----------------------------------
-FROM php:8.4-fpm AS base-dev
+FROM php:8.4.19-fpm AS base-dev
 
 WORKDIR /var/www/project
 
@@ -20,7 +20,7 @@ COPY build/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 # -----------------------------------
 # Base stage for Production (Alpine-based, minimal)
 # -----------------------------------
-FROM php:8.4.3-fpm-alpine3.20 AS base-prod
+FROM php:8.4.19-fpm-alpine3.23 AS base-prod
 
 WORKDIR /var/www/project
 

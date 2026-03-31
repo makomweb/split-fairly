@@ -1,5 +1,5 @@
 APP_NAME = split-fairly
-VERSION = 0.1.4
+VERSION = 0.1.5
 
 .DEFAULT_GOAL := help
 
@@ -18,6 +18,7 @@ help:
 	@echo "  make show-composer-updates - Show outdated composer packages"
 	@echo "  make update-composer-dependencies - Update composer packages"
 	@echo "  make update-npm-dependencies - Update npm packages"
+	@echo "  make npm-install - Install npm packages and regenerate lock file (if it is outdated)"
 	@echo "\n🧪 Testing & Quality:"
 	@echo "  make test - Run backend and frontend tests"
 	@echo "  make quality - Run quality checks"
@@ -144,7 +145,7 @@ clear:
 	docker compose exec -it app composer clear
 
 maintenance: maintain
-maintain: show-composer-updates update-composer-dependencies update-npm-dependencies
+maintain: show-composer-updates update-composer-dependencies update-npm-dependencies npm-install
 
 show-composer-updates:
 	@echo "📊 Checking for outdated composer packages..."
@@ -157,6 +158,10 @@ update-composer-dependencies:
 update-npm-dependencies:
 	@echo "📦 Updating npm dependencies..."
 	docker compose exec -it npm-dev npm update --save
+
+npm-install:
+	@echo "📦 Installing npm dependencies and regenerating lock file..."
+	docker compose exec -it npm-dev npm install
 
 coverage:
 	@echo "📈 Generating coverage report..."
