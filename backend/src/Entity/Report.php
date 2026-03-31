@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ReportRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
 #[ORM\Index(columns: ['status'], name: 'idx_status')]
@@ -18,21 +16,11 @@ class Report
     public const STATUS_FAILED = 'failed';
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(type: 'uuid', unique: true)]
-    private Uuid $uuid;
+    #[ORM\Column(length: 64)]
+    private string $id;
 
     #[ORM\Column(length: 50)]
     private string $status = self::STATUS_PENDING;
-
-    #[ORM\Column]
-    private string $compensationId;
-
-    #[ORM\Column(length: 64)]
-    private string $checksum;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $filePath = null;
@@ -46,22 +34,15 @@ class Report
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $errorMessage = null;
 
-    public function __construct(string $compensationId, string $checksum)
+    public function __construct(string $id)
     {
-        $this->uuid = new UuidV7();
-        $this->compensationId = $compensationId;
-        $this->checksum = $checksum;
+        $this->id = $id;
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function getId(): ?int
+    public function getId(): string
     {
         return $this->id;
-    }
-
-    public function getUuid(): Uuid
-    {
-        return $this->uuid;
     }
 
     public function getStatus(): string
@@ -74,16 +55,6 @@ class Report
         $this->status = $status;
 
         return $this;
-    }
-
-    public function getCompensationId(): string
-    {
-        return $this->compensationId;
-    }
-
-    public function getChecksum(): string
-    {
-        return $this->checksum;
     }
 
     public function getFilePath(): ?string

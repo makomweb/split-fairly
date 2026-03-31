@@ -32,37 +32,27 @@ final class ReportController extends AbstractController
             return new JsonResponse(['error' => 'Missing id parameter'], Response::HTTP_BAD_REQUEST);
         }
 
-        $compensationId = (new \DateTimeImmutable())->format('Y-m-d');
-
-        $existingReport = $this->reportRepository->findByCompensationIdAndChecksum(
-            $compensationId,
-            $compensationHash
-        );
+        $existingReport = $this->reportRepository->find($compensationHash);
 
         if ($existingReport) {
             return new JsonResponse([
-                'id' => $existingReport->getUuid()->toRfc4122(),
+                'id' => $existingReport->getId(),
                 'status' => $existingReport->getStatus(),
                 'filePath' => $existingReport->getFilePath(),
             ]);
         }
 
-        $report = new Report($compensationId, $compensationHash);
+        $report = new Report($compensationHash);
         $this->entityManager->persist($report);
         $this->entityManager->flush();
 
-        $reportId = $report->getId();
-        if (null === $reportId) {
-            throw new \RuntimeException('Report ID should not be null after flush');
-        }
-
         $this->messageBus->dispatch(new GenerateReportMessage(
-            $reportId,
-            $compensationId
+            $report->getId(),
+            $compensationHash
         ));
 
         return new JsonResponse([
-            'id' => $report->getUuid()->toRfc4122(),
+            'id' => $report->getId(),
             'status' => $report->getStatus(),
         ], Response::HTTP_ACCEPTED);
     }
