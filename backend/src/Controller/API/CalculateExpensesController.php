@@ -87,7 +87,7 @@ class CalculateExpensesController extends AbstractController
         InstrumentationHolder::getLogging()
             ->info(sprintf('Calculated: %s (withUser: %s)', $compensation, $withUserEmail ?? 'all'));
 
-        return $this->json([
+        $data = [
             'users' => array_map(
                 static fn (Expenses $e) => [
                     'user_email' => $e->userEmail,
@@ -96,6 +96,8 @@ class CalculateExpensesController extends AbstractController
                 $expenses
             ),
             'compensation' => $compensation,
-        ]);
+        ];
+
+        return $this->json([...$data, 'id' => hash('sha256', json_encode($data))]);
     }
 }
