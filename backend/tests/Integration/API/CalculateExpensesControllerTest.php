@@ -16,7 +16,11 @@ class CalculateExpensesControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $container = $client->getContainer();
+
+        /** @var EntityManagerInterface $entityManager */
         $entityManager = $container->get(EntityManagerInterface::class);
+
+        /** @var UserPasswordHasherInterface $passwordHasher */
         $passwordHasher = $container->get(UserPasswordHasherInterface::class);
 
         $user1 = User::create('user1@example.com', ['ROLE_USER']);
@@ -45,7 +49,12 @@ class CalculateExpensesControllerTest extends WebTestCase
         $client->request('GET', '/api/calculate');
 
         self::assertResponseIsSuccessful();
-        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $content = $client->getResponse()->getContent();
+        assert(is_string($content));
+
+        $response = json_decode($content, true);
+        assert(is_array($response));
 
         self::assertArrayHasKey('id', $response);
         self::assertIsString($response['id']);

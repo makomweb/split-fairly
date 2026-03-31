@@ -13,7 +13,11 @@ class ReportControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $container = $client->getContainer();
+
+        /** @var EntityManagerInterface $entityManager */
         $entityManager = $container->get(EntityManagerInterface::class);
+
+        /** @var UserPasswordHasherInterface $passwordHasher */
         $passwordHasher = $container->get(UserPasswordHasherInterface::class);
 
         $user = User::create('user1@example.com', ['ROLE_USER']);
@@ -34,7 +38,12 @@ class ReportControllerTest extends WebTestCase
         $client->request('POST', "/api/report/calculation?id={$testId}");
 
         self::assertResponseStatusCodeSame(202);
-        $response = json_decode($client->getResponse()->getContent(), true);
+
+        $content = $client->getResponse()->getContent();
+        assert(is_string($content));
+
+        $response = json_decode($content, true);
+        assert(is_array($response));
 
         self::assertArrayHasKey('id', $response);
     }

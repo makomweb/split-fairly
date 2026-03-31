@@ -100,6 +100,7 @@ class CalculateExpensesController extends AbstractController
 
         $json = json_encode($data);
         assert(is_string($json));
+
         return $this->json([...$data, 'id' => hash('sha256', $json)]);
     }
 }

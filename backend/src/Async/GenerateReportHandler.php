@@ -41,7 +41,7 @@ final class GenerateReportHandler
 
             $report = $this->reportRepository->find($message->id);
             if (!$report instanceof Report) {
-                throw new \RuntimeException(sprintf('Report with ID %d not found', $message->reportId));
+                throw new \RuntimeException(sprintf('Report with ID %s not found', $message->id));
             }
 
             $report->setStatus(Report::STATUS_GENERATING);
