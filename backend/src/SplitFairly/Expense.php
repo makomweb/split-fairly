@@ -15,9 +15,9 @@ final readonly class Expense
         public string $type,
         public string $location,
     ) {
-        Ensure::that($what !== '' && $what !== '0');
-        Ensure::that($type !== '' && $type !== '0');
-        Ensure::that($location !== '' && $location !== '0');
+        Ensure::that('' !== $what && '0' !== $what);
+        Ensure::that('' !== $type && '0' !== $type);
+        Ensure::that('' !== $location && '0' !== $location);
         Ensure::that(
             in_array($type, array_map(static fn (ExpenseType $e) => $e->value, ExpenseType::cases()), strict: true),
             sprintf('Invalid expense type: %s', $type)

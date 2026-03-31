@@ -35,7 +35,7 @@ class ReportControllerTest extends WebTestCase
         $client->followRedirect();
 
         $testId = hash('sha256', bin2hex(random_bytes(16)));
-        $client->request('POST', '/api/report/calculation?id=' . $testId);
+        $client->request('POST', '/api/report/calculation?id='.$testId);
 
         self::assertResponseStatusCodeSame(202);
 

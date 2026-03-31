@@ -101,36 +101,36 @@ final readonly class EventRepository implements EventStoreInterface
             ->createQueryBuilder('e')
             ->orderBy('e.createdAt', 'ASC');
 
-        if ($options->createdBy !== []) {
+        if ([] !== $options->createdBy) {
             $builder = $builder
                 ->where('e.createdBy IN (:createdBy)')
                 ->setParameter('createdBy', $options->createdBy);
         }
 
-        if ($options->subjectTypes !== []) {
-            $whereMethod = $options->createdBy === [] ? 'where' : 'andWhere';
+        if ([] !== $options->subjectTypes) {
+            $whereMethod = [] === $options->createdBy ? 'where' : 'andWhere';
             $builder = $builder
                 ->$whereMethod('e.subjectType IN (:subjectTypes)')
                 ->setParameter('subjectTypes', $options->subjectTypes);
         }
 
-        if ($options->subjectTypes === [] && $options->subjectIds !== []) {
-            $whereMethod = $options->createdBy === [] ? 'where' : 'andWhere';
+        if ([] === $options->subjectTypes && [] !== $options->subjectIds) {
+            $whereMethod = [] === $options->createdBy ? 'where' : 'andWhere';
             $builder = $builder
                 ->$whereMethod('e.subjectId IN (:subjectIds)')
                 ->setParameter('subjectIds', $options->subjectIds);
-        } elseif ($options->subjectIds !== []) {
+        } elseif ([] !== $options->subjectIds) {
             $builder = $builder
                 ->andWhere('e.subjectId IN (:subjectIds)')
                 ->setParameter('subjectIds', $options->subjectIds);
         }
 
-        if ($options->subjectTypes === [] && $options->subjectIds === [] && $options->eventTypes !== []) {
-            $whereMethod = $options->createdBy === [] ? 'where' : 'andWhere';
+        if ([] === $options->subjectTypes && [] === $options->subjectIds && [] !== $options->eventTypes) {
+            $whereMethod = [] === $options->createdBy ? 'where' : 'andWhere';
             $builder = $builder
                 ->$whereMethod('e.eventType IN (:eventTypes)')
                 ->setParameter('eventTypes', $options->eventTypes);
-        } elseif ($options->eventTypes !== []) {
+        } elseif ([] !== $options->eventTypes) {
             $builder = $builder
                 ->andWhere('e.eventType IN (:eventTypes)')
                 ->setParameter('eventTypes', $options->eventTypes);

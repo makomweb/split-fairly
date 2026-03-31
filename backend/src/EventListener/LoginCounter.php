@@ -21,6 +21,6 @@ final readonly class LoginCounter
     {
         $userId = $event->getUser()->getUserIdentifier();
 
-        $this->bus->dispatch(Message::create('🔐 Successful login: ' . $userId));
+        $this->bus->dispatch(Message::create('🔐 Successful login: '.$userId));
     }
 }

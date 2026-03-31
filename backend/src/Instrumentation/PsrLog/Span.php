@@ -32,7 +32,7 @@ final class Span implements SpanInterface
 
     public function close(): void
     {
-        if ($this->recordedExceptions !== []) {
+        if ([] !== $this->recordedExceptions) {
             foreach ($this->recordedExceptions as $context => $ex) {
                 $this->logger->error(
                     sprintf('💥 %s: %s', $context, $ex->getMessage()),

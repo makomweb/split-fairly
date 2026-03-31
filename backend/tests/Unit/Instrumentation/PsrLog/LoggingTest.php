@@ -56,7 +56,7 @@ final class LoggingTest extends TestCase
             ->method('error')
             ->with(
                 'Test error message',
-                $this->callback(fn(mixed $context) => is_array($context)
+                $this->callback(fn (mixed $context) => is_array($context)
                     && isset($context['exception_type'])
                     && $context['exception_type'] === $exception::class
                     && isset($context['stack_trace'])

@@ -81,7 +81,7 @@ final class CalculatorTest extends TestCase
         $eventStore
             ->expects($this->once())
             ->method('getEvents')
-            ->with($this->callback(fn(QueryOptions $options) => $options->createdBy === [$user1, $user2]
+            ->with($this->callback(fn (QueryOptions $options) => $options->createdBy === [$user1, $user2]
                 && $options->subjectTypes === ['Expense']
                 && $options->eventTypes === ['tracked']))
             ->willReturn([$event1, $event2, $event3]);

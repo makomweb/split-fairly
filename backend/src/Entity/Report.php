@@ -33,10 +33,11 @@ class Report
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $errorMessage = null;
 
-    public function __construct(#[ORM\Id]
-    #[ORM\Column(length: 64, unique: true)]
-    private string $id)
-    {
+    public function __construct(
+        #[ORM\Id]
+        #[ORM\Column(length: 64, unique: true)]
+        private string $id,
+    ) {
         $this->createdAt = new \DateTimeImmutable();
     }
 

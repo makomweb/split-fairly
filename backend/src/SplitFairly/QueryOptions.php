@@ -25,9 +25,9 @@ final readonly class QueryOptions
 
     public function isEmpty(): bool
     {
-        return $this->createdBy === []
-            && $this->subjectTypes === []
-            && $this->subjectIds === []
-            && $this->eventTypes === [];
+        return [] === $this->createdBy
+            && [] === $this->subjectTypes
+            && [] === $this->subjectIds
+            && [] === $this->eventTypes;
     }
 }

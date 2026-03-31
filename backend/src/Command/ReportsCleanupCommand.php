@@ -45,7 +45,7 @@ final class ReportsCleanupCommand extends Command
 
         $oldReports = $this->reportRepository->findOlderThan($cutoffDate);
 
-        if ($oldReports === []) {
+        if ([] === $oldReports) {
             $output->writeln('No old reports found.');
 
             return Command::SUCCESS;

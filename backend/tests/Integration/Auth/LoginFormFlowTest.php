@@ -201,7 +201,7 @@ class LoginFormFlowTest extends WebTestCase
 
         // Check that a session cookie is set
         self::assertTrue($client->getResponse()->headers->has('Set-Cookie')
-                         || $client->getCookieJar()->all() !== []);
+                         || [] !== $client->getCookieJar()->all());
     }
 
     public function test_remember_me_checkbox_preserves_session(): void

@@ -18,8 +18,8 @@ final class AppFixtures extends Fixture
         private readonly string $adminPassword,
         private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
-        Ensure::that($adminEmail !== '' && $adminEmail !== '0');
-        Ensure::that($adminPassword !== '' && $adminPassword !== '0');
+        Ensure::that('' !== $adminEmail && '0' !== $adminEmail);
+        Ensure::that('' !== $adminPassword && '0' !== $adminPassword);
     }
 
     public function load(ObjectManager $manager): void

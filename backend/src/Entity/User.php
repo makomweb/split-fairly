@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @param string[] $roles */
     public static function create(string $email, array $roles = []): self
     {
-        Ensure::that($email !== '' && $email !== '0', new \InvalidArgumentException('Email should not be empty!'));
+        Ensure::that('' !== $email && '0' !== $email, new \InvalidArgumentException('Email should not be empty!'));
 
         $user = new User();
         $user->email = $email;
@@ -128,7 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
     }
 
-    public function serialize()
+    public function serialize(): void
     {
         trigger_deprecation('Symfony', '7.3', 'erase credentials using the "__serialize()" method instead');
         // If you store any temporary, sensitive data on the user, clear it here

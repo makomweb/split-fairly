@@ -47,7 +47,7 @@ class AddUserCommand extends Command
 
         // Check if user already exists
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-        if ($existingUser instanceof \App\Entity\User) {
+        if ($existingUser instanceof User) {
             $io->error(sprintf('User with email "%s" already exists', $email));
 
             return Command::FAILURE;

@@ -31,7 +31,7 @@ final class ExpenseTrackerTest extends TestCase
 
         $eventStore = $this->createMock(EventStoreInterface::class);
         $eventStore->expects($this->once())->method('persist')->with(
-            $this->callback(fn(Event $event): bool => 'user-123' === $event->createdBy
+            $this->callback(fn (Event $event): bool => 'user-123' === $event->createdBy
                 && 'Expense' === $event->subjectType
                 && $event->subjectId === $expense->getId()->toRfc4122()
                 && 'tracked' === $event->eventType

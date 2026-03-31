@@ -42,7 +42,7 @@ final class Expenses
              * @return array<int, Category>
              */
             static function (array $carry, Expense $expense) use ($filter): array {
-                if ($filter !== [] && !in_array($expense->type, $filter, true)) {
+                if ([] !== $filter && !in_array($expense->type, $filter, true)) {
                     return $carry;
                 }
 

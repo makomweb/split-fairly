@@ -37,7 +37,7 @@ final readonly class Normalizer implements ContractNormalizerInterface, Contract
     {
         return $this->normalizer->normalize(
             $object,
-            context: $ignoreFields === []
+            context: [] === $ignoreFields
                 ? []
                 : [SymfonyAbstractNormalizer::IGNORED_ATTRIBUTES => $ignoreFields]
         );
