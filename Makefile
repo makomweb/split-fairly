@@ -23,6 +23,8 @@ help:
 	@echo "  make test - Run backend and frontend tests"
 	@echo "  make quality - Run quality checks"
 	@echo "  make phpstan - Run static code analysis"
+	@echo "  make rector - Run rector code modernizer (dry-run)"
+	@echo "  make rector-apply - Apply rector transformations"
 	@echo "  make style - Fix code style"
 	@echo "  make arch - Test architecture"
 	@echo "  make coverage - Generate coverage report"
@@ -116,6 +118,14 @@ sa: phpstan
 phpstan:
 	@echo "🔍 Running static code analysis..."
 	docker compose exec -it app vendor/bin/phpstan analyse --memory-limit=1G
+
+rector:
+	@echo "♻️  Running rector (dry-run)..."
+	docker compose exec -it app /root/.composer/vendor/bin/rector process --dry-run
+
+rector-apply:
+	@echo "♻️  Applying rector transformations..."
+	docker compose exec -it app /root/.composer/vendor/bin/rector process
 
 cs: style
 style: codestyle
