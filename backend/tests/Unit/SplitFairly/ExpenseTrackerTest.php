@@ -21,7 +21,7 @@ final class ExpenseTrackerTest extends TestCase
         $expense = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
 
         $currentUser = $this->createMock(CurrentUserInterface::class);
-        $currentUser->method('getUuid')->willReturn('user-123');
+        $currentUser->expects($this->any())->method('getUuid')->willReturn('user-123');
 
         $normalizedPayload = ['price' => (string) $price, 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'];
         $normalizer = $this->createMock(NormalizerInterface::class);
