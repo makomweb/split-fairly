@@ -45,10 +45,7 @@ final class ReportController extends AbstractController
         $this->entityManager->persist($report);
         $this->entityManager->flush();
 
-        $this->messageBus->dispatch(new GenerateReportMessage(
-            $report->getId(),
-            $id
-        ));
+        $this->messageBus->dispatch(GenerateReportMessage::fromReport($report));
 
         return new JsonResponse([
             'id' => $report->getId(),

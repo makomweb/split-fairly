@@ -7,12 +7,6 @@ parameters:
 			path: public/index.php
 
 		-
-			message: '#^Property App\\Entity\\Report\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
-			identifier: property.unusedType
-			count: 1
-			path: src/Entity/Report.php
-
-		-
 			message: '#^Property App\\Entity\\User\:\:\$id \(int\|null\) is never assigned int so it can be removed from the property type\.$#'
 			identifier: property.unusedType
 			count: 1

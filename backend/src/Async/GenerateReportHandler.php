@@ -39,7 +39,7 @@ final class GenerateReportHandler
             // Clear any stale entity state
             $this->entityManager->clear();
 
-            $report = $this->reportRepository->find($message->reportId);
+            $report = $this->reportRepository->find($message->id);
             if (!$report instanceof Report) {
                 throw new \RuntimeException(sprintf('Report with ID %d not found', $message->reportId));
             }
@@ -67,7 +67,7 @@ final class GenerateReportHandler
             $dompdf->render();
 
             $pdfContent = $dompdf->output();
-            $fileName = sprintf('report-%s.pdf', $report->getUuid()->toRfc4122());
+            $fileName = sprintf('report-%s.pdf', $report->getId());
             $filePath = $this->reportsDir.DIRECTORY_SEPARATOR.$fileName;
 
             Ensure::that(false !== file_put_contents($filePath, $pdfContent));
