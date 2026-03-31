@@ -16,7 +16,7 @@ class Report
     public const STATUS_FAILED = 'failed';
 
     #[ORM\Id]
-    #[ORM\Column(length: 64)]
+    #[ORM\Column(length: 64, unique: true)]
     private string $id;
 
     #[ORM\Column(length: 50)]
