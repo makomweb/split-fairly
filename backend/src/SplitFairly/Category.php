@@ -6,11 +6,11 @@ namespace App\SplitFairly;
 
 use App\Invariant\Ensure;
 
-final class Category
+final readonly class Category
 {
     private function __construct(
-        public readonly string $type,
-        public readonly Price $sum,
+        public string $type,
+        public Price $sum,
     ) {
     }
 

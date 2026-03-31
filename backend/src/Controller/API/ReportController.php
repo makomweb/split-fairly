@@ -33,7 +33,7 @@ final class ReportController extends AbstractController
 
         $report = $this->reportRepository->find($id);
 
-        if ($report) {
+        if ($report instanceof \App\Entity\Report) {
             return $this->json([
                 'id' => $report->getId(),
                 'status' => $report->getStatus(),
@@ -58,7 +58,7 @@ final class ReportController extends AbstractController
     {
         $report = $this->reportRepository->find($id);
 
-        if (!$report) {
+        if (!$report instanceof \App\Entity\Report) {
             return new JsonResponse(['error' => 'Report not found'], Response::HTTP_NOT_FOUND);
         }
 

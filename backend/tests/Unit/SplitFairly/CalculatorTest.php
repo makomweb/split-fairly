@@ -49,28 +49,28 @@ final class CalculatorTest extends TestCase
         $expense3 = new Expense(price: $price, what: 'Dinner', type: 'Lent', location: 'user@example.com');
 
         $event1 = new Event(
+            createdBy: $user1,
             subjectType: 'Expense',
             subjectId: 'exp-1',
             eventType: 'tracked',
             payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'],
-            createdAt: new \DateTimeImmutable(),
-            createdBy: $user1
+            createdAt: new \DateTimeImmutable()
         );
         $event2 = new Event(
+            createdBy: $user1,
             subjectType: 'Expense',
             subjectId: 'exp-2',
             eventType: 'tracked',
             payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'type' => 'Non-Food', 'location' => 'Restaurant'],
-            createdAt: new \DateTimeImmutable(),
-            createdBy: $user1
+            createdAt: new \DateTimeImmutable()
         );
         $event3 = new Event(
+            createdBy: $user2,
             subjectType: 'Expense',
             subjectId: 'exp-3',
             eventType: 'tracked',
             payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'type' => 'Lent', 'location' => 'user@example.com'],
-            createdAt: new \DateTimeImmutable(),
-            createdBy: $user2
+            createdAt: new \DateTimeImmutable()
         );
 
         $eventStore = $this->createMock(EventStoreInterface::class);
@@ -81,11 +81,9 @@ final class CalculatorTest extends TestCase
         $eventStore
             ->expects($this->once())
             ->method('getEvents')
-            ->with($this->callback(function (QueryOptions $options) use ($user1, $user2) {
-                return $options->createdBy === [$user1, $user2]
-                    && $options->subjectTypes === ['Expense']
-                    && $options->eventTypes === ['tracked'];
-            }))
+            ->with($this->callback(fn(QueryOptions $options) => $options->createdBy === [$user1, $user2]
+                && $options->subjectTypes === ['Expense']
+                && $options->eventTypes === ['tracked']))
             ->willReturn([$event1, $event2, $event3]);
 
         $denormalizer = $this->createStub(DenormalizerInterface::class);

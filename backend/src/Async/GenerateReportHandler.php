@@ -18,15 +18,15 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Twig\Environment;
 
 #[AsMessageHandler]
-final class GenerateReportHandler
+final readonly class GenerateReportHandler
 {
     public function __construct(
-        private readonly Instrumentation $instrumentation,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ReportRepository $reportRepository,
-        private readonly Calculator $calculator,
-        private readonly Environment $twig,
-        #[Autowire('%kernel.project_dir%/var/reports')] private readonly string $reportsDir,
+        private Instrumentation $instrumentation,
+        private EntityManagerInterface $entityManager,
+        private ReportRepository $reportRepository,
+        private Calculator $calculator,
+        private Environment $twig,
+        #[Autowire('%kernel.project_dir%/var/reports')] private string $reportsDir,
     ) {
     }
 
@@ -82,20 +82,20 @@ final class GenerateReportHandler
                 $fileName,
                 $timer->getMillisecondsElapsed()
             ));
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $this->instrumentation->getLogging()->info(sprintf(
                 'Failed to generate report: %s',
-                $e->getMessage()
+                $exception->getMessage()
             ));
 
             if ($report instanceof Report) {
                 $report->setStatus(Report::STATUS_FAILED);
-                $report->setErrorMessage($e->getMessage());
+                $report->setErrorMessage($exception->getMessage());
                 $report->setCompletedAt(new \DateTimeImmutable());
                 $this->entityManager->flush();
             }
 
-            throw $e;
+            throw $exception;
         }
     }
 

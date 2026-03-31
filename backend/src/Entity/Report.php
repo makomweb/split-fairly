@@ -6,18 +6,17 @@ use App\Repository\ReportRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReportRepository::class)]
-#[ORM\Index(columns: ['status'], name: 'idx_status')]
-#[ORM\Index(columns: ['created_at'], name: 'idx_created_at')]
+#[ORM\Index(name: 'idx_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_created_at', columns: ['created_at'])]
 class Report
 {
     public const STATUS_PENDING = 'pending';
-    public const STATUS_GENERATING = 'generating';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_FAILED = 'failed';
 
-    #[ORM\Id]
-    #[ORM\Column(length: 64, unique: true)]
-    private string $id;
+    public const STATUS_GENERATING = 'generating';
+
+    public const STATUS_COMPLETED = 'completed';
+
+    public const STATUS_FAILED = 'failed';
 
     #[ORM\Column(length: 50)]
     private string $status = self::STATUS_PENDING;
@@ -34,9 +33,10 @@ class Report
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $errorMessage = null;
 
-    public function __construct(string $id)
+    public function __construct(#[ORM\Id]
+    #[ORM\Column(length: 64, unique: true)]
+    private string $id)
     {
-        $this->id = $id;
         $this->createdAt = new \DateTimeImmutable();
     }
 

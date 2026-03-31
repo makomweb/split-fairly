@@ -15,7 +15,7 @@ final class Span implements SpanInterface
     private array $recordedExceptions = [];
 
     public function __construct(
-        private string $methodName,
+        private readonly string $methodName,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -32,16 +32,17 @@ final class Span implements SpanInterface
 
     public function close(): void
     {
-        if (!empty($this->recordedExceptions)) {
+        if ($this->recordedExceptions !== []) {
             foreach ($this->recordedExceptions as $context => $ex) {
                 $this->logger->error(
                     sprintf('💥 %s: %s', $context, $ex->getMessage()),
                     [
-                        'exception_type' => get_class($ex),
+                        'exception_type' => $ex::class,
                         'stack_trace' => $ex->getTrace(),
                     ]
                 );
             }
+
             $this->logger->debug('Leaving '.$this->methodName);
         } else {
             $this->logger->debug('Exiting '.$this->methodName);

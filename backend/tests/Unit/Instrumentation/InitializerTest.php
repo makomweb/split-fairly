@@ -25,7 +25,6 @@ final class InitializerTest extends TestCase
         // Reset the Holder singleton
         $reflection = new \ReflectionClass(InstrumentationHolder::class);
         $instanceProperty = $reflection->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
     }
 

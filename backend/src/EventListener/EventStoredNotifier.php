@@ -20,7 +20,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[AsEntityListener(event: Events::postPersist, method: 'onPostPersist', entity: EventEntity::class)]
 final readonly class EventStoredNotifier
 {
-    public function __construct(private readonly MessageBusInterface $bus)
+    public function __construct(private MessageBusInterface $bus)
     {
     }
 

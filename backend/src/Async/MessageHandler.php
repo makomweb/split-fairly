@@ -25,8 +25,8 @@ final readonly class MessageHandler
 
         try {
             $this->handle($message);
-        } catch (\Throwable $ex) {
-            $tracer->recordException('Handling the message has failed', $ex);
+        } catch (\Throwable $throwable) {
+            $tracer->recordException('Handling the message has failed', $throwable);
         } finally {
             $elapsed = Stopwatch::from($message->createdAt)->getMillisecondsElapsed();
             $this->instrumentation->getMetrics()->record('handle_message', $elapsed, 'ms');

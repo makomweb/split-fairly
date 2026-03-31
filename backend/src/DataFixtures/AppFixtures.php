@@ -13,13 +13,13 @@ final class AppFixtures extends Fixture
 {
     public function __construct(
         #[Autowire('%admin.email%')]
-        private string $adminEmail,
+        private readonly string $adminEmail,
         #[Autowire('%admin.password%')]
-        private string $adminPassword,
+        private readonly string $adminPassword,
         private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
-        Ensure::that(!empty($adminEmail));
-        Ensure::that(!empty($adminPassword));
+        Ensure::that($adminEmail !== '' && $adminEmail !== '0');
+        Ensure::that($adminPassword !== '' && $adminPassword !== '0');
     }
 
     public function load(ObjectManager $manager): void

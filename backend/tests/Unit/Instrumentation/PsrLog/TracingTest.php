@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 final class TracingTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
+
     private Tracing $tracing;
 
     protected function setUp(): void

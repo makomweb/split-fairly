@@ -10,7 +10,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 #[AsEventListener()]
-final class Initializer
+final readonly class Initializer
 {
     public function __construct(
         #[Autowire('%app.telemetry%')]

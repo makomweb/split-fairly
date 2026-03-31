@@ -30,7 +30,7 @@ class CalculateExpensesController extends AbstractController
         $stopwatch = Stopwatch::start();
 
         $currentUser = $this->getUser();
-        if (!$currentUser) {
+        if (!$currentUser instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return $this->json([
                 'error' => 'Please login first!',
             ], Response::HTTP_UNAUTHORIZED);
@@ -45,7 +45,7 @@ class CalculateExpensesController extends AbstractController
         if ($withUserEmail) {
             // Find the specific user to calculate with
             $selectedUser = $this->userRepository->findOneBy(['email' => $withUserEmail]);
-            if (!$selectedUser) {
+            if (!$selectedUser instanceof \App\Entity\User) {
                 return $this->json([
                     'error' => sprintf('User %s not found!', $withUserEmail),
                 ], Response::HTTP_BAD_REQUEST);

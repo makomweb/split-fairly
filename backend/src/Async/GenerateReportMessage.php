@@ -8,10 +8,10 @@ use App\Entity\Report;
 use Symfony\Component\Messenger\Attribute\AsMessage;
 
 #[AsMessage(transport: 'async')]
-final class GenerateReportMessage
+final readonly class GenerateReportMessage
 {
     private function __construct(
-        public readonly string $id,
+        public string $id,
     ) {
     }
 

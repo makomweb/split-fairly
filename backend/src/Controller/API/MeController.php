@@ -18,7 +18,7 @@ class MeController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!$user) {
+        if (!$user instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return $this->json([
                 'error' => 'Please login first!',
             ], Response::HTTP_UNAUTHORIZED);

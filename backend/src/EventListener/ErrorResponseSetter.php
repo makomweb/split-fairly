@@ -24,11 +24,11 @@ final readonly class ErrorResponseSetter
         $exception = $event->getThrowable();
 
         $data = [
-            'type' => self::getType($exception),
+            'type' => $this->getType($exception),
             'title' => 'An error occurred',
             'status' => self::getCode($exception),
             'detail' => $exception->getMessage(),
-            'class' => get_class($exception),
+            'class' => $exception::class,
         ];
 
         if ($this->isDebug) {
@@ -50,7 +50,7 @@ final readonly class ErrorResponseSetter
             : Response::HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    private static function getType(\Throwable $exception): string
+    private function getType(\Throwable $exception): string
     {
         $code = self::getCode($exception);
 

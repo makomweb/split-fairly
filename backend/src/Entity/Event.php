@@ -14,40 +14,21 @@ class Event
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     private Uuid $id;
 
-    #[ORM\Column]
-    private \DateTimeImmutable $createdAt;
-
-    #[ORM\Column]
-    private string $createdBy;
-
-    #[ORM\Column]
-    private string $subjectType;
-
-    #[ORM\Column]
-    private string $subjectId;
-
-    #[ORM\Column]
-    private string $eventType;
-
-    /** @var array<string,mixed> $payload */
-    #[ORM\Column]
-    private array $payload;
-
     /** @param array<string,mixed> $payload */
     public function __construct(
-        string $createdBy,
-        string $subjectType,
-        string $subjectId,
-        string $eventType,
-        array $payload = [],
-        \DateTimeImmutable $createdAt = new \DateTimeImmutable('now'),
+        #[ORM\Column]
+        private string $createdBy,
+        #[ORM\Column]
+        private string $subjectType,
+        #[ORM\Column]
+        private string $subjectId,
+        #[ORM\Column]
+        private string $eventType,
+        #[ORM\Column]
+        private array $payload = [],
+        #[ORM\Column]
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable('now'),
     ) {
-        $this->createdAt = $createdAt;
-        $this->createdBy = $createdBy;
-        $this->subjectType = $subjectType;
-        $this->subjectId = $subjectId;
-        $this->eventType = $eventType;
-        $this->payload = $payload;
         $this->id = new UuidV7();
     }
 

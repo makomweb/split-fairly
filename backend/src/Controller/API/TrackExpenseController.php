@@ -25,7 +25,7 @@ class TrackExpenseController extends AbstractController
     {
         $currentUser = $this->getUser();
 
-        if (!$currentUser) {
+        if (!$currentUser instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             return $this->json([
                 'error' => 'Please login first!',
             ], Response::HTTP_UNAUTHORIZED);
@@ -45,7 +45,7 @@ class TrackExpenseController extends AbstractController
 
             // Check recipient email exists in the system
             $recipientUser = $this->userRepository->findOneBy(['email' => $recipientEmail]);
-            if (!$recipientUser) {
+            if (!$recipientUser instanceof \App\Entity\User) {
                 return $this->json([
                     'error' => sprintf('User %s not found!', $recipientEmail),
                 ], Response::HTTP_BAD_REQUEST);

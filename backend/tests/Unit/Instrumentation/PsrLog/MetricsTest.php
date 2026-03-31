@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 final class MetricsTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
+
     private Metrics $metrics;
 
     protected function setUp(): void

@@ -22,12 +22,12 @@ final class Compensation implements \Stringable
         $spentTypes = array_intersect($includeTypes, ['Groceries', 'Non-Food']);
         $lentTypes = array_intersect($includeTypes, ['Lent']);
 
-        $spentA = !empty($spentTypes) ? $a->spent($spentTypes)->divide(2) : Price::ZERO();
-        $spentB = !empty($spentTypes) ? $b->spent($spentTypes)->divide(2) : Price::ZERO();
+        $spentA = $spentTypes === [] ? Price::ZERO() : $a->spent($spentTypes)->divide(2);
+        $spentB = $spentTypes === [] ? Price::ZERO() : $b->spent($spentTypes)->divide(2);
         $spentDiff = $spentA->substract($spentB);
 
-        $lentA = !empty($lentTypes) ? $a->lent($lentTypes) : Price::ZERO();
-        $lentB = !empty($lentTypes) ? $b->lent($lentTypes) : Price::ZERO();
+        $lentA = $lentTypes === [] ? Price::ZERO() : $a->lent($lentTypes);
+        $lentB = $lentTypes === [] ? Price::ZERO() : $b->lent($lentTypes);
         $lentDiff = $lentA->substract($lentB);
 
         $totalDiff = $spentDiff->add($lentDiff);
