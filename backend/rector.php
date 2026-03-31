@@ -21,4 +21,8 @@ return RectorConfig::configure()
         // Code quality
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
+    ])
+    // Skip ErrorResponseSetter - has legitimate static methods that shouldn't be converted
+    ->withSkip([
+        __DIR__.'/src/EventListener/ErrorResponseSetter.php',
     ]);
