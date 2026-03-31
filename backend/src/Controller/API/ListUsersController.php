@@ -2,6 +2,7 @@
 
 namespace App\Controller\API;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,14 +28,18 @@ class ListUsersController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Get all users except the current user
-        $allUsers = $this->userRepository->findAll();
-        $otherUsers = array_filter($allUsers, fn ($user) => $user->getUserIdentifier() !== $currentUser->getUserIdentifier());
-
-        $users = array_map(fn ($user) => [
-            'id' => $user->getUuid()->toRfc4122(),
-            'email' => $user->getEmail(),
-        ], $otherUsers);
+        // Provide only other non-admin users:
+        $users = array_map(
+            static fn (User $user) => [
+                'id' => $user->getUuid()->toRfc4122(),
+                'email' => $user->getEmail(),
+            ],
+            array_filter(
+                $this->userRepository->findAll(),
+                static fn (User $user) => !$user->isAdmin()
+                    && $user->getUserIdentifier() !== $currentUser->getUserIdentifier()
+            )
+        );
 
         return $this->json(['users' => array_values($users)]);
     }
