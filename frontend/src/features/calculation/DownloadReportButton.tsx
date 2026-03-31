@@ -2,18 +2,22 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { initiateReportGeneration, getReportStatus, downloadReport, ReportStatus } from './api'
 
-export function DownloadReportButton() {
+type Props = {
+  id: string
+}
+
+export function DownloadReportButton({id}: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [reportStatus, setReportStatus] = useState<ReportStatus | null>(null)
 
-  const pollReportStatus = async (reportId: string) => {
+  const pollReportStatus = async (id: string) => {
     let attempts = 0
     const maxAttempts = 120 // 2 minutes with 1s intervals
 
     while (attempts < maxAttempts) {
       try {
-        const status = await getReportStatus(reportId)
+        const status = await getReportStatus(id)
         setReportStatus(status)
 
         if (status.status === 'completed') {
@@ -40,7 +44,7 @@ export function DownloadReportButton() {
 
     try {
       // Initiate report generation
-      const initResponse = await initiateReportGeneration()
+      const initResponse = await initiateReportGeneration(id)
       setReportStatus(initResponse)
 
       // Poll for completion

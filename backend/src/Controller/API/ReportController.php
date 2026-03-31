@@ -8,6 +8,7 @@ use App\Repository\ReportRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,14 +25,18 @@ final class ReportController extends AbstractController
     }
 
     #[Route('/report/calculation', name: 'report.calculation', methods: ['POST'])]
-    public function initiate(): JsonResponse
+    public function initiate(Request $request): JsonResponse
     {
+        $compensationHash = $request->query->get('id');
+        if (!$compensationHash) {
+            return new JsonResponse(['error' => 'Missing id parameter'], Response::HTTP_BAD_REQUEST);
+        }
+
         $compensationId = (new \DateTimeImmutable())->format('Y-m-d');
-        $checksum = hash('sha256', $compensationId);
 
         $existingReport = $this->reportRepository->findByCompensationIdAndChecksum(
             $compensationId,
-            $checksum
+            $compensationHash
         );
 
         if ($existingReport) {
@@ -42,7 +47,7 @@ final class ReportController extends AbstractController
             ]);
         }
 
-        $report = new Report($compensationId, $checksum);
+        $report = new Report($compensationId, $compensationHash);
         $this->entityManager->persist($report);
         $this->entityManager->flush();
 

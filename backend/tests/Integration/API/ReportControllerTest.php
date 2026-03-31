@@ -30,7 +30,7 @@ class ReportControllerTest extends WebTestCase
         $client->submit($form);
         $client->followRedirect();
 
-        $testId = 'abc123def456';
+        $testId = hash('sha256', 'test-data');
         $client->request('POST', "/api/report/calculation?id={$testId}");
 
         self::assertResponseStatusCodeSame(202);

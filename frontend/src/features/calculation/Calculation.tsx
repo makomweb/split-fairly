@@ -187,7 +187,7 @@ export function Calculation({ onUserSelected }: { onUserSelected?: (selected: bo
               <UserExpenseCard key={expenses.user_email} expenses={expenses} />
             ))}
 
-            <DownloadReportButton />
+            <DownloadReportButton id={data.id}/>
           </>
         )}
       </div>
