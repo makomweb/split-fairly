@@ -11,17 +11,19 @@ use App\SplitFairly\Expense;
 use App\SplitFairly\ExpenseTracker;
 use App\SplitFairly\NormalizerInterface;
 use App\SplitFairly\Price;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 final class ExpenseTrackerTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function test_tracks_expense_and_persists_event(): void
     {
         $price = new Price(value: 10.50, currency: 'EUR');
         $expense = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
 
-        $currentUser = $this->createMock(CurrentUserInterface::class);
-        $currentUser->expects($this->any())->method('getUuid')->willReturn('user-123');
+        $currentUser = $this->createStub(CurrentUserInterface::class);
+        $currentUser->method('getUuid')->willReturn('user-123');
 
         $normalizedPayload = ['price' => (string) $price, 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'];
         $normalizer = $this->createMock(NormalizerInterface::class);

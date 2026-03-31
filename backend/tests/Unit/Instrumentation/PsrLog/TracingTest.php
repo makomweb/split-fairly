@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Instrumentation\PsrLog;
 
 use App\Instrumentation\PsrLog\Tracing;
 use App\Instrumentation\Tracer;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,6 +22,7 @@ final class TracingTest extends TestCase
         $this->tracing = new Tracing($this->logger);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_tracer_returns_tracer_instance(): void
     {
         $this->logger->method('debug');
@@ -30,6 +32,7 @@ final class TracingTest extends TestCase
         self::assertInstanceOf(Tracer::class, $tracer);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_tracer_with_context(): void
     {
         $this->logger->method('debug');
@@ -40,6 +43,7 @@ final class TracingTest extends TestCase
         self::assertInstanceOf(Tracer::class, $tracer);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_tracer_opens_span(): void
     {
         $this->logger->method('debug');
@@ -49,6 +53,7 @@ final class TracingTest extends TestCase
         self::assertInstanceOf(Tracer::class, $tracer);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_multiple_tracers(): void
     {
         $this->logger->method('debug');
@@ -59,6 +64,7 @@ final class TracingTest extends TestCase
         self::assertNotSame($tracer1, $tracer2);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_tracer_created_with_method_name_and_file(): void
     {
         $this->logger->method('debug');
