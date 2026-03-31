@@ -10,7 +10,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class ApiMeEndpointTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
+
     private UserPasswordHasherInterface $passwordHasher;
+
     private User $testUser;
 
     protected function setUp(): void
@@ -112,6 +114,7 @@ class ApiMeEndpointTest extends WebTestCase
 
         // Check /api/me returns first user
         $client->request('GET', '/api/me');
+
         $responseContent = $client->getResponse()->getContent();
         $response = \is_string($responseContent) ? json_decode($responseContent, true) : null;
         $response = \is_array($response) ? $response : [];

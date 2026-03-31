@@ -19,6 +19,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[IsGranted('ROLE_ADMIN')]
+    #[\Override]
     public function index(): Response
     {
         $url = $this->adminUrlGenerator
@@ -28,12 +29,14 @@ class DashboardController extends AbstractDashboardController
         return $this->redirect($url);
     }
 
+    #[\Override]
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
             ->setTitle('Split Fairly Admin');
     }
 
+    #[\Override]
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');

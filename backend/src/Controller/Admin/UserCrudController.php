@@ -30,6 +30,7 @@ class UserCrudController extends AbstractCrudController
         return User::class;
     }
 
+    #[\Override]
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -39,12 +40,14 @@ class UserCrudController extends AbstractCrudController
             ->setDefaultSort(['id' => 'DESC']);
     }
 
+    #[\Override]
     public function configureActions(Actions $actions): Actions
     {
         return $actions
             ->add(Crud::PAGE_INDEX, Action::DETAIL);
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')
@@ -71,6 +74,7 @@ class UserCrudController extends AbstractCrudController
         yield $passwordField;
     }
 
+    #[\Override]
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         /* @var User $entityInstance */
@@ -78,6 +82,7 @@ class UserCrudController extends AbstractCrudController
         parent::persistEntity($entityManager, $entityInstance);
     }
 
+    #[\Override]
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         /* @var User $entityInstance */
@@ -89,7 +94,7 @@ class UserCrudController extends AbstractCrudController
     {
         $plainPassword = $user->getPassword();
 
-        if (!empty($plainPassword)) {
+        if (!in_array($plainPassword, [null, '', '0'], true)) {
             $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
         }

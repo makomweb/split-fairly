@@ -27,7 +27,7 @@ final readonly class Logging implements LoggingInterface
     {
         $this->logger
             ->error($ex->getMessage(), [
-                'exception_type' => get_class($ex),
+                'exception_type' => $ex::class,
                 'stack_trace' => $ex->getTrace(),
             ]);
     }

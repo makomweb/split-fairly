@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Instrumentation;
 
 use App\Instrumentation\Initializer;
 use App\Instrumentation\InstrumentationHolder;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -24,16 +25,16 @@ final class InitializerTest extends TestCase
         // Reset the Holder singleton
         $reflection = new \ReflectionClass(InstrumentationHolder::class);
         $instanceProperty = $reflection->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_initializer_initializes_provider_on_invoke(): void
     {
         $initializer = new Initializer('PsrLog', $this->logger);
 
         $request = Request::create('/');
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = $this->createStub(HttpKernelInterface::class);
         $event = new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST);
 
         $initializer($event);
@@ -43,12 +44,13 @@ final class InitializerTest extends TestCase
         self::assertInstanceOf(\App\Instrumentation\LoggingInterface::class, $logging);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_initializer_with_null_telemetry(): void
     {
         $initializer = new Initializer('Null', $this->logger);
 
         $request = Request::create('/');
-        $kernel = $this->createMock(HttpKernelInterface::class);
+        $kernel = $this->createStub(HttpKernelInterface::class);
         $event = new RequestEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST);
 
         $initializer($event);

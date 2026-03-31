@@ -7,11 +7,11 @@ namespace App\Async;
 use Symfony\Component\Messenger\Attribute\AsMessage;
 
 #[AsMessage(transport: 'async')]
-final class Message
+final readonly class Message
 {
     private function __construct(
-        public readonly float $createdAt,
-        public readonly string $type,
+        public float $createdAt,
+        public string $type,
     ) {
     }
 

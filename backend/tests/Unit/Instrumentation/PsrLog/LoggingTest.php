@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 final class LoggingTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
+
     private Logging $logging;
 
     protected function setUp(): void
@@ -55,13 +56,11 @@ final class LoggingTest extends TestCase
             ->method('error')
             ->with(
                 'Test error message',
-                $this->callback(function (mixed $context) use ($exception) {
-                    return is_array($context)
-                        && isset($context['exception_type'])
-                        && $context['exception_type'] === get_class($exception)
-                        && isset($context['stack_trace'])
-                        && $context['stack_trace'] === $exception->getTrace();
-                })
+                $this->callback(fn (mixed $context) => is_array($context)
+                    && isset($context['exception_type'])
+                    && $context['exception_type'] === $exception::class
+                    && isset($context['stack_trace'])
+                    && $context['stack_trace'] === $exception->getTrace())
             );
 
         $this->logging->exception($exception);

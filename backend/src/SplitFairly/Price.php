@@ -12,7 +12,7 @@ final readonly class Price implements \Stringable
         public float $value,
         public string $currency = 'EUR',
     ) {
-        Ensure::that(!empty($currency));
+        Ensure::that('' !== $currency && '0' !== $currency);
     }
 
     public static function ABS(self $price): self

@@ -41,11 +41,11 @@ final class ReportsCleanupCommand extends Command
         $daysOption = $input->getOption('days');
         assert(is_numeric($daysOption), 'Days option is not a number!');
         $days = (int) $daysOption;
-        $cutoffDate = new \DateTimeImmutable("-{$days} days");
+        $cutoffDate = new \DateTimeImmutable(sprintf('-%d days', $days));
 
         $oldReports = $this->reportRepository->findOlderThan($cutoffDate);
 
-        if (empty($oldReports)) {
+        if ([] === $oldReports) {
             $output->writeln('No old reports found.');
 
             return Command::SUCCESS;

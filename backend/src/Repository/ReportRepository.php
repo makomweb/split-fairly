@@ -30,21 +30,4 @@ class ReportRepository extends ServiceEntityRepository
 
         return $result;
     }
-
-    public function findByCompensationIdAndChecksum(string $compensationId, string $checksum): ?Report
-    {
-        $result = $this->createQueryBuilder('r')
-            ->andWhere('r.compensationId = :compensationId')
-            ->andWhere('r.checksum = :checksum')
-            ->andWhere('r.status = :status')
-            ->setParameter('compensationId', $compensationId)
-            ->setParameter('checksum', $checksum)
-            ->setParameter('status', Report::STATUS_COMPLETED)
-            ->orderBy('r.createdAt', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return $result instanceof Report ? $result : null;
-    }
 }

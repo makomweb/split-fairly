@@ -10,8 +10,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class TrackExpenseWithLendValidationTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
+
     private UserPasswordHasherInterface $passwordHasher;
+
     private User $user1;
+
     private User $user2;
 
     protected function setUp(): void

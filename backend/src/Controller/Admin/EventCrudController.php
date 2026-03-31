@@ -34,10 +34,11 @@ class EventCrudController extends AbstractCrudController
         return EventEntity::class;
     }
 
-    public function __construct(private EventStoreInterface $eventRepository)
+    public function __construct(private readonly EventStoreInterface $eventRepository)
     {
     }
 
+    #[\Override]
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -50,6 +51,7 @@ class EventCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_EDIT, 'Edit Event');
     }
 
+    #[\Override]
     public function configureActions(Actions $actions): Actions
     {
         $wipe = Action::new('wipeEvents', 'Wipe Events', 'fa fa-trash')
@@ -62,6 +64,7 @@ class EventCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $wipe);
     }
 
+    #[\Override]
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')
@@ -92,6 +95,7 @@ class EventCrudController extends AbstractCrudController
         // trying to convert the array value to a string during field configuration
     }
 
+    #[\Override]
     public function createEditFormBuilder(
         EntityDto $entityDto,
         KeyValueStore $formOptions,
@@ -103,6 +107,7 @@ class EventCrudController extends AbstractCrudController
         return $builder;
     }
 
+    #[\Override]
     public function createNewFormBuilder(
         EntityDto $entityDto,
         KeyValueStore $formOptions,

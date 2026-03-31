@@ -15,6 +15,6 @@ final readonly class Metrics implements MetricsInterface
 
     public function record(string $name, float|int $value, string $unit): void
     {
-        $this->logger->info("📈 Metric recorded: {$name} = {$value} {$unit}");
+        $this->logger->info(sprintf('📈 Metric recorded: %s = %s %s', $name, $value, $unit));
     }
 }

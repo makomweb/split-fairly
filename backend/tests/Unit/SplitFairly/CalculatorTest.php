@@ -13,19 +13,21 @@ use App\SplitFairly\Expense;
 use App\SplitFairly\Expenses;
 use App\SplitFairly\Price;
 use App\SplitFairly\QueryOptions;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 final class CalculatorTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function test_calculate_returns_empty_array_when_no_users(): void
     {
-        $eventStore = $this->createMock(EventStoreInterface::class);
+        $eventStore = $this->createStub(EventStoreInterface::class);
         $eventStore->method('getUserIds')->willReturn([]);
         $eventStore->method('getEvents')->willReturn([]);
 
-        $denormalizer = $this->createMock(DenormalizerInterface::class);
+        $denormalizer = $this->createStub(DenormalizerInterface::class);
 
-        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider = $this->createStub(EmailProviderInterface::class);
         $emailProvider->method('getEmailFor')->willReturn('test@example.com');
 
         $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
@@ -35,6 +37,7 @@ final class CalculatorTest extends TestCase
         self::assertSame([], $result);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_calculate_groups_expenses_by_multiple_users(): void
     {
         $user1 = 'user-123';
@@ -46,28 +49,28 @@ final class CalculatorTest extends TestCase
         $expense3 = new Expense(price: $price, what: 'Dinner', type: 'Lent', location: 'user@example.com');
 
         $event1 = new Event(
+            createdBy: $user1,
             subjectType: 'Expense',
             subjectId: 'exp-1',
             eventType: 'tracked',
             payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'],
-            createdAt: new \DateTimeImmutable(),
-            createdBy: $user1
+            createdAt: new \DateTimeImmutable()
         );
         $event2 = new Event(
+            createdBy: $user1,
             subjectType: 'Expense',
             subjectId: 'exp-2',
             eventType: 'tracked',
             payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Lunch', 'type' => 'Non-Food', 'location' => 'Restaurant'],
-            createdAt: new \DateTimeImmutable(),
-            createdBy: $user1
+            createdAt: new \DateTimeImmutable()
         );
         $event3 = new Event(
+            createdBy: $user2,
             subjectType: 'Expense',
             subjectId: 'exp-3',
             eventType: 'tracked',
             payload: ['price' => ['value' => 10.50, 'currency' => 'EUR'], 'what' => 'Dinner', 'type' => 'Lent', 'location' => 'user@example.com'],
-            createdAt: new \DateTimeImmutable(),
-            createdBy: $user2
+            createdAt: new \DateTimeImmutable()
         );
 
         $eventStore = $this->createMock(EventStoreInterface::class);
@@ -78,19 +81,17 @@ final class CalculatorTest extends TestCase
         $eventStore
             ->expects($this->once())
             ->method('getEvents')
-            ->with($this->callback(function (QueryOptions $options) use ($user1, $user2) {
-                return $options->createdBy === [$user1, $user2]
-                    && $options->subjectTypes === ['Expense']
-                    && $options->eventTypes === ['tracked'];
-            }))
+            ->with($this->callback(fn (QueryOptions $options) => $options->createdBy === [$user1, $user2]
+                && $options->subjectTypes === ['Expense']
+                && $options->eventTypes === ['tracked']))
             ->willReturn([$event1, $event2, $event3]);
 
-        $denormalizer = $this->createMock(DenormalizerInterface::class);
+        $denormalizer = $this->createStub(DenormalizerInterface::class);
         $denormalizer
             ->method('fromArray')
             ->willReturnOnConsecutiveCalls($expense1, $expense2, $expense3);
 
-        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider = $this->createStub(EmailProviderInterface::class);
         $emailProvider->method('getEmailFor')->willReturn('test@example.com');
 
         $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);
@@ -114,6 +115,7 @@ final class CalculatorTest extends TestCase
         self::assertCount(1, $user2Expenses->expenses);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_calculate_calls_get_user_ids(): void
     {
         $eventStore = $this->createMock(EventStoreInterface::class);
@@ -124,9 +126,9 @@ final class CalculatorTest extends TestCase
 
         $eventStore->method('getEvents')->willReturn([]);
 
-        $denormalizer = $this->createMock(DenormalizerInterface::class);
+        $denormalizer = $this->createStub(DenormalizerInterface::class);
 
-        $emailProvider = $this->createMock(EmailProviderInterface::class);
+        $emailProvider = $this->createStub(EmailProviderInterface::class);
         $emailProvider->method('getEmailFor')->willReturn('test@example.com');
 
         $calculator = new Calculator($eventStore, $denormalizer, $emailProvider);

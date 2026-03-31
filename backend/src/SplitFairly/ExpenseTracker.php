@@ -7,9 +7,9 @@ namespace App\SplitFairly;
 final readonly class ExpenseTracker
 {
     public function __construct(
-        private readonly EventStoreInterface $eventStore,
-        private readonly NormalizerInterface $normalizer,
-        private readonly CurrentUserInterface $currentUser,
+        private EventStoreInterface $eventStore,
+        private NormalizerInterface $normalizer,
+        private CurrentUserInterface $currentUser,
     ) {
     }
 
@@ -17,7 +17,7 @@ final readonly class ExpenseTracker
     {
         $event = new Event(
             createdBy: $this->currentUser->getUuid(),
-            subjectType: array_last(explode('\\', get_class($expense))),
+            subjectType: array_last(explode('\\', $expense::class)),
             subjectId: $expense->getId()->toRfc4122(),
             eventType: 'tracked',
             payload: $this->normalizer->toArray($expense, ignoreFields: ['id'])

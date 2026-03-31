@@ -39,7 +39,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user = $this->findOneBy(['uuid' => $userUuid]);
         assert($user instanceof User);
         $email = $user->getEmail();
-        assert(!empty($email));
+        assert(!in_array($email, [null, '', '0'], true));
 
         return $email;
     }

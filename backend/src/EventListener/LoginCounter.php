@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 final readonly class LoginCounter
 {
     public function __construct(
-        private readonly MessageBusInterface $bus,
+        private MessageBusInterface $bus,
     ) {
     }
 
@@ -21,6 +21,6 @@ final readonly class LoginCounter
     {
         $userId = $event->getUser()->getUserIdentifier();
 
-        $this->bus->dispatch(Message::create("🔐 Successful login: {$userId}"));
+        $this->bus->dispatch(Message::create('🔐 Successful login: '.$userId));
     }
 }

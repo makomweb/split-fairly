@@ -13,7 +13,7 @@ use App\Instrumentation\PsrLog\Tracing as PsrLogTracing;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class Instrumentation
+final readonly class Instrumentation
 {
     public function __construct(
         #[Autowire('%app.telemetry%')]

@@ -11,16 +11,18 @@ use App\SplitFairly\Expense;
 use App\SplitFairly\ExpenseTracker;
 use App\SplitFairly\NormalizerInterface;
 use App\SplitFairly\Price;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 final class ExpenseTrackerTest extends TestCase
 {
+    #[AllowMockObjectsWithoutExpectations]
     public function test_tracks_expense_and_persists_event(): void
     {
         $price = new Price(value: 10.50, currency: 'EUR');
         $expense = new Expense(price: $price, what: 'Coffee', type: 'Groceries', location: 'Starbucks');
 
-        $currentUser = $this->createMock(CurrentUserInterface::class);
+        $currentUser = $this->createStub(CurrentUserInterface::class);
         $currentUser->method('getUuid')->willReturn('user-123');
 
         $normalizedPayload = ['price' => (string) $price, 'what' => 'Coffee', 'type' => 'Groceries', 'location' => 'Starbucks'];
@@ -29,13 +31,11 @@ final class ExpenseTrackerTest extends TestCase
 
         $eventStore = $this->createMock(EventStoreInterface::class);
         $eventStore->expects($this->once())->method('persist')->with(
-            $this->callback(function (Event $event) use ($expense, $normalizedPayload): bool {
-                return 'user-123' === $event->createdBy
-                    && 'Expense' === $event->subjectType
-                    && $event->subjectId === $expense->getId()->toRfc4122()
-                    && 'tracked' === $event->eventType
-                    && $event->payload === $normalizedPayload;
-            }),
+            $this->callback(fn (Event $event): bool => 'user-123' === $event->createdBy
+                && 'Expense' === $event->subjectType
+                && $event->subjectId === $expense->getId()->toRfc4122()
+                && 'tracked' === $event->eventType
+                && $event->payload === $normalizedPayload),
             false
         );
 

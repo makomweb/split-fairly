@@ -10,7 +10,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class LoginFormFlowTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
+
     private UserPasswordHasherInterface $passwordHasher;
+
     private User $testUser;
 
     protected function setUp(): void
@@ -199,7 +201,7 @@ class LoginFormFlowTest extends WebTestCase
 
         // Check that a session cookie is set
         self::assertTrue($client->getResponse()->headers->has('Set-Cookie')
-                         || count($client->getCookieJar()->all()) > 0);
+                         || [] !== $client->getCookieJar()->all());
     }
 
     public function test_remember_me_checkbox_preserves_session(): void

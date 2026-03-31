@@ -19,7 +19,6 @@ final class InstrumentationTest extends TestCase
         // Reset the singleton instance via reflection
         $reflection = new \ReflectionClass(InstrumentationHolder::class);
         $instanceProperty = $reflection->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
         parent::tearDown();
     }

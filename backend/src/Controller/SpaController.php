@@ -32,7 +32,7 @@ final readonly class SpaController
         // Production: serve built HTML
         $buildIndex = $this->projectDir.'/public/build/index.html';
         if (!file_exists($buildIndex)) {
-            throw new \RuntimeException("SPA build not found at {$buildIndex}. Run make npm-build!");
+            throw new \RuntimeException(sprintf('SPA build not found at %s. Run make npm-build!', $buildIndex));
         }
 
         $content = file_get_contents($buildIndex);

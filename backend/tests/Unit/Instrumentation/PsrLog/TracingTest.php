@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Instrumentation\PsrLog;
 
 use App\Instrumentation\PsrLog\Tracing;
 use App\Instrumentation\Tracer;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -13,6 +14,7 @@ use Psr\Log\LoggerInterface;
 final class TracingTest extends TestCase
 {
     private LoggerInterface&MockObject $logger;
+
     private Tracing $tracing;
 
     protected function setUp(): void
@@ -21,18 +23,20 @@ final class TracingTest extends TestCase
         $this->tracing = new Tracing($this->logger);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_tracer_returns_tracer_instance(): void
     {
-        $this->logger->expects($this->any())->method('debug');
+        $this->logger->method('debug');
 
         $tracer = $this->tracing->createTracer('testMethod', __FILE__);
 
         self::assertInstanceOf(Tracer::class, $tracer);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_tracer_with_context(): void
     {
-        $this->logger->expects($this->any())->method('debug');
+        $this->logger->method('debug');
 
         $context = ['request_id' => 'abc123', 'user_id' => 'user-1'];
         $tracer = $this->tracing->createTracer('testMethod', __FILE__, $context);
@@ -40,18 +44,20 @@ final class TracingTest extends TestCase
         self::assertInstanceOf(Tracer::class, $tracer);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_tracer_opens_span(): void
     {
-        $this->logger->expects($this->any())->method('debug');
+        $this->logger->method('debug');
 
         $tracer = $this->tracing->createTracer('processPayment', __FILE__);
 
         self::assertInstanceOf(Tracer::class, $tracer);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_create_multiple_tracers(): void
     {
-        $this->logger->expects($this->any())->method('debug');
+        $this->logger->method('debug');
 
         $tracer1 = $this->tracing->createTracer('method1', __FILE__);
         $tracer2 = $this->tracing->createTracer('method2', __FILE__);
@@ -59,9 +65,10 @@ final class TracingTest extends TestCase
         self::assertNotSame($tracer1, $tracer2);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function test_tracer_created_with_method_name_and_file(): void
     {
-        $this->logger->expects($this->any())->method('debug');
+        $this->logger->method('debug');
 
         $methodName = 'calculateTotal';
         $file = __FILE__;

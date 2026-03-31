@@ -28,7 +28,7 @@ final readonly class ErrorResponseSetter
             'title' => 'An error occurred',
             'status' => self::getCode($exception),
             'detail' => $exception->getMessage(),
-            'class' => get_class($exception),
+            'class' => $exception::class,
         ];
 
         if ($this->isDebug) {

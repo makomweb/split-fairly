@@ -10,9 +10,13 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class ListUsersEndpointTest extends WebTestCase
 {
     private EntityManagerInterface $entityManager;
+
     private UserPasswordHasherInterface $passwordHasher;
+
     private User $user1;
+
     private User $user2;
+
     private User $user3;
 
     protected function setUp(): void

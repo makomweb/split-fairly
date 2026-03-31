@@ -24,6 +24,7 @@ interface Compensation {
 export interface CalculationResponse {
   users: Expenses[]
   compensation: Compensation | null
+  id: string
 }
 
 export interface ReportStatus {
@@ -53,8 +54,9 @@ export async function fetchCalculation(withUser?: string): Promise<CalculationRe
   return response.json()
 }
 
-export async function initiateReportGeneration(): Promise<ReportStatus> {
-  const response = await fetch(getApiUrl('/api/report/calculation'), {
+export async function initiateReportGeneration(id: string): Promise<ReportStatus> {
+  // TODO: Consolidate URL parameter!
+  const response = await fetch(getApiUrl(`/api/report/calculation?id=${id}`), {
     method: 'POST',
     credentials: 'include',
   })
@@ -66,8 +68,8 @@ export async function initiateReportGeneration(): Promise<ReportStatus> {
   return response.json()
 }
 
-export async function getReportStatus(reportId: string): Promise<ReportStatus> {
-  const response = await fetch(getApiUrl(`/api/report/${reportId}/status`), {
+export async function getReportStatus(id: string): Promise<ReportStatus> {
+  const response = await fetch(getApiUrl(`/api/report/${id}/status`), {
     credentials: 'include',
   })
 
@@ -78,8 +80,8 @@ export async function getReportStatus(reportId: string): Promise<ReportStatus> {
   return response.json()
 }
 
-export async function downloadReport(reportId: string): Promise<Response> {
-  return fetch(getApiUrl(`/api/report/${reportId}/download`), {
+export async function downloadReport(id: string): Promise<Response> {
+  return fetch(getApiUrl(`/api/report/${id}/download`), {
     credentials: 'include',
   })
 }
